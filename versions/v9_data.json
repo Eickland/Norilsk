@@ -1,0 +1,31 @@
+{
+  "statuses": [
+    {
+      "id": 1,
+      "name": "Ожидает",
+      "color": "#FF6B6B"
+    },
+    {
+      "id": 2,
+      "name": "В работе",
+      "color": "#4ECDC4"
+    },
+    {
+      "id": 3,
+      "name": "Завершена",
+      "color": "#45B7D1"
+    },
+    {
+      "id": 4,
+      "name": "Отклонена",
+      "color": "#96CEB4"
+    },
+    {
+      "id": 5,
+      "name": "Архив",
+      "color": "#FFEAA7"
+    }
+  ],
+  "probes": [],
+  "metadata": {}
+}
