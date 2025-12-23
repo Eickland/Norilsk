@@ -337,11 +337,10 @@ class ProbeLab {
         });
     }
 
-    // Импорт данных
+    // Импорт данных ИСП АЭС
     const importTable = document.getElementById('importTable');
     const importModal = document.getElementById('importModal');
     const cancelImportBtn = document.getElementById('cancelImportBtn');
-    const saveImportBtn = document.getElementById('saveImportBtn');
     const fileInput = document.getElementById('fileInput');
     const dropArea = document.getElementById('dropArea');
     const fileInfo = document.getElementById('fileInfo');
@@ -533,6 +532,194 @@ class ProbeLab {
                 // Восстанавливаем кнопку
                 uploadSubmit.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить';
                 uploadSubmit.disabled = false;
+            }
+        });
+    }
+
+    const importData = document.getElementById('importData');
+    const importDataModal = document.getElementById('importDataModal');
+    const cancelDataImportBtn = document.getElementById('cancelDataImportBtn');
+    const fileDataInput = document.getElementById('fileDataInput');
+    const dropDataArea = document.getElementById('dropDataArea');
+    const DatafileInfo = document.getElementById('DatafileInfo');
+    const DatafileName = document.getElementById('DatafileName');
+    const DatafileSize = document.getElementById('DatafileSize');
+    const removeDataFileBtn = document.getElementById('removeDataFileBtn');
+    const uploadDataSubmit = document.getElementById('uploadDataSubmit');
+    // Открытие модального окна
+    if (importData) {
+        importData.addEventListener('click', () => {
+            importDataModal.style.display = 'flex';
+            // Сброс при открытии
+            dataresetFileInput();
+        });
+    }
+
+    // Закрытие модального окна
+    if (cancelDataImportBtn) {
+        cancelDataImportBtn.addEventListener('click', () => {
+            importDataModal.style.display = 'none';
+            dataresetFileInput();
+        });
+    }
+
+    // Клик по области загрузки
+    dropDataArea.addEventListener('click', () => fileDataInput.click());
+
+    // Обработка выбора файла
+    fileDataInput.addEventListener('change', datahandleFile);
+
+    // Drag & Drop функционал
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropDataArea.addEventListener(eventName, DatapreventDefaults, false);
+    });
+
+    function DatapreventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropDataArea.addEventListener(eventName, datahighlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropDataArea.addEventListener(eventName, dataunhighlight, false);
+    });
+
+    function datahighlight() {
+        dropDataArea.classList.add('dragover');
+    }
+
+    function dataunhighlight() {
+        dropDataArea.classList.remove('dragover');
+    }
+
+    // Обработка drop (только один файл)
+    dropDataArea.addEventListener('drop', datahandleDrop, false);
+
+    function datahandleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        
+        if (files.length > 1) {
+            alert('Пожалуйста, загружайте только один файл за раз');
+            return;
+        }
+        
+        if (files.length === 1) {
+            fileDataInput.files = files;
+            datahandleFile({ target: fileDataInput });
+        }
+    }
+
+    // Обработка выбранного файла (только один)
+    function datahandleFile(e) {
+        const files = e.target.files;
+        
+        if (!files.length) {
+            hideFileInfo();
+            return;
+        }
+        
+        // Проверяем, что загружен только один файл
+        if (files.length > 1) {
+            alert('Можно загрузить только один файл. Будет использован первый файл из списка.');
+            // Оставляем только первый файл
+            const dt = new DataTransfer();
+            dt.items.add(files[0]);
+            fileDataInput.files = dt.files;
+        }
+        
+        const file = files[0];
+        
+        // Показываем информацию о файле
+        DatafileName.textContent = file.name;
+        DatafileSize.textContent = `Размер: ${formatFileSize(file.size)}`;
+        DatafileInfo.style.display = 'block';
+    }
+
+    // Удаление файла
+    if (removeDataFileBtn) {
+        removeDataFileBtn.addEventListener('click', () => {
+            dataresetFileInput();
+        });
+    }
+
+    // Сброс выбора файла
+    function dataresetFileInput() {
+        fileDataInput.value = '';
+        datahideFileInfo();
+    }
+
+    // Скрытие информации о файле
+    function datahideFileInfo() {
+        DatafileInfo.style.display = 'none';
+        DatafileName.textContent = '';
+        DatafileSize.textContent = '';
+    }
+
+    // Отправка файла на сервер (только один файл)
+    if (uploadDataSubmit) {
+        uploadDataSubmit.addEventListener('click', async function() {
+            const files = fileDataInput.files;
+            
+            if (!files.length) {
+                alert('Пожалуйста, выберите файл для загрузки!');
+                return;
+            }
+            
+            // Берем только первый файл (на всякий случай)
+            const file = files[0];
+            
+            // Валидация файла (пример)
+            if (!validateFile(file)) {
+                alert('Недопустимый тип файла или слишком большой размер');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file); // Только один файл с ключом 'file'
+            
+            // Добавляем дополнительные данные, если нужно
+            formData.append('userId', '123');
+            formData.append('description', 'Загруженный файл');
+            
+            try {
+                // Показываем индикатор загрузки
+                uploadSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
+                uploadSubmit.disabled = true;
+                
+                const response = await fetch('/api/upload_data', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    alert('Файл успешно загружен!');
+                    
+                    // Закрываем модальное окно после успешной загрузки
+                    importDataModal.style.display = 'none';
+                    
+                    // Сброс формы
+                    resetFileInput();
+                    
+                    // Опционально: обновить таблицу или показать сообщение
+                    if (typeof refreshData === 'function') {
+                        refreshData();
+                    }
+                } else {
+                    throw new Error(result.message || 'Ошибка загрузки файла');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Ошибка при загрузке файла: ' + error.message);
+            } finally {
+                // Восстанавливаем кнопку
+                uploadDataSubmit.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить';
+                uploadDataSubmit.disabled = false;
             }
         });
     }
