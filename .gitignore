@@ -1,3 +1,4 @@
 .env
 *.env
 allowed_users.json
+__pycache__

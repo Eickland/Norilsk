@@ -345,36 +345,32 @@ def index():
     """
     Главная страница с принудительной нормализацией ID при каждой загрузке
     """
-    if 'user_id' in session:  # Если пользователь авторизован
 
-        try:
-            # Принудительно нормализуем ID
-            success, message, changes = normalize_probe_ids()
-            
-            # Логируем результат
-            if changes > 0:
-                app.logger.info(f"Normalized {changes} probe IDs on page load: {message}")
-            
-            # Загружаем данные для отображения
-            with open('data/data.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            
-            probes = data.get('probes', [])
-            
-            return render_template('index.html', 
-                                probes=probes,
-                                normalization_info={
-                                    'success': success,
-                                    'message': message,
-                                    'changes': changes
-                                })
-            
-        except Exception as e:
-            app.logger.error(f"Error loading index: {str(e)}")
-            return render_template('index.html', probes=[], error=str(e))
+    try:
+        # Принудительно нормализуем ID
+        success, message, changes = normalize_probe_ids()
         
-    else:
-        return redirect(url_for('telegram_login'))  # На страницу логина 
+        # Логируем результат
+        if changes > 0:
+            app.logger.info(f"Normalized {changes} probe IDs on page load: {message}")
+        
+        # Загружаем данные для отображения
+        with open('data/data.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        probes = data.get('probes', [])
+        
+        return render_template('index.html', 
+                            probes=probes,
+                            normalization_info={
+                                'success': success,
+                                'message': message,
+                                'changes': changes
+                            })
+        
+    except Exception as e:
+        app.logger.error(f"Error loading index: {str(e)}")
+        return render_template('index.html', probes=[], error=str(e))
 
 @app.route('/api/data')
 def get_data():
