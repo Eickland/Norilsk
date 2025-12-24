@@ -2,12 +2,12 @@
   "statuses": [
     {
       "id": 1,
-      "name": "Ожидает",
+      "name": "Создана",
       "color": "#FF6B6B"
     },
     {
       "id": 2,
-      "name": "В работе",
+      "name": "Выщелачивание",
       "color": "#4ECDC4"
     },
     {
@@ -17,12 +17,22 @@
     },
     {
       "id": 4,
-      "name": "Отклонена",
+      "name": "Осаждение",
       "color": "#96CEB4"
     },
     {
       "id": 5,
-      "name": "Архив",
+      "name": "Флотация",
+      "color": "#FFEAA7"
+    },
+    {
+      "id": 6,
+      "name": "Фильтрация",
+      "color": "#FFEAA7"
+    },
+    {
+      "id": 7,
+      "name": "Передано на анализ",
       "color": "#FFEAA7"
     }
   ],
@@ -260,25 +270,25 @@
     },
     {
       "name": "BLNK",
-      "Ag": 0.0,
-      "Ca": 0.09843333333333333,
-      "Co": 0.0,
-      "Cu": 0.00775,
-      "Fe": 9.351333333333331,
-      "Ni": 0.021033333333333334,
-      "Sc": 1.125,
-      "dAg": 0.0,
-      "dCa": 0.001844812546936231,
-      "dCo": 0.0,
-      "dCu": 0.0013435028842544402,
-      "dFe": 0.14761549150862666,
-      "dNi": 0.0008504900548115383,
-      "dSc": 0.004582575694955771,
+      "Ag": 0.00085,
+      "Ca": 0.0,
+      "Co": 0.0005333333333333334,
+      "Cu": 0.0,
+      "Fe": 0.0,
+      "Ni": 0.0,
+      "Sc": 1.0513333333333332,
+      "dAg": 0.0012020815280171307,
+      "dCa": 0.0,
+      "dCo": 0.00015275252316519465,
+      "dCu": 0.0,
+      "dFe": 0.0,
+      "dNi": 0.0,
+      "dSc": 0.00472581562625255,
       "id": 12,
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "8_0",
@@ -300,7 +310,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_1",
@@ -322,7 +332,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_2",
@@ -344,7 +354,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_3",
@@ -366,7 +376,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_4",
@@ -388,7 +398,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_5",
@@ -410,7 +420,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_6",
@@ -432,7 +442,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_7",
@@ -454,7 +464,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_8",
@@ -476,7 +486,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_9",
@@ -498,7 +508,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_10",
@@ -520,7 +530,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_11",
@@ -542,7 +552,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_12",
@@ -564,7 +574,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_13",
@@ -586,7 +596,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "8_14",
@@ -608,7 +618,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "AV_1_1-s",
@@ -630,7 +640,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "NV_AV1-S",
@@ -652,7 +662,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "NV1_3_0_1-S",
@@ -674,7 +684,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "NV_MSP-S",
@@ -696,7 +706,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "АОВ_1.2_1-S",
@@ -718,7 +728,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "AV_12-1-1-S",
@@ -740,7 +750,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "AV-1-1-1-S",
@@ -762,7 +772,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "AV-1-42-1-S",
@@ -784,7 +794,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "AV13-2-1-S",
@@ -806,7 +816,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "NV1-2-0-1-S",
@@ -828,7 +838,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "AV_1_131_1-S",
@@ -850,7 +860,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "AOB_1.3_1-S",
@@ -872,7 +882,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "M1(Ш1)",
@@ -894,7 +904,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T13_110 (27.11.25) 1",
@@ -916,7 +926,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T13_110 (27.11.25) 2",
@@ -938,7 +948,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T13_110 (27.11.25) 3",
@@ -960,7 +970,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T13_215_0_1-S",
@@ -982,7 +992,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T13_220_0_1-S",
@@ -1004,7 +1014,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T13_315_0_1-S",
@@ -1026,7 +1036,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T13_310_0_1-S",
@@ -1048,7 +1058,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T13_310_3_0_1-S",
@@ -1070,7 +1080,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T15_110_1_1-S",
@@ -1092,7 +1102,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T15_210_1_1-S",
@@ -1114,7 +1124,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T15_310_1_1-S",
@@ -1136,7 +1146,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T15_110-S",
@@ -1158,7 +1168,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T15_210-S",
@@ -1180,7 +1190,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T15_310-S",
@@ -1202,7 +1212,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T15_105_2_1-S",
@@ -1224,7 +1234,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T15_115_1_1-S",
@@ -1246,7 +1256,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T15_105-S",
@@ -1268,7 +1278,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T15_115-S",
@@ -1290,7 +1300,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T13_110_a_1-S",
@@ -1312,7 +1322,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T13_110_b_1-S",
@@ -1334,7 +1344,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T13_110_ab_1-S",
@@ -1356,7 +1366,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T17_105_2_1-S",
@@ -1378,7 +1388,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T17_110_1_1-S",
@@ -1400,7 +1410,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.095917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T17_115_2_1-S",
@@ -1422,7 +1432,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.096917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T17_105-S",
@@ -1444,7 +1454,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.096917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T17_110-S",
@@ -1466,7 +1476,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.096917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "T17_115-S",
@@ -1488,7 +1498,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:34:12.096917"
+      "last_normalized": "2025-12-22T17:36:30.874323"
     },
     {
       "name": "1",
@@ -1510,7 +1520,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "2",
@@ -1532,7 +1542,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "3",
@@ -1554,7 +1564,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "4",
@@ -1576,7 +1586,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "5",
@@ -1598,7 +1608,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "6",
@@ -1620,7 +1630,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "7",
@@ -1642,7 +1652,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "8",
@@ -1664,7 +1674,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "9",
@@ -1686,7 +1696,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "10",
@@ -1708,7 +1718,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "11",
@@ -1730,7 +1740,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "12",
@@ -1752,7 +1762,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "13",
@@ -1774,7 +1784,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "14",
@@ -1796,7 +1806,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "15",
@@ -1818,7 +1828,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "16",
@@ -1840,7 +1850,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "17",
@@ -1862,7 +1872,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "18",
@@ -1884,7 +1894,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "19",
@@ -1906,7 +1916,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "20",
@@ -1928,7 +1938,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "21",
@@ -1950,7 +1960,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "22",
@@ -1972,7 +1982,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "23",
@@ -1994,7 +2004,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "24",
@@ -2016,7 +2026,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "25",
@@ -2038,7 +2048,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "26",
@@ -2060,7 +2070,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "27",
@@ -2082,7 +2092,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "28",
@@ -2104,7 +2114,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "29",
@@ -2126,7 +2136,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "30",
@@ -2148,7 +2158,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "31",
@@ -2170,7 +2180,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "32",
@@ -2192,7 +2202,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "33",
@@ -2214,7 +2224,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "34",
@@ -2236,7 +2246,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "35",
@@ -2258,7 +2268,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "36",
@@ -2280,7 +2290,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "37",
@@ -2302,7 +2312,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "38",
@@ -2324,7 +2334,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "39",
@@ -2346,7 +2356,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "40",
@@ -2368,7 +2378,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "41",
@@ -2390,7 +2400,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "42",
@@ -2412,7 +2422,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "43",
@@ -2434,7 +2444,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "44",
@@ -2456,7 +2466,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "45",
@@ -2478,7 +2488,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "46",
@@ -2500,7 +2510,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "47",
@@ -2522,7 +2532,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "48",
@@ -2544,7 +2554,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "49",
@@ -2566,7 +2576,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "50",
@@ -2588,7 +2598,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "51",
@@ -2610,7 +2620,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "52",
@@ -2632,7 +2642,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "53",
@@ -2654,7 +2664,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "54",
@@ -2676,7 +2686,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "55",
@@ -2698,7 +2708,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "56",
@@ -2720,7 +2730,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "57",
@@ -2742,7 +2752,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "58",
@@ -2764,7 +2774,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "59",
@@ -2786,7 +2796,7 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
     },
     {
       "name": "60",
@@ -2808,70 +2818,86 @@
       "tags": [],
       "status_id": 3,
       "sample_mass": 1,
-      "last_normalized": "2025-12-24T11:33:53.028789"
+      "last_normalized": "2025-12-22T18:53:18.714792"
+    },
+    {
+      "id": 128,
+      "name": "x",
+      "Fe": 0.0,
+      "Ni": 0.0,
+      "Cu": 0.0,
+      "sample_mass": 1.0,
+      "status_id": 1,
+      "tags": [],
+      "created_at": "2025-12-23 12:24:26"
     }
   ],
   "metadata": {
-    "last_normalization": "2025-12-24T11:34:12.096917",
-    "normalization_changes": 56,
+    "last_normalization": "2025-12-22T18:53:18.714792",
+    "normalization_changes": 61,
     "total_probes": 127,
     "id_mapping": {
-      "64": 12,
-      "14": 13,
-      "15": 14,
-      "16": 15,
-      "17": 16,
-      "18": 17,
-      "19": 18,
-      "20": 19,
-      "21": 20,
-      "22": 21,
-      "23": 22,
-      "24": 23,
-      "25": 24,
-      "26": 25,
-      "27": 26,
-      "28": 27,
-      "30": 28,
-      "31": 29,
-      "32": 30,
-      "33": 31,
-      "35": 32,
-      "36": 33,
-      "37": 34,
-      "38": 35,
-      "39": 36,
-      "41": 37,
-      "42": 38,
-      "43": 39,
-      "44": 40,
-      "45": 41,
-      "46": 42,
-      "47": 43,
-      "48": 44,
-      "49": 45,
-      "50": 46,
-      "51": 47,
-      "52": 48,
-      "54": 49,
-      "55": 50,
-      "56": 51,
-      "57": 52,
-      "58": 53,
-      "59": 54,
-      "60": 55,
-      "61": 56,
-      "62": 57,
-      "63": 58,
-      "65": 59,
-      "66": 60,
-      "67": 61,
-      "68": 62,
-      "69": 63,
-      "70": 64,
-      "71": 65,
-      "72": 66,
-      "73": 67
+      "13": 12,
+      "14": 68,
+      "15": 69,
+      "16": 70,
+      "17": 71,
+      "18": 72,
+      "19": 73,
+      "20": 74,
+      "21": 75,
+      "22": 76,
+      "23": 77,
+      "24": 78,
+      "25": 79,
+      "26": 80,
+      "27": 81,
+      "28": 82,
+      "29": 83,
+      "30": 84,
+      "31": 85,
+      "32": 86,
+      "33": 87,
+      "34": 88,
+      "35": 89,
+      "36": 90,
+      "37": 91,
+      "38": 92,
+      "39": 93,
+      "40": 94,
+      "41": 95,
+      "42": 96,
+      "43": 97,
+      "44": 98,
+      "45": 99,
+      "46": 100,
+      "47": 101,
+      "48": 102,
+      "49": 103,
+      "50": 104,
+      "51": 105,
+      "52": 106,
+      "53": 107,
+      "54": 108,
+      "55": 109,
+      "56": 110,
+      "57": 111,
+      "58": 112,
+      "59": 113,
+      "60": 114,
+      "61": 115,
+      "62": 116,
+      "63": 117,
+      "64": 118,
+      "65": 119,
+      "66": 120,
+      "67": 121,
+      "68": 122,
+      "69": 123,
+      "70": 124,
+      "71": 125,
+      "72": 126,
+      "73": 127
     }
   }
 }

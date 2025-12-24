@@ -306,5 +306,71 @@
     "filename": "v28_data.json",
     "data_size": 58222,
     "probes_count": 127
+  },
+  {
+    "id": 29,
+    "timestamp": "2025-12-24T11:33:50.498633",
+    "description": "Backup before restoring version 27",
+    "author": "system",
+    "change_type": "backup",
+    "hash": "f1663715b919777e63ba9f098ecb5cc5",
+    "filename": "v29_data.json",
+    "data_size": 58663,
+    "probes_count": 128
+  },
+  {
+    "id": 30,
+    "timestamp": "2025-12-24T11:33:50.513779",
+    "description": "Restored from version 27",
+    "author": "system",
+    "change_type": "restore",
+    "hash": "efbea5fe471f8aaf350f9cab4653e2c3",
+    "filename": "restore_v27_20251224_113350.json",
+    "data_size": 55175,
+    "probes_count": 127
+  },
+  {
+    "id": 31,
+    "timestamp": "2025-12-24T11:33:53.044446",
+    "description": "Нормализация завершена: обновлено 61 ID",
+    "author": "system",
+    "change_type": "normalization_complete",
+    "hash": "173ee94b1f2ca61b928d9e23a19bb924",
+    "filename": "v31_data.json",
+    "data_size": 58222,
+    "probes_count": 127
+  },
+  {
+    "id": 32,
+    "timestamp": "2025-12-24T11:34:07.774076",
+    "description": "Импорт файла '-01-12-2025_2.csv' - состояние до импорта",
+    "author": "anonymous",
+    "change_type": "pre_import",
+    "hash": "2ae69c762490ab9711aec29f26ef127f",
+    "filename": "v32_data.json",
+    "data_size": 58222,
+    "probes_count": 127
+  },
+  {
+    "id": 33,
+    "timestamp": "2025-12-24T11:34:07.800998",
+    "description": "Импорт файла '-01-12-2025_2.csv' - обновлено: 73, добавлено: 0",
+    "author": "anonymous",
+    "change_type": "import",
+    "hash": "0584e7afee648e6904c5c8fa50cb1554",
+    "filename": "v33_data.json",
+    "data_size": 58271,
+    "probes_count": 127
+  },
+  {
+    "id": 34,
+    "timestamp": "2025-12-24T11:34:12.111789",
+    "description": "Нормализация завершена: обновлено 56 ID",
+    "author": "system",
+    "change_type": "normalization_complete",
+    "hash": "f6bec7d04e4e0f39bc28416a476c39d8",
+    "filename": "v34_data.json",
+    "data_size": 58193,
+    "probes_count": 127
   }
 ]

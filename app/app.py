@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file
+from flask import Flask, render_template, request, jsonify, send_file, session, redirect, url_for
 from datetime import datetime
 import json
 import os
@@ -7,8 +7,18 @@ from test_ISP_AES import process_icp_aes_data
 import pandas as pd
 from version_control import VersionControlSystem
 from io import BytesIO
+from dotenv import load_dotenv
+import hashlib
+import hmac
+import time
 
-app = Flask(__name__)
+load_dotenv()
+
+app = Flask(__name__, template_folder='../templates', static_folder='../static')
+
+app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+CONFIG_PATH = 'allowed_users.json'
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['RESULTS_FOLDER'] = 'results'
@@ -256,37 +266,115 @@ def check_id_consistency(data_file='data/data.json'):
         'recommend_normalization': has_issues
     }
 
+def get_next_probe_id(data_file='data/data.json'):
+    
+    try:
+        # Загружаем данные
+        with open(data_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        probes = data.get('probes', [])
+        
+        list_id = []
+        
+        for probe in probes:
+            
+            current_id = probe.get('id')
+            list_id.append(current_id)
+    
+        next_probe_id = max(list_id)
+
+        return next_probe_id
+                    
+    except Exception as e:
+        return False, f"Ошибка получения ID: {str(e)}", 0    
+
+def verify_telegram_auth(auth_data):
+    """Проверка хеша данных от Telegram"""
+    check_hash = auth_data.get('hash')
+    # Формируем строку для проверки (все поля, кроме hash, в алфавитном порядке)
+    data_check_list = []
+    for key, value in sorted(auth_data.items()):
+        if key != 'hash':
+            data_check_list.append(f'{key}={value}')
+    data_check_string = '\n'.join(data_check_list)
+
+    # Вычисляем секретный ключ на основе токена бота
+    secret_key = hashlib.sha256(TELEGRAM_TOKEN.encode()).digest() # type: ignore
+    # Вычисляем HMAC-SHA256
+    hash_v = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
+    
+    return hash_v == check_hash
+
+def is_user_allowed(user_data):
+    """Проверяет, есть ли пользователь в файле-секрете"""
+    if not os.path.exists(CONFIG_PATH):
+        return False
+    
+    with open(CONFIG_PATH, 'r') as f:
+        config = json.load(f)
+    
+    user_id = int(user_data.get('id'))
+    username = user_data.get('username')
+
+    # Проверяем и по ID (надежно), и по логину (удобно)
+    if user_id in config.get('allowed_ids', []):
+        return True
+    if username in config.get('allowed_usernames', []):
+        return True
+        
+    return False
+
+@app.route('/login/telegram')
+def telegram_login():
+    auth_data = request.args.to_dict()
+    
+    # 1. Сначала проверяем цифровую подпись (функция из предыдущего шага)
+    if not verify_telegram_auth(auth_data):
+        return "Ошибка безопасности", 400
+        
+    # 2. Проверяем по нашему файл-секрету
+    if is_user_allowed(auth_data):
+        session['user'] = auth_data.get('username') or auth_data.get('id')
+        return redirect('/')
+    
+    return "Доступ запрещен", 403
+
 @app.route('/')
 def index():
     """
     Главная страница с принудительной нормализацией ID при каждой загрузке
     """
-    
-    try:
-        # Принудительно нормализуем ID
-        success, message, changes = normalize_probe_ids()
+    if 'user_id' in session:  # Если пользователь авторизован
+
+        try:
+            # Принудительно нормализуем ID
+            success, message, changes = normalize_probe_ids()
+            
+            # Логируем результат
+            if changes > 0:
+                app.logger.info(f"Normalized {changes} probe IDs on page load: {message}")
+            
+            # Загружаем данные для отображения
+            with open('data/data.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            probes = data.get('probes', [])
+            
+            return render_template('index.html', 
+                                probes=probes,
+                                normalization_info={
+                                    'success': success,
+                                    'message': message,
+                                    'changes': changes
+                                })
+            
+        except Exception as e:
+            app.logger.error(f"Error loading index: {str(e)}")
+            return render_template('index.html', probes=[], error=str(e))
         
-        # Логируем результат
-        if changes > 0:
-            app.logger.info(f"Normalized {changes} probe IDs on page load: {message}")
-        
-        # Загружаем данные для отображения
-        with open('data/data.json', 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        
-        probes = data.get('probes', [])
-        
-        return render_template('index.html', 
-                             probes=probes,
-                             normalization_info={
-                                 'success': success,
-                                 'message': message,
-                                 'changes': changes
-                             })
-        
-    except Exception as e:
-        app.logger.error(f"Error loading index: {str(e)}")
-        return render_template('index.html', probes=[], error=str(e))
+    else:
+        return redirect(url_for('telegram_login'))  # На страницу логина 
 
 @app.route('/api/data')
 def get_data():
@@ -342,7 +430,7 @@ def add_probe():
     db_data = load_data()
     
     new_probe = {
-        "id": db_data['next_probe_id'],
+        "id": get_next_probe_id() + 1, # type: ignore
         "name": data.get('name', 'Новая проба'), # type: ignore
         "Fe": float(data.get('Fe', 0)), # type: ignore
         "Ni": float(data.get('Ni', 0)), # type: ignore
@@ -354,12 +442,11 @@ def add_probe():
     }
     
     db_data['probes'].append(new_probe)
-    db_data['next_probe_id'] += 1
     save_data(db_data)
     
     return jsonify({"success": True, "probe": new_probe})
 
-from version_control import VersionControlSystem  # Импортируем систему управления версиями
+
 
 # Инициализируем систему управления версиями (добавьте в начало)
 vcs = VersionControlSystem('data/data.json', 'versions')

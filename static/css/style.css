@@ -310,7 +310,7 @@ th.fixed-col:first-child,
 td.fixed-col:first-child {
   position: sticky;
   left: 0;
-  background: white;
+  background: rgba(20, 20, 35, 0.9);
   z-index: 10;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
@@ -320,7 +320,7 @@ th.fixed-col:nth-child(2),
 td.fixed-col:nth-child(2) {
   position: sticky;
   left: 100px; /* Ширина первой колонки */
-  background: white;
+  background: rgba(20, 20, 35, 0.9);
   z-index: 10;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
@@ -330,7 +330,7 @@ td.fixed-col:nth-child(2) {
     padding: 8px 15px;
     border: none;
     border-radius: 20px;
-    color: white;
+    color: rgba(20, 20, 35, 0.9);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
