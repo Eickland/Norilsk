@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import hashlib
 import hmac
 import time
+from typing import Dict, List, Any, Set
 
 load_dotenv()
 
@@ -188,6 +189,46 @@ def normalize_probe_ids(data_file='data/data.json'):
     except Exception as e:
         return False, f"Ошибка нормализации: {str(e)}", 0
 
+    # Функция ниже - ищет недостающие поля у проб и заполняет их нулями. На выходе также даёт статистику - сколько недостающих полей добавлено у скольких суммарно проб.
+
+def normalize_probe_structure(
+        data_file: str = "data/data.json",
+        default_value: Any = 0,
+) -> Dict[str, Any]:
+    with open(data_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    probes=data['probes']
+    all_fields: Set[str] = set()
+    for probe in probes:
+        if isinstance(probe,dict):
+            all_fields.update(probe.keys())
+    
+    normalization_stats = {
+        'fields_added_total': 0,
+        'probes_modified': 0,
+    }
+
+    for probe in probes:
+        if not isinstance(probe,dict):
+            continue
+        fields_added = 0
+        for field in all_fields:
+            if field not in probe:
+                probe[field] = default_value
+                fields_added += 1
+        if fields_added > 0:
+            normalization_stats['fields_added_total'] += fields_added
+            normalization_stats['probes_modified'] += 1
+
+    with open(data_file,'w',encoding='utf-8') as f:
+        json.dump(data,f,ensure_ascii=False,indent=2)
+
+    return {
+        "data": data,
+        "stats": normalization_stats,
+        }
+
 def check_id_consistency(data_file='data/data.json'):
     """
     Проверяет целостность ID проб
@@ -353,7 +394,18 @@ def index():
         # Логируем результат
         if changes > 0:
             app.logger.info(f"Normalized {changes} probe IDs on page load: {message}")
-        
+
+        # Заполняем у проб недостающие поля данных нулями
+        normalize_result = normalize_probe_structure(
+            data_file='data/data.json',
+            default_value=0
+        )
+
+        # Логируем заполнение нулями
+        stats = normalize_result.get('stats',{})
+        if stats.get('fields_added_total',0) > 0:
+            app.logger.info(f"Normalized probe structure: added {stats['fields_added_total']} fields to {stats['probes_modified']} probes")
+
         # Загружаем данные для отображения
         with open('data/data.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
