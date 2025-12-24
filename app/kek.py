@@ -1,0 +1,1 @@
+print('Kirill is a God of Git')
