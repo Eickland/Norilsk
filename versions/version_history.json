@@ -372,5 +372,16 @@
     "filename": "v34_data.json",
     "data_size": 58193,
     "probes_count": 127
+  },
+  {
+    "id": 35,
+    "timestamp": "2025-12-25T16:02:00.422879",
+    "description": "Restored from version 26",
+    "author": "system",
+    "change_type": "restore",
+    "hash": "01fd6da7a9e31353cad232f06d10ffe5",
+    "filename": "restore_v26_20251225_160200.json",
+    "data_size": 30999,
+    "probes_count": 67
   }
 ]
