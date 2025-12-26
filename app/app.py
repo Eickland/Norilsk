@@ -52,19 +52,23 @@ def generate_result_filename(original_filename):
     name, ext = os.path.splitext(original_filename)
     return f"{name}_result_{timestamp}.json"
 
-def convert_df_to_dict(df:pd.DataFrame):
+def convert_df_to_dict(df:pd.DataFrame, add_mass=True):
     
     df['id'] = df.index + 1
     df['tags'] = [[] for _ in range(len(df))]
     df['status_id'] = 3
-    df['sample_mass'] = 1
     
-    try:
-        df.rename(columns={'Название пробы': 'name'}, inplace=True)
+    if add_mass:
         
-    except:
-        df.rename(columns={df.columns[0]: 'name'}, inplace=True) 
+        df['sample_mass'] = 1
     
+    df.rename(columns={df.columns[0]: 'name'}, inplace=True)
+        
+    df['name'].dropna(inplace=True)
+    df.dropna(axis=1,how='all', inplace=True)
+    
+    df = df.fillna('null') 
+
     new_probes = df.to_dict('records')
     
     return new_probes
@@ -81,9 +85,6 @@ def save_data(data):
     """Сохранение данных в файл"""
     with open(DATA_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-
-import json
-from datetime import datetime
 
 def normalize_probe_ids(data_file='data/data.json'):
     """
@@ -633,9 +634,9 @@ def upload_data():
         except json.JSONDecodeError:
             parameters = {}
         
-        result_data = pd.read_excel(file_path)
+        result_data = pd.read_csv(file_path, sep=';')
         
-        json_data = convert_df_to_dict(result_data)
+        json_data = convert_df_to_dict(result_data, add_mass=False)
         
         # ЗАГРУЖАЕМ ТЕКУЩИЕ ДАННЫЕ ПЕРЕД ИЗМЕНЕНИЕМ
         with open('data/data.json', 'r', encoding='utf-8') as f:
@@ -1032,7 +1033,7 @@ def save_probes():
     
     # Сохранение данных
     with open('data/data.json', 'w') as f:
-        json.dump(data, f)
+        json.dump(data, f, indent=2, ensure_ascii=False)
     
     return jsonify({'success': True})
 
