@@ -46,11 +46,38 @@ class ProbeLab {
         }
     }
 
+    async updateProbePriority(probeId, priorityId) {
+        try {
+            const response = await fetch('/api/update_priority', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    probe_id: probeId,
+                    priority_id: priorityId
+                })
+            });
+            
+            if (response.ok) {
+                await this.loadData();
+                this.renderTable();
+            }
+        } catch (error) {
+            console.error('Ошибка обновления приоритета:', error);
+        }
+    }
+
     renderTable() {
         const tbody = document.getElementById('probeTableBody');
         if (!tbody || !this.data) return;
 
         tbody.innerHTML = '';
+
+        // Проверяем структуру данных
+        console.log('Данные загружены:', this.data);
+        console.log('Пробы:', this.data.probes);
+
 
         // Безопасный вывод чисел с форматированием
         const safeToFixed = (value, decimals = 1) => {
@@ -82,6 +109,8 @@ class ProbeLab {
 
         filteredProbes.forEach(probe => {
             const status = this.data.statuses.find(s => s.id === probe.status_id);
+            const priority = this.data.priority?.find(p => p.id === probe.priority) || 
+                            { id: probe.priority, name: 'Не указан', color: '#ccc' };
             const row = document.createElement('tr');
             
             row.innerHTML = `
@@ -95,11 +124,22 @@ class ProbeLab {
                 <td>${safeToFixed(probe.sample_mass, 2)}</td>
                 <td>
                     <select class="status-select" data-probe-id="${probe.id || ''}" 
-                            style="background-color: ${status && status.color ? status.color : '#ccc'}; color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; min-width: 140px;">
+                            style="background-color: ${status && status.color ? status.color : '#ccc'}; color: black; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; min-width: 140px;">
                         ${(this.data.statuses || []).map(s => 
                             `<option value="${s.id}" ${s.id === probe.status_id ? 'selected' : ''}
-                            style="background-color: ${s.color || '#ccc'}; color: white;">
+                            style="background-color: ${s.color || '#ccc'}; color: black;">
                                 ${this.escapeHtml(s.name || 'Неизвестно')}
+                            </option>`
+                        ).join('')}
+                    </select>
+                </td>
+                <td>
+                    <select class="priority-select" data-probe-id="${probe.id || ''}" 
+                            style="background-color: ${priority.color}; color: black; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; min-width: 140px;">
+                        ${(this.data.priority || []).map(p => 
+                            `<option value="${p.id}" ${p.id === probe.priority ? 'selected' : ''}
+                            style="background-color: ${p.color}; color: black;">
+                                ${this.escapeHtml(p.name)}
                             </option>`
                         ).join('')}
                     </select>
@@ -130,6 +170,13 @@ class ProbeLab {
                 const probeId = parseInt(e.target.dataset.probeId);
                 const statusId = parseInt(e.target.value);
                 this.updateProbeStatus(probeId, statusId);
+            });
+        });
+        document.querySelectorAll('.priority-select').forEach(select => {
+            select.addEventListener('change', (e) => {
+                const probeId = parseInt(e.target.dataset.probeId);
+                const priorityId = parseInt(e.target.value);
+                this.updateProbePriority(probeId, priorityId);
             });
         });
     }
@@ -276,7 +323,8 @@ class ProbeLab {
                     ni_concentration: parseFloat(ni) || 0,
                     cu_concentration: parseFloat(cu) || 0,
                     sample_mass: parseFloat(mass) || 1.0,
-                    tags: tags
+                    tags: tags,
+                    priority: 1 // По умолчанию делаем средний приоритет
                 };
 
                 try {

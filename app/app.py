@@ -11,29 +11,35 @@ from dotenv import load_dotenv
 import hashlib
 import hmac
 import time
+from pathlib import Path
 from typing import Dict, List, Any, Set
 
 load_dotenv()
 
-app = Flask(__name__, template_folder='../templates', static_folder='../static')
+BASE_DIR = Path(__file__).parent.parent
+
+app = Flask(__name__, template_folder=str(BASE_DIR / 'templates'), static_folder=str(BASE_DIR / 'static'))
 
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 CONFIG_PATH = 'allowed_users.json'
 
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['RESULTS_FOLDER'] = 'results'
+BASE_DIR = Path(__file__).parent.parent
+
+app.config['UPLOAD_FOLDER'] = BASE_DIR / 'uploads'
+app.config['RESULTS_FOLDER'] = BASE_DIR / 'results'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB максимум
 app.config['ALLOWED_EXTENSIONS'] = {'csv', 'xlsx', 'xls', 'json'}
-app.config['DATA_FILE'] = 'data/data.json'
-app.config['VERSIONS_DIR'] = 'versions'
+
+app.config['VERSIONS_DIR'] = BASE_DIR / 'versions'
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['RESULTS_FOLDER'], exist_ok=True)
 
 # Файл для хранения данных
-DATA_FILE = 'data/data.json'
 
+DATA_FILE = BASE_DIR / 'data' / 'data.json'
+app.config['DATA_FILE'] = DATA_FILE
 # Инициализация системы управления версиями
 vcs = VersionControlSystem(app.config['DATA_FILE'], app.config['VERSIONS_DIR'])
 
@@ -53,19 +59,23 @@ def generate_result_filename(original_filename):
     name, ext = os.path.splitext(original_filename)
     return f"{name}_result_{timestamp}.json"
 
-def convert_df_to_dict(df:pd.DataFrame):
+def convert_df_to_dict(df:pd.DataFrame, add_mass=True):
     
     df['id'] = df.index + 1
     df['tags'] = [[] for _ in range(len(df))]
     df['status_id'] = 3
-    df['sample_mass'] = 1
     
-    try:
-        df.rename(columns={'Название пробы': 'name'}, inplace=True)
+    if add_mass:
         
-    except:
-        df.rename(columns={df.columns[0]: 'name'}, inplace=True) 
+        df['sample_mass'] = 1
     
+    df.rename(columns={df.columns[0]: 'name'}, inplace=True)
+        
+    df['name'].dropna(inplace=True)
+    df.dropna(axis=1,how='all', inplace=True)
+    
+    df = df.fillna('null') 
+
     new_probes = df.to_dict('records')
     
     return new_probes
@@ -83,10 +93,7 @@ def save_data(data):
     with open(DATA_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-import json
-from datetime import datetime
-
-def normalize_probe_ids(data_file='data/data.json'):
+def normalize_probe_ids(data_file=DATA_FILE):
     """
     Принудительно обновляет все ID проб в базе данных
     начиная с 1 и далее по порядку
@@ -307,7 +314,7 @@ def check_id_consistency(data_file='data/data.json'):
         'recommend_normalization': has_issues
     }
 
-def get_next_probe_id(data_file='data/data.json'):
+def get_next_probe_id(data_file=DATA_FILE):
     
     try:
         # Загружаем данные
@@ -407,7 +414,7 @@ def index():
             app.logger.info(f"Normalized probe structure: added {stats['fields_added_total']} fields to {stats['probes_modified']} probes")
 
         # Загружаем данные для отображения
-        with open('data/data.json', 'r', encoding='utf-8') as f:
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
         probes = data.get('probes', [])
@@ -444,6 +451,23 @@ def update_status():
             break
     
     save_data(db_data)
+    return jsonify({"success": True})
+
+@app.route('/api/update_priority', methods=['POST'])
+def update_priority():
+    data = request.json
+    probe_id = data.get('probe_id') # type: ignore
+    priority_id = data.get('priority_id') # type: ignore
+    
+    db_data = load_data()
+    
+    # Обновление приоритета пробы
+    for probe in db_data['probes']:
+        if probe['id'] == probe_id:
+            probe['priority'] = priority_id
+            break
+    
+    save_data(db_data)   
     return jsonify({"success": True})
 
 @app.route('/api/add_status', methods=['POST'])
@@ -485,6 +509,7 @@ def add_probe():
         "Cu": float(data.get('Cu', 0)), # type: ignore
         "sample_mass": float(data.get('sample_mass', 0)), # type: ignore
         "status_id": 1,
+        "priority": 1,
         "tags": data.get('tags', []), # type: ignore
         "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
@@ -493,11 +518,6 @@ def add_probe():
     save_data(db_data)
     
     return jsonify({"success": True, "probe": new_probe})
-
-
-
-# Инициализируем систему управления версиями (добавьте в начало)
-vcs = VersionControlSystem('data/data.json', 'versions')
 
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
@@ -551,7 +571,7 @@ def upload_file():
         json_data = convert_df_to_dict(result_data)
         
         # ЗАГРУЖАЕМ ТЕКУЩИЕ ДАННЫЕ ПЕРЕД ИЗМЕНЕНИЕМ
-        with open('data/data.json', 'r', encoding='utf-8') as f:
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
         # 1. СОЗДАЕМ ВЕРСИЮ ТЕКУЩЕГО СОСТОЯНИЯ (до изменений)
@@ -593,7 +613,7 @@ def upload_file():
                 added_count += 1
         
         # 3. СОХРАНЯЕМ ОБНОВЛЕННЫЕ ДАННЫЕ
-        with open('data/data.json', 'w', encoding='utf-8') as f:
+        with open(DATA_FILE, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         
         # 4. СОЗДАЕМ ВЕРСИЮ ПОСЛЕ ИМПОРТА
@@ -685,12 +705,12 @@ def upload_data():
         except json.JSONDecodeError:
             parameters = {}
         
-        result_data = pd.read_excel(file_path)
+        result_data = pd.read_csv(file_path,sep=';')
         
-        json_data = convert_df_to_dict(result_data)
+        json_data = convert_df_to_dict(result_data,add_mass=False)
         
         # ЗАГРУЖАЕМ ТЕКУЩИЕ ДАННЫЕ ПЕРЕД ИЗМЕНЕНИЕМ
-        with open('data/data.json', 'r', encoding='utf-8') as f:
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
         # 1. СОЗДАЕМ ВЕРСИЮ ТЕКУЩЕГО СОСТОЯНИЯ (до изменений)
@@ -732,7 +752,7 @@ def upload_data():
                 added_count += 1
         
         # 3. СОХРАНЯЕМ ОБНОВЛЕННЫЕ ДАННЫЕ
-        with open('data/data.json', 'w', encoding='utf-8') as f:
+        with open(DATA_FILE, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         
         # 4. СОЗДАЕМ ВЕРСИЮ ПОСЛЕ ИМПОРТА
@@ -953,7 +973,7 @@ def delete_probe(probe_id):
     
     try:
         # Загружаем текущие данные
-        with open('data/data.json', 'r', encoding='utf-8') as f:
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
         # Ищем пробу для удаления
@@ -990,7 +1010,7 @@ def delete_probe(probe_id):
         data['probes'] = [p for p in probes if p.get('id') != probe_id]
         
         # Сохраняем обновленные данные
-        with open('data/data.json', 'w', encoding='utf-8') as f:
+        with open(DATA_FILE, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
         
         # Подтверждаем удаление с дополнительной версией (опционально)
@@ -1057,9 +1077,9 @@ def export_version(version_id):
     
     # Создаем временный файл для экспорта
     export_filename = f"probes_version_{version_id}_{datetime.now().strftime('%Y%m%d')}.json"
-    export_path = os.path.join('temp', export_filename)
+    export_path = os.path.join(BASE_DIR / 'temp', export_filename)
     
-    os.makedirs('temp', exist_ok=True)
+    os.makedirs(BASE_DIR / 'temp', exist_ok=True)
     
     with open(export_path, 'w', encoding='utf-8') as f:
         json.dump(version_data, f, ensure_ascii=False, indent=2)
@@ -1083,8 +1103,8 @@ def save_probes():
     )
     
     # Сохранение данных
-    with open('data/data.json', 'w') as f:
-        json.dump(data, f)
+    with open(DATA_FILE, 'w') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
     
     return jsonify({'success': True})
 
@@ -1092,7 +1112,7 @@ def save_probes():
 def export_excel():
     """Экспорт всей базы данных в Excel"""
     try:
-        with open('data.json', 'r', encoding='utf-8') as f:
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
             
         df = pd.json_normalize(data=data['probes'])
