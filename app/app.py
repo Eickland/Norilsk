@@ -11,30 +11,34 @@ from dotenv import load_dotenv
 import hashlib
 import hmac
 import time
+from pathlib import Path
 
 load_dotenv()
 
-app = Flask(__name__, template_folder='../templates', static_folder='../static')
+BASE_DIR = Path(__file__).parent.parent
+
+app = Flask(__name__, template_folder=str(BASE_DIR / 'templates'), static_folder=str(BASE_DIR / 'static'))
 
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 CONFIG_PATH = 'allowed_users.json'
 
-# Файл для хранения данных
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_FILE = os.path.join(BASE_DIR, 'data', 'data.json')
+BASE_DIR = Path(__file__).parent.parent
 
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['RESULTS_FOLDER'] = 'results'
+app.config['UPLOAD_FOLDER'] = BASE_DIR / 'uploads'
+app.config['RESULTS_FOLDER'] = BASE_DIR / 'results'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB максимум
 app.config['ALLOWED_EXTENSIONS'] = {'csv', 'xlsx', 'xls', 'json'}
-app.config['DATA_FILE'] = DATA_FILE
-app.config['VERSIONS_DIR'] = 'versions'
+
+app.config['VERSIONS_DIR'] = BASE_DIR / 'versions'
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['RESULTS_FOLDER'], exist_ok=True)
 
+# Файл для хранения данных
 
+DATA_FILE = BASE_DIR / 'data' / 'data.json'
+app.config['DATA_FILE'] = DATA_FILE
 # Инициализация системы управления версиями
 vcs = VersionControlSystem(app.config['DATA_FILE'], app.config['VERSIONS_DIR'])
 
@@ -462,11 +466,6 @@ def add_probe():
     save_data(db_data)
     
     return jsonify({"success": True, "probe": new_probe})
-
-
-
-# Инициализируем систему управления версиями (добавьте в начало)
-vcs = VersionControlSystem(DATA_FILE, 'versions')
 
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
@@ -1026,9 +1025,9 @@ def export_version(version_id):
     
     # Создаем временный файл для экспорта
     export_filename = f"probes_version_{version_id}_{datetime.now().strftime('%Y%m%d')}.json"
-    export_path = os.path.join('temp', export_filename)
+    export_path = os.path.join(BASE_DIR / 'temp', export_filename)
     
-    os.makedirs('temp', exist_ok=True)
+    os.makedirs(BASE_DIR / 'temp', exist_ok=True)
     
     with open(export_path, 'w', encoding='utf-8') as f:
         json.dump(version_data, f, ensure_ascii=False, indent=2)
@@ -1053,7 +1052,7 @@ def save_probes():
     
     # Сохранение данных
     with open(DATA_FILE, 'w') as f:
-        json.dump(data, f, indent=2, ensure_acsii=False)
+        json.dump(data, f, indent=2, ensure_ascii=False)
     
     return jsonify({'success': True})
 
@@ -1061,7 +1060,7 @@ def save_probes():
 def export_excel():
     """Экспорт всей базы данных в Excel"""
     try:
-        with open('data.json', 'r', encoding='utf-8') as f:
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
             
         df = pd.json_normalize(data=data['probes'])
