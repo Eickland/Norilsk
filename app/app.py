@@ -404,8 +404,8 @@ def update_status():
 @app.route('/api/update_priority', methods=['POST'])
 def update_priority():
     data = request.json
-    probe_id = data.get('probe_id')
-    priority_id = data.get('priority_id')
+    probe_id = data.get('probe_id') # type: ignore
+    priority_id = data.get('priority_id') # type: ignore
     
     db_data = load_data()
     
