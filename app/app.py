@@ -15,24 +15,28 @@ from pathlib import Path
 
 load_dotenv()
 
-app = Flask(__name__, template_folder='../templates', static_folder='../static')
+BASE_DIR = Path(__file__).parent.parent
+
+app = Flask(__name__, template_folder=str(BASE_DIR / 'templates'), static_folder=str(BASE_DIR / 'static'))
 
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 CONFIG_PATH = 'allowed_users.json'
 
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['RESULTS_FOLDER'] = 'results'
+BASE_DIR = Path(__file__).parent.parent
+
+app.config['UPLOAD_FOLDER'] = BASE_DIR / 'uploads'
+app.config['RESULTS_FOLDER'] = BASE_DIR / 'results'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB максимум
 app.config['ALLOWED_EXTENSIONS'] = {'csv', 'xlsx', 'xls', 'json'}
 
-app.config['VERSIONS_DIR'] = 'versions'
+app.config['VERSIONS_DIR'] = BASE_DIR / 'versions'
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['RESULTS_FOLDER'], exist_ok=True)
 
 # Файл для хранения данных
-BASE_DIR = Path(__file__).parent.parent
+
 DATA_FILE = BASE_DIR / 'data' / 'data.json'
 app.config['DATA_FILE'] = DATA_FILE
 # Инициализация системы управления версиями
@@ -444,11 +448,6 @@ def add_probe():
     save_data(db_data)
     
     return jsonify({"success": True, "probe": new_probe})
-
-
-
-# Инициализируем систему управления версиями (добавьте в начало)
-vcs = VersionControlSystem(str(DATA_FILE), 'versions')
 
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
@@ -1008,9 +1007,9 @@ def export_version(version_id):
     
     # Создаем временный файл для экспорта
     export_filename = f"probes_version_{version_id}_{datetime.now().strftime('%Y%m%d')}.json"
-    export_path = os.path.join('temp', export_filename)
+    export_path = os.path.join(BASE_DIR / 'temp', export_filename)
     
-    os.makedirs('temp', exist_ok=True)
+    os.makedirs(BASE_DIR / 'temp', exist_ok=True)
     
     with open(export_path, 'w', encoding='utf-8') as f:
         json.dump(version_data, f, ensure_ascii=False, indent=2)
