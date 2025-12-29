@@ -2,28 +2,60 @@
   "statuses": [
     {
       "id": 1,
-      "name": "Ожидает",
-      "color": "#FF6B6B"
+      "name": "Сульфидизация",
+      "color": "#FFF7A3"
     },
     {
       "id": 2,
-      "name": "В работе",
-      "color": "#4ECDC4"
+      "name": "Флотация",
+      "color": "#C5A8FF"
     },
     {
       "id": 3,
-      "name": "Завершена",
-      "color": "#45B7D1"
+      "name": "Фильтрование",
+      "color": "#FFB7A3"
     },
     {
       "id": 4,
-      "name": "Отклонена",
-      "color": "#96CEB4"
+      "name": "Сушильный шкаф",
+      "color": "#D7C4A8"
     },
     {
       "id": 5,
-      "name": "Архив",
-      "color": "#FFEAA7"
+      "name": "Разложение",
+      "color": "#7FDBD4"
+    },
+    {
+      "id": 6,
+      "name": "Анализ",
+      "color": "#A3D9FF"
+    },
+    {
+      "id": 7,
+      "name": "Обработка данных",
+      "color": "#FFA8D4"
+    },
+    {
+      "id": 8,
+      "name": "Выполнено",
+      "color": "#A3E4C8"
+    }
+  ],
+  "priority": [
+    {
+      "id": 0,
+      "name": "Низкий",
+      "color": "#98FF96"
+    },
+    {
+      "id": 1,
+      "name": "Средний",
+      "color": "#F0C15D"
+    },
+    {
+      "id": 2,
+      "name": "Высокий",
+      "color": "#F78686"
     }
   ],
   "probes": [
@@ -49,7 +81,8 @@
       "Ni": 4.79,
       "dNi": 0.0,
       "is_solid": true,
-      "last_normalized": "2025-12-26T16:38:03.132110"
+      "last_normalized": "2025-12-26T16:38:03.132110",
+      "priority": 1
     },
     {
       "name": "T13_310_0_1_F",

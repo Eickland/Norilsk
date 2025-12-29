@@ -401,6 +401,23 @@ def update_status():
     save_data(db_data)
     return jsonify({"success": True})
 
+@app.route('/api/update_priority', methods=['POST'])
+def update_priority():
+    data = request.json
+    probe_id = data.get('probe_id')
+    priority_id = data.get('priority_id')
+    
+    db_data = load_data()
+    
+    # Обновление приоритета пробы
+    for probe in db_data['probes']:
+        if probe['id'] == probe_id:
+            probe['priority'] = priority_id
+            break
+    
+    save_data(db_data)   
+    return jsonify({"success": True})
+
 @app.route('/api/add_status', methods=['POST'])
 def add_status():
     data = request.json
@@ -440,6 +457,7 @@ def add_probe():
         "Cu": float(data.get('Cu', 0)), # type: ignore
         "sample_mass": float(data.get('sample_mass', 0)), # type: ignore
         "status_id": 1,
+        "priority": 1,
         "tags": data.get('tags', []), # type: ignore
         "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
@@ -635,9 +653,9 @@ def upload_data():
         except json.JSONDecodeError:
             parameters = {}
         
-        result_data = pd.read_csv(file_path, sep=';')
+        result_data = pd.read_csv(file_path,sep=';')
         
-        json_data = convert_df_to_dict(result_data, add_mass=False)
+        json_data = convert_df_to_dict(result_data,add_mass=False)
         
         # ЗАГРУЖАЕМ ТЕКУЩИЕ ДАННЫЕ ПЕРЕД ИЗМЕНЕНИЕМ
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
