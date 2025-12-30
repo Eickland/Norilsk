@@ -199,7 +199,7 @@ def normalize_probe_ids(data_file=DATA_FILE):
     # Функция ниже - ищет недостающие поля у проб и заполняет их нулями. На выходе также даёт статистику - сколько недостающих полей добавлено у скольких суммарно проб.
 
 def normalize_probe_structure(
-        data_file: str = "data/data.json",
+        data_file: str = str(DATA_FILE),
         default_value: Any = 0,
 ) -> Dict[str, Any]:
     with open(data_file, 'r', encoding='utf-8') as f:
@@ -236,7 +236,7 @@ def normalize_probe_structure(
         "stats": normalization_stats,
         }
 
-def check_id_consistency(data_file='data/data.json'):
+def check_id_consistency(data_file=str(DATA_FILE)):
     """
     Проверяет целостность ID проб
     
@@ -404,7 +404,7 @@ def index():
 
         # Заполняем у проб недостающие поля данных нулями
         normalize_result = normalize_probe_structure(
-            data_file='data/data.json',
+            data_file=str(DATA_FILE),
             default_value=0
         )
 
@@ -430,6 +430,17 @@ def index():
     except Exception as e:
         app.logger.error(f"Error loading index: {str(e)}")
         return render_template('index.html', probes=[], error=str(e))
+
+@app.route('/table')
+def render_table():
+    
+    try:
+        return render_template('table.html')
+    
+    except Exception as e:
+        
+        app.logger.error(f"Error loading table: {str(e)}")
+        return render_template('index.html', error=str(e))        
 
 @app.route('/api/data')
 def get_data():
