@@ -118,10 +118,7 @@ class ProbeLab {
                 <td>
                     <strong>${this.escapeHtml(getSafeValue(probe, 'name', 'Без названия'))}</strong>
                 </td>
-                <td class="concentration">${safeToFixed(probe.Fe)}</td>
-                <td class="concentration">${safeToFixed(probe.Ni)}</td>
-                <td class="concentration">${safeToFixed(probe.Cu)}</td>
-                <td>${safeToFixed(probe.sample_mass, 2)}</td>
+                <td class="concentration">${getSafeValue(probe, 'описание', 'Нет описания')}</td>
                 <td>
                     <select class="status-select" data-probe-id="${probe.id || ''}" 
                             style="background-color: ${status && status.color ? status.color : '#ccc'}; color: black; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; min-width: 140px;">
