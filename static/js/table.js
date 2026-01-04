@@ -97,31 +97,24 @@ class DataTableViewer {
         
         // Render body
         if (this.filteredData.probes.length === 0) {
-            this.elements.tableBody.innerHTML = `
+            this.elements.tableHead.innerHTML = `
                 <tr>
-                    <td colspan="${columns.length}" class="no-results">
-                        Нет данных для отображения
-                    </td>
+                    ${columns.map(col => `<th>${col}</th>`).join('')}
                 </tr>
             `;
         } else {
             this.elements.tableBody.innerHTML = this.filteredData.probes.map(probe => `
                 <tr>
                     ${columns.map(col => {
-                        const value = probe[col] !== undefined ? probe[col] : '';
-                        return `<td style="width: 150px; min-width: 150px; max-width: 150px;" title="${this.escapeHtml(String(value))}">${this.escapeHtml(String(value))}</td>`;
+                        const value = probe[col] ?? '';
+                        return `<td title="${this.escapeHtml(String(value))}">
+                                    ${this.escapeHtml(String(value))}
+                                </td>`;
                     }).join('')}
                 </tr>
             `).join('');
         }
 
-        // Устанавливаем общую ширину таблицы
-        const table = document.getElementById('dataTable');
-        const headers = table.querySelectorAll('th');
-        if (headers.length > 0) {
-            table.style.width = `${headers.length * 150}px`;
-        }
-        
         this.updateStats();
     }
     
@@ -176,7 +169,17 @@ class DataTableViewer {
     }
 }
 
-// Инициализация при загрузке страницы
+
 document.addEventListener('DOMContentLoaded', () => {
+    const top = document.querySelector('.scroll-top');
+    const topInner = document.querySelector('.scroll-top-inner');
+    const bottom = document.querySelector('.data-table-wrapper');
+
+
+    bottom.addEventListener('scroll', () => {
+        top.scrollLeft = bottom.scrollLeft;
+    });
+
+
     new DataTableViewer();
 });

@@ -435,7 +435,7 @@ def index():
 def render_table():
     
     try:
-        return render_template('table.html')
+        return render_template('data_table.html')
     
     except Exception as e:
         
@@ -1155,3 +1155,4 @@ def health_check():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)
+    print(app.url_map)

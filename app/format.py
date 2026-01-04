@@ -64,7 +64,7 @@ def process_json_file(input_file: str, output_file: str|None = None) -> None:
     # Загружаем JSON данные
     try:
         with open(input_file, 'r', encoding='utf-8') as f:
-            data = json.load(f)
+            data = json.loads(f.read().replace('null', '0'))
     except json.JSONDecodeError as e:
         print(f"Ошибка при чтении JSON файла: {e}")
         return
@@ -93,7 +93,7 @@ def process_json_file(input_file: str, output_file: str|None = None) -> None:
     if output_file is None:
         # Создаем резервную копию исходного файла
         backup_file = input_path.with_suffix('.json.backup')
-        input_path.rename(backup_file)
+        input_path.replace(backup_file)
         print(f"Создана резервная копия: {backup_file}")
         output_file = input_file
     
