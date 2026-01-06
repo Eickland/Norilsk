@@ -64,7 +64,7 @@
       "Ca": 13.94,
       "dCa": 0.11,
       "Co": 0.01,
-      "dCo": 0.0,
+      "dCo": 0,
       "Cu": 1.17,
       "dCu": 0.01,
       "Fe": 306.92,
@@ -77,7 +77,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false
+      "last_normalized": "2026-01-06T22:31:13.627301"
     },
     {
       "name": "AOB 1.2",

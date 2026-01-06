@@ -61,10 +61,10 @@
   "probes": [
     {
       "name": "AOB 1.1",
-      "Ca": 13.94,
+      "Ca": 13.95,
       "dCa": 0.11,
       "Co": 0.01,
-      "dCo": 0.0,
+      "dCo": 0,
       "Cu": 1.17,
       "dCu": 0.01,
       "Fe": 306.92,
@@ -75,7 +75,9 @@
       "is_solid": true,
       "id": 1,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": "2026-01-06T22:31:04.999140"
     },
     {
       "name": "AOB 1.2",
@@ -93,7 +95,9 @@
       "is_solid": true,
       "id": 2,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "AOB 1.3",
@@ -111,7 +115,9 @@
       "is_solid": true,
       "id": 3,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "AV 11",
@@ -129,7 +135,9 @@
       "is_solid": true,
       "id": 4,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "AV 11 110",
@@ -147,7 +155,9 @@
       "is_solid": true,
       "id": 5,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "AV11-110-1",
@@ -165,7 +175,9 @@
       "is_solid": true,
       "id": 6,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "AV11-110-C",
@@ -183,7 +195,9 @@
       "is_solid": true,
       "id": 7,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "AV11-110-F",
@@ -201,7 +215,9 @@
       "is_solid": true,
       "id": 8,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "AV11-110-N",
@@ -220,7 +236,8 @@
       "id": 9,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "AV111F",
@@ -238,7 +255,9 @@
       "is_solid": true,
       "id": 10,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "AV111I",
@@ -256,7 +275,9 @@
       "is_solid": true,
       "id": 11,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "AV11C",
@@ -274,7 +295,9 @@
       "is_solid": true,
       "id": 12,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "AV12_1_1_C",
@@ -292,7 +315,9 @@
       "is_solid": true,
       "id": 13,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "NV_1_2_F",
@@ -310,7 +335,9 @@
       "is_solid": true,
       "id": 14,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "NV_AV_1_C",
@@ -328,7 +355,9 @@
       "is_solid": true,
       "id": 15,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "NV_AV1_F",
@@ -346,7 +375,9 @@
       "is_solid": true,
       "id": 16,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "NV_MSP_F",
@@ -364,7 +395,9 @@
       "is_solid": true,
       "id": 17,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "NV1_1",
@@ -422,7 +455,9 @@
       "is_solid": true,
       "id": 20,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "T13_105_0_1_F",
@@ -440,7 +475,9 @@
       "is_solid": true,
       "id": 21,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "T13_105_0_1_I",
@@ -458,7 +495,9 @@
       "is_solid": true,
       "id": 22,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "T13_110_0_1_С",
@@ -476,7 +515,9 @@
       "is_solid": true,
       "id": 23,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "T13_115_0_1_F",
@@ -494,7 +535,9 @@
       "is_solid": true,
       "id": 24,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "T13_120_0_1_F",
@@ -512,7 +555,9 @@
       "is_solid": true,
       "id": 25,
       "tags": [],
-      "status_id": 3
+      "status_id": 3,
+      "is_solution": false,
+      "last_normalized": false
     },
     {
       "name": "T13_120_0_1_I",
@@ -531,7 +576,8 @@
       "id": 26,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_120_3_0_1_C",
@@ -550,7 +596,8 @@
       "id": 27,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_175_0_1_F",
@@ -569,7 +616,8 @@
       "id": 28,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_175_0_1_I",
@@ -588,7 +636,8 @@
       "id": 29,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_175_0_1_С",
@@ -607,7 +656,8 @@
       "id": 30,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_205_0_1_C",
@@ -626,7 +676,8 @@
       "id": 31,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_205_0_1_F",
@@ -645,7 +696,8 @@
       "id": 32,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_205_0_1_I",
@@ -664,7 +716,8 @@
       "id": 33,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_210_0_1_F",
@@ -683,7 +736,8 @@
       "id": 34,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_210_0_1_I",
@@ -702,7 +756,8 @@
       "id": 35,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_210_0_1_С",
@@ -721,7 +776,8 @@
       "id": 36,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_215_0_1_F",
@@ -740,7 +796,8 @@
       "id": 37,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_215_0_1_I",
@@ -759,7 +816,8 @@
       "id": 38,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_215_0_1_С",
@@ -778,7 +836,8 @@
       "id": 39,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_220_0_1_C",
@@ -797,7 +856,8 @@
       "id": 40,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_220_0_1_F",
@@ -816,7 +876,8 @@
       "id": 41,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_275_0_1_F",
@@ -835,7 +896,8 @@
       "id": 42,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_305_0_1_C",
@@ -854,7 +916,8 @@
       "id": 43,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_305_0_1_I",
@@ -873,7 +936,8 @@
       "id": 44,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_310_0_1_C",
@@ -892,7 +956,8 @@
       "id": 45,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_310_0_1_F",
@@ -911,7 +976,8 @@
       "id": 46,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_310_0_1_I",
@@ -930,7 +996,8 @@
       "id": 47,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_310_3_0_1_I",
@@ -949,7 +1016,8 @@
       "id": 48,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_310_3_0_1_С",
@@ -968,7 +1036,8 @@
       "id": 49,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_315_0_1_c??",
@@ -987,7 +1056,8 @@
       "id": 50,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_315_0_1_F",
@@ -1006,7 +1076,8 @@
       "id": 51,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_315_0_1_I",
@@ -1025,7 +1096,8 @@
       "id": 52,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_375_0_1_C",
@@ -1044,7 +1116,8 @@
       "id": 53,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_375_0_1_F",
@@ -1063,7 +1136,8 @@
       "id": 54,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T13_375_0_1_I",
@@ -1082,7 +1156,8 @@
       "id": 55,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T15_105_2_1_С",
@@ -1101,7 +1176,8 @@
       "id": 56,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T15_110_1_1_C",
@@ -1120,7 +1196,8 @@
       "id": 57,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T15_110_1_1_I",
@@ -1139,7 +1216,8 @@
       "id": 58,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T15_115_1_1_C",
@@ -1158,7 +1236,8 @@
       "id": 59,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T15_115_2_1_С",
@@ -1177,7 +1256,8 @@
       "id": 60,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T15_115_310_1_1_I ???",
@@ -1196,7 +1276,8 @@
       "id": 61,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T15_210_1_1_C",
@@ -1215,7 +1296,8 @@
       "id": 62,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T15_210_1_1_F",
@@ -1234,7 +1316,8 @@
       "id": 63,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T15_210_1_1_I",
@@ -1253,7 +1336,8 @@
       "id": 64,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T15_310_0_1_С",
@@ -1272,7 +1356,8 @@
       "id": 65,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T17_105_2_1_C",
@@ -1291,7 +1376,8 @@
       "id": 66,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T17_110_1_1_C",
@@ -1310,7 +1396,8 @@
       "id": 67,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "T17_110_1_1_I",
@@ -1329,7 +1416,8 @@
       "id": 68,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "аов 1.21f",
@@ -1348,7 +1436,8 @@
       "id": 69,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "аов 1.31F",
@@ -1367,7 +1456,8 @@
       "id": 70,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "АОВ 1.11",
@@ -1386,7 +1476,8 @@
       "id": 71,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "АОВ_1.1_1_I",
@@ -1405,7 +1496,8 @@
       "id": 72,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "АОВ_1.2_1_I",
@@ -1424,7 +1516,8 @@
       "id": 73,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "АОВ_1.2_1_С",
@@ -1443,7 +1536,8 @@
       "id": 74,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "АОВ_1.3_1_I",
@@ -1462,7 +1556,8 @@
       "id": 75,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.072952"
+      "last_normalized": "2026-01-06T09:37:49.072952",
+      "is_solution": false
     },
     {
       "name": "АОВ_1.3_1_С",
@@ -1481,7 +1576,8 @@
       "id": 76,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "АОВ1.1_1_F",
@@ -1500,7 +1596,8 @@
       "id": 77,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "МСП 113.4",
@@ -1519,7 +1616,8 @@
       "id": 78,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "Т13_115_0_1_I",
@@ -1538,7 +1636,8 @@
       "id": 79,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "Т13",
@@ -1557,7 +1656,8 @@
       "id": 80,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV-1-3-I",
@@ -1576,7 +1676,8 @@
       "id": 81,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NVI-1",
@@ -1595,7 +1696,8 @@
       "id": 82,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "AVI3-2-1-F",
@@ -1614,7 +1716,8 @@
       "id": 83,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV1-10.2",
@@ -1633,7 +1736,8 @@
       "id": 84,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "AV-1-4.2",
@@ -1652,7 +1756,8 @@
       "id": 85,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "AV12-1-1-C-1",
@@ -1671,7 +1776,8 @@
       "id": 86,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "AV13-2-1-C",
@@ -1690,7 +1796,8 @@
       "id": 87,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "AV12-1-1-F",
@@ -1709,7 +1816,8 @@
       "id": 88,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "AVI3-2-1-I",
@@ -1728,7 +1836,8 @@
       "id": 89,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV-1-2-I",
@@ -1747,7 +1856,8 @@
       "id": 90,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV1-3-F",
@@ -1766,7 +1876,8 @@
       "id": 91,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV-1-2-C",
@@ -1785,7 +1896,8 @@
       "id": 92,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_110_0_1_F",
@@ -1804,7 +1916,8 @@
       "id": 93,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_110_0_1_I",
@@ -1823,7 +1936,8 @@
       "id": 94,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_275_0_1_I",
@@ -1842,7 +1956,8 @@
       "id": 95,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_275_0_1_С",
@@ -1861,7 +1976,8 @@
       "id": 96,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13-110-Б-1-С",
@@ -1880,7 +1996,8 @@
       "id": 97,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13-110-Б-1-I",
@@ -1899,7 +2016,8 @@
       "id": 98,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13-110-aБ-1-I",
@@ -1918,7 +2036,8 @@
       "id": 99,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "AV-1-42",
@@ -1937,7 +2056,8 @@
       "id": 100,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "AV-1-42-F",
@@ -1956,7 +2076,8 @@
       "id": 101,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "AV-1-131-C",
@@ -1975,7 +2096,8 @@
       "id": 102,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "AV-1-131-F",
@@ -1994,7 +2116,8 @@
       "id": 103,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV-MSP-I",
@@ -2013,7 +2136,8 @@
       "id": 104,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV-AV-1-I",
@@ -2032,7 +2156,8 @@
       "id": 105,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV1-6-0-1-F",
@@ -2051,7 +2176,8 @@
       "id": 106,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV1-3-C",
@@ -2070,7 +2196,8 @@
       "id": 107,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV1-6-0-1-I",
@@ -2089,7 +2216,8 @@
       "id": 108,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV1-6-0-1-C",
@@ -2108,7 +2236,8 @@
       "id": 109,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NVI_4_1_I",
@@ -2127,7 +2256,8 @@
       "id": 110,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T15_115_1_1_I",
@@ -2146,7 +2276,8 @@
       "id": 111,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T17_105_2_1_I",
@@ -2165,7 +2296,8 @@
       "id": 112,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T17_115_2_1_F",
@@ -2184,7 +2316,8 @@
       "id": 113,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T15_105_2_1_F",
@@ -2203,7 +2336,8 @@
       "id": 114,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV_MCP_C",
@@ -2222,7 +2356,8 @@
       "id": 115,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NVI_4_1_F",
@@ -2241,7 +2376,8 @@
       "id": 116,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NVI_4_1_C",
@@ -2260,7 +2396,8 @@
       "id": 117,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T15_105_2_1_I",
@@ -2279,7 +2416,8 @@
       "id": 118,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T17_115_2_1_I",
@@ -2298,7 +2436,8 @@
       "id": 119,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T17_105_2_1_F",
@@ -2317,7 +2456,8 @@
       "id": 120,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_110_A_1_F",
@@ -2336,7 +2476,8 @@
       "id": 121,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_110_АБ_1_F",
@@ -2355,7 +2496,8 @@
       "id": 122,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_110_A_1_I",
@@ -2374,7 +2516,8 @@
       "id": 123,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_110_АБ_1_C",
@@ -2393,7 +2536,8 @@
       "id": 124,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_110_A_1_C",
@@ -2412,7 +2556,8 @@
       "id": 125,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_110_АБ_1_I",
@@ -2431,7 +2576,8 @@
       "id": 126,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_110_БF_1_C",
@@ -2450,7 +2596,8 @@
       "id": 127,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_110_AF_1_C",
@@ -2469,7 +2616,8 @@
       "id": 128,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "Т13_110_АБf_1_C",
@@ -2488,7 +2636,8 @@
       "id": 129,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_110_AF гипс",
@@ -2507,7 +2656,8 @@
       "id": 130,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "Т13_110_АБF гипс",
@@ -2526,7 +2676,8 @@
       "id": 131,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "Т13_110_af_I",
@@ -2545,7 +2696,8 @@
       "id": 132,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T13_110_БF_гипс",
@@ -2564,7 +2716,8 @@
       "id": 133,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "Т13_110_qF_1_F",
@@ -2583,7 +2736,8 @@
       "id": 134,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "Т13_110_БF_1_F",
@@ -2602,7 +2756,8 @@
       "id": 135,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "Т13_110_АБF_1_I",
@@ -2621,7 +2776,8 @@
       "id": 136,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "Т13_110_АБF_1_F",
@@ -2640,7 +2796,8 @@
       "id": 137,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "Т13_110_БF_1_I",
@@ -2659,7 +2816,8 @@
       "id": 138,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "AV_1_4.2_F",
@@ -2678,7 +2836,8 @@
       "id": 139,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "AV_1_13.1_C",
@@ -2697,7 +2856,8 @@
       "id": 140,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV1_5_1_C",
@@ -2716,7 +2876,8 @@
       "id": 141,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV1_7_F",
@@ -2735,7 +2896,8 @@
       "id": 142,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "LST_3_C",
@@ -2754,7 +2916,8 @@
       "id": 143,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV1_5_I",
@@ -2773,7 +2936,8 @@
       "id": 144,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV1_7_I",
@@ -2792,7 +2956,8 @@
       "id": 145,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "ISO_4_I",
@@ -2811,7 +2976,8 @@
       "id": 146,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "ISO_4_F",
@@ -2830,7 +2996,8 @@
       "id": 147,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "ISO_4_C",
@@ -2849,7 +3016,8 @@
       "id": 148,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV_1_7_C",
@@ -2868,7 +3036,8 @@
       "id": 149,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "S_0_C",
@@ -2887,7 +3056,8 @@
       "id": 150,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "S_1_C",
@@ -2906,7 +3076,8 @@
       "id": 151,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "S_2_C",
@@ -2925,7 +3096,8 @@
       "id": 152,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "S_3_I",
@@ -2944,7 +3116,8 @@
       "id": 153,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "S_3_C",
@@ -2963,7 +3136,8 @@
       "id": 154,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "S_4_I",
@@ -2982,7 +3156,8 @@
       "id": 155,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "S_4_C",
@@ -3001,7 +3176,8 @@
       "id": 156,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "NV_1_7_C*5",
@@ -3020,7 +3196,8 @@
       "id": 157,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "LST_2_C",
@@ -3039,7 +3216,8 @@
       "id": 158,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "LST_2_I",
@@ -3058,7 +3236,8 @@
       "id": 159,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "LST_1_I",
@@ -3077,7 +3256,8 @@
       "id": 160,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "LST_1_F",
@@ -3096,7 +3276,8 @@
       "id": 161,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "LST_3_I",
@@ -3115,7 +3296,8 @@
       "id": 162,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "LST_1_C",
@@ -3134,7 +3316,8 @@
       "id": 163,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "LST_2_F",
@@ -3153,7 +3336,8 @@
       "id": 164,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "LST_3_F",
@@ -3172,7 +3356,8 @@
       "id": 165,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solution": false
     },
     {
       "name": "T12_115_0_1",
@@ -3191,7 +3376,8 @@
       "id": 166,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T12_120_0_1",
@@ -3210,7 +3396,8 @@
       "id": 167,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AOB1_1_1",
@@ -3229,7 +3416,8 @@
       "id": 168,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AV11_110",
@@ -3248,7 +3436,8 @@
       "id": 169,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AV11_110_1",
@@ -3267,7 +3456,8 @@
       "id": 170,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AV_1_42",
@@ -3286,7 +3476,8 @@
       "id": 171,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AV_1_102",
@@ -3305,7 +3496,8 @@
       "id": 172,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AV_1_131",
@@ -3324,7 +3516,8 @@
       "id": 173,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "обезм. Р-р",
@@ -3343,7 +3536,8 @@
       "id": 174,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "NV_M3I",
@@ -3362,7 +3556,8 @@
       "id": 175,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "NV_AV1",
@@ -3381,7 +3576,8 @@
       "id": 176,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "NV_KSH",
@@ -3400,7 +3596,8 @@
       "id": 177,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "NV1_1*10",
@@ -3419,7 +3616,8 @@
       "id": 178,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "NV1_2*10",
@@ -3438,7 +3636,8 @@
       "id": 179,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "NV_KSH*10",
@@ -3457,7 +3656,8 @@
       "id": 180,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "аов 1.2-1-f",
@@ -3476,7 +3676,8 @@
       "id": 181,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "nm1",
@@ -3495,7 +3696,8 @@
       "id": 182,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "nm2",
@@ -3514,7 +3716,8 @@
       "id": 183,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "nm1.5",
@@ -3533,7 +3736,8 @@
       "id": 184,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "nm2.5",
@@ -3552,7 +3756,8 @@
       "id": 185,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "nm3.5",
@@ -3571,7 +3776,8 @@
       "id": 186,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "nm0",
@@ -3590,7 +3796,8 @@
       "id": 187,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13 205 100",
@@ -3609,7 +3816,8 @@
       "id": 188,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13 205 10",
@@ -3628,7 +3836,8 @@
       "id": 189,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13 105",
@@ -3647,7 +3856,8 @@
       "id": 190,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13 305",
@@ -3666,7 +3876,8 @@
       "id": 191,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_115",
@@ -3685,7 +3896,8 @@
       "id": 192,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_215",
@@ -3704,7 +3916,8 @@
       "id": 193,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_315",
@@ -3723,7 +3936,8 @@
       "id": 194,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_120",
@@ -3742,7 +3956,8 @@
       "id": 195,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_220",
@@ -3761,7 +3976,8 @@
       "id": 196,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_320",
@@ -3780,7 +3996,8 @@
       "id": 197,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_205",
@@ -3799,7 +4016,8 @@
       "id": 198,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_305",
@@ -3818,7 +4036,8 @@
       "id": 199,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_210",
@@ -3837,7 +4056,8 @@
       "id": 200,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_310",
@@ -3856,7 +4076,8 @@
       "id": 201,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_175",
@@ -3875,7 +4096,8 @@
       "id": 202,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AV_1_1-s",
@@ -3894,7 +4116,8 @@
       "id": 203,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "NV_AV1-S",
@@ -3913,7 +4136,8 @@
       "id": 204,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "NV1_3_0_1-S",
@@ -3932,7 +4156,8 @@
       "id": 205,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "NV_MSP-S",
@@ -3951,7 +4176,8 @@
       "id": 206,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "АОВ_1.2_1-S",
@@ -3970,7 +4196,8 @@
       "id": 207,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AV_12-1-1-S",
@@ -3989,7 +4216,8 @@
       "id": 208,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AV-1-1-1-S",
@@ -4008,7 +4236,8 @@
       "id": 209,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AV-1-42-1-S",
@@ -4027,7 +4256,8 @@
       "id": 210,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AV13-2-1-S",
@@ -4046,7 +4276,8 @@
       "id": 211,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "NV1-2-0-1-S",
@@ -4065,7 +4296,8 @@
       "id": 212,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AV_1_131_1-S",
@@ -4084,7 +4316,8 @@
       "id": 213,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AOB_1.3_1-S",
@@ -4103,7 +4336,8 @@
       "id": 214,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T13_110 (27.11.25) 1",
@@ -4122,7 +4356,8 @@
       "id": 215,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T13_110 (27.11.25) 2",
@@ -4141,7 +4376,8 @@
       "id": 216,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T13_110 (27.11.25) 3",
@@ -4160,7 +4396,8 @@
       "id": 217,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T13_215_0_1-S",
@@ -4179,7 +4416,8 @@
       "id": 218,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T13_220_0_1-S",
@@ -4198,7 +4436,8 @@
       "id": 219,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T13_315_0_1-S",
@@ -4217,7 +4456,8 @@
       "id": 220,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T13_310_0_1-S",
@@ -4236,7 +4476,8 @@
       "id": 221,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T13_310_3_0_1-S",
@@ -4255,7 +4496,8 @@
       "id": 222,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T15_110_1_1-S",
@@ -4274,7 +4516,8 @@
       "id": 223,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T15_210_1_1-S",
@@ -4293,7 +4536,8 @@
       "id": 224,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T15_310_1_1-S",
@@ -4312,7 +4556,8 @@
       "id": 225,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T15_110-S",
@@ -4331,7 +4576,8 @@
       "id": 226,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T15_210-S",
@@ -4350,7 +4596,8 @@
       "id": 227,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T15_310-S",
@@ -4369,7 +4616,8 @@
       "id": 228,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T15_105_2_1-S",
@@ -4388,7 +4636,8 @@
       "id": 229,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T15_115_1_1-S",
@@ -4407,7 +4656,8 @@
       "id": 230,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T15_105-S",
@@ -4426,7 +4676,8 @@
       "id": 231,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T15_115-S",
@@ -4445,7 +4696,8 @@
       "id": 232,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T13_110_a_1-S",
@@ -4464,7 +4716,8 @@
       "id": 233,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T13_110_b_1-S",
@@ -4483,7 +4736,8 @@
       "id": 234,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T13_110_ab_1-S",
@@ -4502,7 +4756,8 @@
       "id": 235,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T17_105_2_1-S",
@@ -4521,7 +4776,8 @@
       "id": 236,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T17_110_1_1-S",
@@ -4540,7 +4796,8 @@
       "id": 237,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T17_115_2_1-S",
@@ -4559,7 +4816,8 @@
       "id": 238,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T17_105-S",
@@ -4578,7 +4836,8 @@
       "id": 239,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T17_110-S",
@@ -4597,7 +4856,8 @@
       "id": 240,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "T17_115-S",
@@ -4616,7 +4876,8 @@
       "id": 241,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_110_0_1",
@@ -4635,7 +4896,8 @@
       "id": 242,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_175_0_1",
@@ -4654,7 +4916,8 @@
       "id": 243,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_205_1",
@@ -4673,7 +4936,8 @@
       "id": 244,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_210_0_1",
@@ -4692,7 +4956,8 @@
       "id": 245,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_275",
@@ -4711,7 +4976,8 @@
       "id": 246,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_275_0_1",
@@ -4730,7 +4996,8 @@
       "id": 247,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_305_1_1",
@@ -4749,7 +5016,8 @@
       "id": 248,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_375",
@@ -4768,7 +5036,8 @@
       "id": 249,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Т13_375_0_1",
@@ -4787,7 +5056,8 @@
       "id": 250,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "PV1",
@@ -4806,7 +5076,8 @@
       "id": 251,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "PV2",
@@ -4825,7 +5096,8 @@
       "id": 252,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "PO1",
@@ -4844,7 +5116,8 @@
       "id": 253,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "PO2",
@@ -4863,7 +5136,8 @@
       "id": 254,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "PO3",
@@ -4882,7 +5156,8 @@
       "id": 255,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "FO",
@@ -4901,7 +5176,8 @@
       "id": 256,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "TO",
@@ -4920,7 +5196,8 @@
       "id": 257,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "IM",
@@ -4939,7 +5216,8 @@
       "id": 258,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "AV_1_4.2.",
@@ -4958,7 +5236,8 @@
       "id": 259,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "LST_1",
@@ -4977,7 +5256,8 @@
       "id": 260,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "LST_2",
@@ -4996,7 +5276,8 @@
       "id": 261,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "LST_3",
@@ -5015,7 +5296,8 @@
       "id": 262,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "LST_A",
@@ -5034,7 +5316,8 @@
       "id": 263,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "LST_B",
@@ -5053,7 +5336,8 @@
       "id": 264,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "NV1_7",
@@ -5072,7 +5356,8 @@
       "id": 265,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "CS*10",
@@ -5091,7 +5376,8 @@
       "id": 266,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "ISO_4",
@@ -5110,7 +5396,8 @@
       "id": 267,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "S_A",
@@ -5129,7 +5416,8 @@
       "id": 268,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "S_B",
@@ -5148,7 +5436,8 @@
       "id": 269,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "S_B2",
@@ -5167,7 +5456,8 @@
       "id": 270,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "S_0",
@@ -5186,7 +5476,8 @@
       "id": 271,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "S_1",
@@ -5205,7 +5496,8 @@
       "id": 272,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "S_2",
@@ -5224,7 +5516,8 @@
       "id": 273,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "S_3",
@@ -5243,7 +5536,8 @@
       "id": 274,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "S_4",
@@ -5262,7 +5556,8 @@
       "id": 275,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "PV1_100",
@@ -5281,7 +5576,8 @@
       "id": 276,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "PV2_100",
@@ -5300,7 +5596,8 @@
       "id": 277,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "LST_A _10",
@@ -5319,7 +5616,8 @@
       "id": 278,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "LST_B_10",
@@ -5338,7 +5636,8 @@
       "id": 279,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "S_A_10",
@@ -5357,7 +5656,8 @@
       "id": 280,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Vd_148_1",
@@ -5376,7 +5676,8 @@
       "id": 281,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Vd_148",
@@ -5395,7 +5696,8 @@
       "id": 282,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Vd_148 x10",
@@ -5414,7 +5716,8 @@
       "id": 283,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "ISO_2",
@@ -5433,7 +5736,8 @@
       "id": 284,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "ISO_3",
@@ -5452,7 +5756,8 @@
       "id": 285,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Vd_1272",
@@ -5471,7 +5776,8 @@
       "id": 286,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Vd_1272_1",
@@ -5490,7 +5796,8 @@
       "id": 287,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Vd_115_1",
@@ -5509,7 +5816,8 @@
       "id": 288,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "Vd_1272 x10",
@@ -5528,7 +5836,8 @@
       "id": 289,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     },
     {
       "name": "null",
@@ -5547,7 +5856,8 @@
       "id": 290,
       "tags": [],
       "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950"
+      "last_normalized": "2026-01-06T09:37:49.073950",
+      "is_solid": false
     }
   ],
   "metadata": {

@@ -1095,7 +1095,7 @@ class ProbeLab {
         .then(response => response.json())
         .then(result => {
             if (result.success) {
-                let currentProbeData = null; // Храним текущие данные пробы
+
                 // Сохраняем данные пробы
                 currentProbeData = result.probe;
                 
@@ -1207,7 +1207,7 @@ function saveEditedProbe() {
     saveButton.disabled = true;
     
     // Отправляем запрос на сохранение
-    fetch(`/api/probes/${probeId}/update`, {
+    fetch(`/api/probes/${probeId}/update_probe`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -1263,6 +1263,7 @@ function getEditableFields(probe) {
 }
 
 // Инициализация приложения
+let currentProbeData = null; // Храним текущие данные пробы
 let lab;
 document.addEventListener('DOMContentLoaded', () => {
     lab = new ProbeLab();
