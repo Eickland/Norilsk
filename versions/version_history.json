@@ -1,270 +1,6 @@
 [
   {
     "id": 1,
-    "timestamp": "2025-12-26T16:39:43.491708",
-    "description": "Нормализация завершена: обновлено 368 ID",
-    "author": "system",
-    "change_type": "normalization_complete",
-    "hash": "6df9538c8054345ed49a9fa7b7b16980",
-    "filename": "v51_data.json",
-    "data_size": 206954,
-    "probes_count": 393
-  },
-  {
-    "id": 2,
-    "timestamp": "2025-12-26T16:39:50.477233",
-    "description": "Подтверждение удаления пробы #41",
-    "author": "system",
-    "change_type": "delete_confirm",
-    "hash": "93ad24e1a637ff835cb4089ac7ccf212",
-    "filename": "v51_data.json",
-    "data_size": 206566,
-    "probes_count": 392
-  },
-  {
-    "id": 3,
-    "timestamp": "2025-12-26T16:39:52.315138",
-    "description": "Нормализация завершена: обновлено 352 ID",
-    "author": "system",
-    "change_type": "normalization_complete",
-    "hash": "89c2b60b33d07365a1457cf5912d50a4",
-    "filename": "v51_data.json",
-    "data_size": 206403,
-    "probes_count": 392
-  },
-  {
-    "id": 4,
-    "timestamp": "2025-12-26T16:40:00.780337",
-    "description": "Подтверждение удаления пробы #55",
-    "author": "system",
-    "change_type": "delete_confirm",
-    "hash": "0a044b5795b97cca5a0ada4b410e807b",
-    "filename": "v51_data.json",
-    "data_size": 205942,
-    "probes_count": 391
-  },
-  {
-    "id": 5,
-    "timestamp": "2025-12-26T16:40:03.587589",
-    "description": "Нормализация завершена: обновлено 337 ID",
-    "author": "system",
-    "change_type": "normalization_complete",
-    "hash": "30fb901f017eafa5922c16f0c5b699c9",
-    "filename": "v51_data.json",
-    "data_size": 205789,
-    "probes_count": 391
-  },
-  {
-    "id": 6,
-    "timestamp": "2025-12-26T16:40:10.910584",
-    "description": "Подтверждение удаления пробы #54",
-    "author": "system",
-    "change_type": "delete_confirm",
-    "hash": "a0cd5fc8f291adbf35eb7b14f42ac36c",
-    "filename": "v51_data.json",
-    "data_size": 205401,
-    "probes_count": 390
-  },
-  {
-    "id": 7,
-    "timestamp": "2025-12-26T16:40:12.890452",
-    "description": "Нормализация завершена: обновлено 337 ID",
-    "author": "system",
-    "change_type": "normalization_complete",
-    "hash": "b965ca7c84358f9a8bf5b074d6f4ee5a",
-    "filename": "v51_data.json",
-    "data_size": 205398,
-    "probes_count": 390
-  },
-  {
-    "id": 8,
-    "timestamp": "2025-12-26T16:40:28.450035",
-    "description": "Подтверждение удаления пробы #279",
-    "author": "system",
-    "change_type": "delete_confirm",
-    "hash": "f1ccfa472e9e938e05344f0f362ee30c",
-    "filename": "v51_data.json",
-    "data_size": 204972,
-    "probes_count": 389
-  },
-  {
-    "id": 9,
-    "timestamp": "2025-12-26T16:40:30.425254",
-    "description": "Нормализация завершена: обновлено 111 ID",
-    "author": "system",
-    "change_type": "normalization_complete",
-    "hash": "6392183be47a9e7a5fac9ded3eafb251",
-    "filename": "v51_data.json",
-    "data_size": 202351,
-    "probes_count": 389
-  },
-  {
-    "id": 10,
-    "timestamp": "2025-12-26T16:40:37.850283",
-    "description": "Подтверждение удаления пробы #60",
-    "author": "system",
-    "change_type": "delete_confirm",
-    "hash": "065b34f8d9aa1a0a565f3726c83026f4",
-    "filename": "v51_data.json",
-    "data_size": 201963,
-    "probes_count": 388
-  },
-  {
-    "id": 11,
-    "timestamp": "2025-12-26T16:40:39.590359",
-    "description": "Нормализация завершена: обновлено 329 ID",
-    "author": "system",
-    "change_type": "normalization_complete",
-    "hash": "0a87b0bf2bcb7968da6041566615efed",
-    "filename": "v51_data.json",
-    "data_size": 204499,
-    "probes_count": 388
-  },
-  {
-    "id": 12,
-    "timestamp": "2025-12-26T16:40:49.142826",
-    "description": "Подтверждение удаления пробы #71",
-    "author": "system",
-    "change_type": "delete_confirm",
-    "hash": "8eff730a4bdb55d0cc9b75aa44f19bf7",
-    "filename": "v51_data.json",
-    "data_size": 204111,
-    "probes_count": 387
-  },
-  {
-    "id": 13,
-    "timestamp": "2025-12-26T16:40:51.305448",
-    "description": "Нормализация завершена: обновлено 317 ID",
-    "author": "system",
-    "change_type": "normalization_complete",
-    "hash": "45472eb3598428d722e056f9461c1a6d",
-    "filename": "v51_data.json",
-    "data_size": 203988,
-    "probes_count": 387
-  },
-  {
-    "id": 14,
-    "timestamp": "2025-12-26T16:40:56.776801",
-    "description": "Подтверждение удаления пробы #144",
-    "author": "system",
-    "change_type": "delete_confirm",
-    "hash": "c712a929e58fb9182ae834d97e105f77",
-    "filename": "v51_data.json",
-    "data_size": 203599,
-    "probes_count": 386
-  },
-  {
-    "id": 15,
-    "timestamp": "2025-12-26T16:40:58.082808",
-    "description": "Нормализация завершена: обновлено 243 ID",
-    "author": "system",
-    "change_type": "normalization_complete",
-    "hash": "fd6be218e4d9afd4e86acb802e6ce1df",
-    "filename": "v51_data.json",
-    "data_size": 202768,
-    "probes_count": 386
-  },
-  {
-    "id": 16,
-    "timestamp": "2025-12-26T16:41:11.280854",
-    "description": "Подтверждение удаления пробы #171",
-    "author": "system",
-    "change_type": "delete_confirm",
-    "hash": "8b5565352d8f3bc742815d5e01188708",
-    "filename": "v51_data.json",
-    "data_size": 202379,
-    "probes_count": 385
-  },
-  {
-    "id": 17,
-    "timestamp": "2025-12-26T16:41:13.360554",
-    "description": "Нормализация завершена: обновлено 215 ID",
-    "author": "system",
-    "change_type": "normalization_complete",
-    "hash": "acb5d21a7d8019faced9bbd836fee2a4",
-    "filename": "v51_data.json",
-    "data_size": 202043,
-    "probes_count": 385
-  },
-  {
-    "id": 18,
-    "timestamp": "2025-12-26T16:41:22.105436",
-    "description": "Подтверждение удаления пробы #94",
-    "author": "system",
-    "change_type": "delete_confirm",
-    "hash": "5a28fbbc498e941ea576409d6f6aace9",
-    "filename": "v51_data.json",
-    "data_size": 201655,
-    "probes_count": 384
-  },
-  {
-    "id": 19,
-    "timestamp": "2025-12-26T16:41:24.496524",
-    "description": "Нормализация завершена: обновлено 291 ID",
-    "author": "system",
-    "change_type": "normalization_complete",
-    "hash": "bcb821d2366f08dcaf5f0f59f68368b3",
-    "filename": "v51_data.json",
-    "data_size": 202555,
-    "probes_count": 384
-  },
-  {
-    "id": 20,
-    "timestamp": "2025-12-26T16:41:33.680753",
-    "description": "Подтверждение удаления пробы #92",
-    "author": "system",
-    "change_type": "delete_confirm",
-    "hash": "424ed4e11d1ca6652b18babcbf569c3e",
-    "filename": "v51_data.json",
-    "data_size": 202041,
-    "probes_count": 383
-  },
-  {
-    "id": 21,
-    "timestamp": "2025-12-26T16:41:35.480237",
-    "description": "Нормализация завершена: обновлено 292 ID",
-    "author": "system",
-    "change_type": "normalization_complete",
-    "hash": "50aaf0bc08808ed5c42a5dcc8b9ee0c7",
-    "filename": "v51_data.json",
-    "data_size": 202048,
-    "probes_count": 383
-  },
-  {
-    "id": 22,
-    "timestamp": "2025-12-26T16:41:51.907668",
-    "description": "Подтверждение удаления пробы #92",
-    "author": "system",
-    "change_type": "delete_confirm",
-    "hash": "6aed57d63dfc4b1bfd8dadd5a9f8d564",
-    "filename": "v51_data.json",
-    "data_size": 201534,
-    "probes_count": 382
-  },
-  {
-    "id": 23,
-    "timestamp": "2025-12-26T16:41:53.692063",
-    "description": "Нормализация завершена: обновлено 291 ID",
-    "author": "system",
-    "change_type": "normalization_complete",
-    "hash": "93afe11027d9001d4772f91371490c08",
-    "filename": "v51_data.json",
-    "data_size": 201521,
-    "probes_count": 382
-  },
-  {
-    "id": 24,
-    "timestamp": "2025-12-26T16:42:03.523501",
-    "description": "Подтверждение удаления пробы #167",
-    "author": "system",
-    "change_type": "delete_confirm",
-    "hash": "a4a1098e7ab7debc99edb2b80b40fb0b",
-    "filename": "v51_data.json",
-    "data_size": 201132,
-    "probes_count": 381
-  },
-  {
-    "id": 25,
     "timestamp": "2025-12-26T16:42:05.007493",
     "description": "Нормализация завершена: обновлено 215 ID",
     "author": "system",
@@ -275,7 +11,7 @@
     "probes_count": 381
   },
   {
-    "id": 26,
+    "id": 2,
     "timestamp": "2025-12-26T16:42:27.266151",
     "description": "Подтверждение удаления пробы #238",
     "author": "system",
@@ -286,7 +22,7 @@
     "probes_count": 380
   },
   {
-    "id": 27,
+    "id": 3,
     "timestamp": "2025-12-26T16:42:29.307333",
     "description": "Нормализация завершена: обновлено 143 ID",
     "author": "system",
@@ -297,7 +33,7 @@
     "probes_count": 380
   },
   {
-    "id": 28,
+    "id": 4,
     "timestamp": "2025-12-26T16:42:46.459635",
     "description": "Подтверждение удаления пробы #106",
     "author": "system",
@@ -308,7 +44,7 @@
     "probes_count": 379
   },
   {
-    "id": 29,
+    "id": 5,
     "timestamp": "2025-12-26T16:42:48.186642",
     "description": "Нормализация завершена: обновлено 274 ID",
     "author": "system",
@@ -319,7 +55,7 @@
     "probes_count": 379
   },
   {
-    "id": 30,
+    "id": 6,
     "timestamp": "2025-12-26T16:43:04.193089",
     "description": "Подтверждение удаления пробы #222",
     "author": "system",
@@ -330,7 +66,7 @@
     "probes_count": 378
   },
   {
-    "id": 31,
+    "id": 7,
     "timestamp": "2025-12-26T16:43:06.682908",
     "description": "Нормализация завершена: обновлено 157 ID",
     "author": "system",
@@ -341,7 +77,7 @@
     "probes_count": 378
   },
   {
-    "id": 32,
+    "id": 8,
     "timestamp": "2025-12-26T16:43:20.789922",
     "description": "Подтверждение удаления пробы #120",
     "author": "system",
@@ -352,7 +88,7 @@
     "probes_count": 377
   },
   {
-    "id": 33,
+    "id": 9,
     "timestamp": "2025-12-26T16:43:23.076284",
     "description": "Нормализация завершена: обновлено 258 ID",
     "author": "system",
@@ -363,7 +99,7 @@
     "probes_count": 377
   },
   {
-    "id": 34,
+    "id": 10,
     "timestamp": "2025-12-26T16:43:34.214648",
     "description": "Подтверждение удаления пробы #119",
     "author": "system",
@@ -374,7 +110,7 @@
     "probes_count": 376
   },
   {
-    "id": 35,
+    "id": 11,
     "timestamp": "2025-12-26T16:43:35.908924",
     "description": "Нормализация завершена: обновлено 258 ID",
     "author": "system",
@@ -385,7 +121,7 @@
     "probes_count": 376
   },
   {
-    "id": 36,
+    "id": 12,
     "timestamp": "2025-12-26T16:43:46.146123",
     "description": "Подтверждение удаления пробы #138",
     "author": "system",
@@ -396,7 +132,7 @@
     "probes_count": 375
   },
   {
-    "id": 37,
+    "id": 13,
     "timestamp": "2025-12-26T16:43:48.908394",
     "description": "Нормализация завершена: обновлено 238 ID",
     "author": "system",
@@ -407,7 +143,7 @@
     "probes_count": 375
   },
   {
-    "id": 38,
+    "id": 14,
     "timestamp": "2025-12-26T16:43:58.033500",
     "description": "Подтверждение удаления пробы #150",
     "author": "system",
@@ -418,7 +154,7 @@
     "probes_count": 374
   },
   {
-    "id": 39,
+    "id": 15,
     "timestamp": "2025-12-26T16:44:02.640667",
     "description": "Подтверждение удаления пробы #151",
     "author": "system",
@@ -429,7 +165,7 @@
     "probes_count": 373
   },
   {
-    "id": 40,
+    "id": 16,
     "timestamp": "2025-12-26T16:44:05.227422",
     "description": "Нормализация завершена: обновлено 224 ID",
     "author": "system",
@@ -440,7 +176,7 @@
     "probes_count": 373
   },
   {
-    "id": 41,
+    "id": 17,
     "timestamp": "2025-12-26T16:45:13.324417",
     "description": "Подтверждение удаления пробы #198",
     "author": "system",
@@ -451,7 +187,7 @@
     "probes_count": 372
   },
   {
-    "id": 42,
+    "id": 18,
     "timestamp": "2025-12-26T16:45:35.515730",
     "description": "Нормализация завершена: обновлено 175 ID",
     "author": "system",
@@ -462,7 +198,7 @@
     "probes_count": 372
   },
   {
-    "id": 43,
+    "id": 19,
     "timestamp": "2025-12-29T18:08:11.522939",
     "description": "Импорт файла '2.csv' - состояние до импорта",
     "author": "anonymous",
@@ -473,7 +209,7 @@
     "probes_count": 372
   },
   {
-    "id": 44,
+    "id": 20,
     "timestamp": "2025-12-29T18:08:11.566958",
     "description": "Импорт файла '2.csv' - обновлено: 119, добавлено: 8",
     "author": "anonymous",
@@ -484,7 +220,7 @@
     "probes_count": 380
   },
   {
-    "id": 45,
+    "id": 21,
     "timestamp": "2025-12-29T18:08:13.863857",
     "description": "Нормализация завершена: обновлено 127 ID",
     "author": "system",
@@ -495,7 +231,7 @@
     "probes_count": 380
   },
   {
-    "id": 46,
+    "id": 22,
     "timestamp": "2025-12-29T18:08:29.683788",
     "description": "Импорт файла '3.csv' - состояние до импорта",
     "author": "anonymous",
@@ -506,7 +242,7 @@
     "probes_count": 380
   },
   {
-    "id": 47,
+    "id": 23,
     "timestamp": "2025-12-29T18:08:29.730996",
     "description": "Импорт файла '3.csv' - обновлено: 127, добавлено: 0",
     "author": "anonymous",
@@ -517,7 +253,7 @@
     "probes_count": 380
   },
   {
-    "id": 48,
+    "id": 24,
     "timestamp": "2025-12-29T18:08:32.058900",
     "description": "Нормализация завершена: обновлено 127 ID",
     "author": "system",
@@ -528,7 +264,7 @@
     "probes_count": 380
   },
   {
-    "id": 49,
+    "id": 25,
     "timestamp": "2025-12-29T18:18:56.772016",
     "description": "Импорт файла '28_12_3.csv' - обновлено: 168, добавлено: 4",
     "author": "anonymous",
@@ -539,7 +275,7 @@
     "probes_count": 384
   },
   {
-    "id": 50,
+    "id": 26,
     "timestamp": "2025-12-29T18:18:59.230842",
     "description": "Нормализация завершена: обновлено 168 ID",
     "author": "system",
@@ -548,5 +284,269 @@
     "filename": "v51_data.json",
     "data_size": 315736,
     "probes_count": 384
+  },
+  {
+    "id": 27,
+    "timestamp": "2026-01-06T01:49:41.099233",
+    "description": "Импорт файла '1.csv' - состояние до импорта",
+    "author": "anonymous",
+    "change_type": "pre_import",
+    "hash": "13e2cc7ba0db8291b9dbc1d048fb0938",
+    "filename": "v51_data.json",
+    "data_size": 321331,
+    "probes_count": 384
+  },
+  {
+    "id": 28,
+    "timestamp": "2026-01-06T01:49:41.197178",
+    "description": "Импорт файла '1.csv' - обновлено: 167, добавлено: 2",
+    "author": "anonymous",
+    "change_type": "import",
+    "hash": "830a0024454ffc3ba70f97182fa812eb",
+    "filename": "v51_data.json",
+    "data_size": 356483,
+    "probes_count": 386
+  },
+  {
+    "id": 29,
+    "timestamp": "2026-01-06T01:49:50.864621",
+    "description": "Нормализация завершена: обновлено 163 ID",
+    "author": "system",
+    "change_type": "normalization_complete",
+    "hash": "1469d2b617b05fc7e33c8f6414efdca5",
+    "filename": "v51_data.json",
+    "data_size": 356536,
+    "probes_count": 386
+  },
+  {
+    "id": 30,
+    "timestamp": "2026-01-06T01:50:19.065954",
+    "description": "Импорт файла '2.csv' - состояние до импорта",
+    "author": "anonymous",
+    "change_type": "pre_import",
+    "hash": "574fe283e5ca9ac8d1f011b38586b089",
+    "filename": "v51_data.json",
+    "data_size": 369627,
+    "probes_count": 386
+  },
+  {
+    "id": 31,
+    "timestamp": "2026-01-06T01:50:19.152921",
+    "description": "Импорт файла '2.csv' - обновлено: 168, добавлено: 1",
+    "author": "anonymous",
+    "change_type": "import",
+    "hash": "90bd262c099a9bc3d7cfc8f3c1d342a0",
+    "filename": "v51_data.json",
+    "data_size": 386536,
+    "probes_count": 387
+  },
+  {
+    "id": 32,
+    "timestamp": "2026-01-06T01:50:22.236292",
+    "description": "Нормализация завершена: обновлено 127 ID",
+    "author": "system",
+    "change_type": "normalization_complete",
+    "hash": "55f0f008e75230373e0e496f3f845d76",
+    "filename": "v51_data.json",
+    "data_size": 386343,
+    "probes_count": 387
+  },
+  {
+    "id": 33,
+    "timestamp": "2026-01-06T01:57:08.394221",
+    "description": "Импорт файла '1.csv' - состояние до импорта",
+    "author": "anonymous",
+    "change_type": "pre_import",
+    "hash": "f43b87b190f0a04bd1c10f1bb5ae50bd",
+    "filename": "v51_data.json",
+    "data_size": 2700,
+    "probes_count": 0
+  },
+  {
+    "id": 34,
+    "timestamp": "2026-01-06T01:57:08.425361",
+    "description": "Импорт файла '1.csv' - обновлено: 4, добавлено: 165",
+    "author": "anonymous",
+    "change_type": "import",
+    "hash": "5a262fd7d10b026d986b1ea04fc4d50a",
+    "filename": "v51_data.json",
+    "data_size": 72129,
+    "probes_count": 165
+  },
+  {
+    "id": 35,
+    "timestamp": "2026-01-06T01:57:14.762177",
+    "description": "Импорт файла '2.csv' - обновлено: 44, добавлено: 125",
+    "author": "anonymous",
+    "change_type": "import",
+    "hash": "8fd301def711230602257e0b29edff41",
+    "filename": "v51_data.json",
+    "data_size": 122885,
+    "probes_count": 290
+  },
+  {
+    "id": 36,
+    "timestamp": "2026-01-06T01:57:17.522076",
+    "description": "Нормализация завершена: обновлено 268 ID",
+    "author": "system",
+    "change_type": "normalization_complete",
+    "hash": "8ecfcd5840b20e04da8049a206b905f0",
+    "filename": "v51_data.json",
+    "data_size": 136611,
+    "probes_count": 290
+  },
+  {
+    "id": 37,
+    "timestamp": "2026-01-06T09:31:05.100611",
+    "description": "Импорт файла '1.csv' - состояние до импорта",
+    "author": "anonymous",
+    "change_type": "pre_import",
+    "hash": "02e23a5e067074dd4fd0e76c031055b2",
+    "filename": "v51_data.json",
+    "data_size": 3192,
+    "probes_count": 0
+  },
+  {
+    "id": 38,
+    "timestamp": "2026-01-06T09:31:05.144021",
+    "description": "Импорт файла '1.csv' - обновлено: 4, добавлено: 165",
+    "author": "anonymous",
+    "change_type": "import",
+    "hash": "c85af8d02f74f779ac20d841ce33cc8a",
+    "filename": "v51_data.json",
+    "data_size": 72456,
+    "probes_count": 165
+  },
+  {
+    "id": 39,
+    "timestamp": "2026-01-06T09:31:11.625574",
+    "description": "Импорт файла '2.csv' - обновлено: 44, добавлено: 125",
+    "author": "anonymous",
+    "change_type": "import",
+    "hash": "e7d6d3c3a8c1c42ae37ab23f9e578087",
+    "filename": "v51_data.json",
+    "data_size": 123087,
+    "probes_count": 290
+  },
+  {
+    "id": 40,
+    "timestamp": "2026-01-06T09:31:14.720115",
+    "description": "Нормализация завершена: обновлено 268 ID",
+    "author": "system",
+    "change_type": "normalization_complete",
+    "hash": "38ca86f27a9881396af0f93bb11cfb79",
+    "filename": "v51_data.json",
+    "data_size": 136321,
+    "probes_count": 290
+  },
+  {
+    "id": 41,
+    "timestamp": "2026-01-06T09:35:40.148329",
+    "description": "Импорт файла '1.csv' - состояние до импорта",
+    "author": "anonymous",
+    "change_type": "pre_import",
+    "hash": "17969217e4d7bb6d5826020c211e3357",
+    "filename": "v51_data.json",
+    "data_size": 3192,
+    "probes_count": 0
+  },
+  {
+    "id": 42,
+    "timestamp": "2026-01-06T09:35:40.191829",
+    "description": "Импорт файла '1.csv' - обновлено: 4, добавлено: 165",
+    "author": "anonymous",
+    "change_type": "import",
+    "hash": "70a9ad6674e664e778680636c916a9e4",
+    "filename": "v51_data.json",
+    "data_size": 72456,
+    "probes_count": 165
+  },
+  {
+    "id": 43,
+    "timestamp": "2026-01-06T09:35:46.296447",
+    "description": "Нормализация завершена: обновлено 141 ID",
+    "author": "system",
+    "change_type": "normalization_complete",
+    "hash": "90914c276f3b71117804fb1b7a0a5acb",
+    "filename": "v51_data.json",
+    "data_size": 78999,
+    "probes_count": 165
+  },
+  {
+    "id": 44,
+    "timestamp": "2026-01-06T09:36:03.381846",
+    "description": "Импорт файла '2.csv' - состояние до импорта",
+    "author": "anonymous",
+    "change_type": "pre_import",
+    "hash": "c37b83fefdbd00942e815e2627adef3f",
+    "filename": "v51_data.json",
+    "data_size": 79527,
+    "probes_count": 165
+  },
+  {
+    "id": 45,
+    "timestamp": "2026-01-06T09:36:03.451561",
+    "description": "Импорт файла '2.csv' - обновлено: 44, добавлено: 125",
+    "author": "anonymous",
+    "change_type": "import",
+    "hash": "3ec302e03ed0a9554f2180f0bbd392d0",
+    "filename": "v51_data.json",
+    "data_size": 130158,
+    "probes_count": 290
+  },
+  {
+    "id": 46,
+    "timestamp": "2026-01-06T09:36:06.009437",
+    "description": "Нормализация завершена: обновлено 127 ID",
+    "author": "system",
+    "change_type": "normalization_complete",
+    "hash": "d775c7f76b11895497d02c3a87e77065",
+    "filename": "v51_data.json",
+    "data_size": 136313,
+    "probes_count": 290
+  },
+  {
+    "id": 47,
+    "timestamp": "2026-01-06T09:37:39.730359",
+    "description": "Импорт файла '1.csv' - состояние до импорта",
+    "author": "anonymous",
+    "change_type": "pre_import",
+    "hash": "79a91cc77bb95570a7e4a62cb2a162bb",
+    "filename": "v51_data.json",
+    "data_size": 2700,
+    "probes_count": 0
+  },
+  {
+    "id": 48,
+    "timestamp": "2026-01-06T09:37:39.775131",
+    "description": "Импорт файла '1.csv' - обновлено: 4, добавлено: 165",
+    "author": "anonymous",
+    "change_type": "import",
+    "hash": "520fef2e1b7e3126c4f91729fc4f0788",
+    "filename": "v51_data.json",
+    "data_size": 71964,
+    "probes_count": 165
+  },
+  {
+    "id": 49,
+    "timestamp": "2026-01-06T09:37:46.208314",
+    "description": "Импорт файла '2.csv' - обновлено: 44, добавлено: 125",
+    "author": "anonymous",
+    "change_type": "import",
+    "hash": "9a6e4d33d6f7073db7750954a65b6d5a",
+    "filename": "v51_data.json",
+    "data_size": 122595,
+    "probes_count": 290
+  },
+  {
+    "id": 50,
+    "timestamp": "2026-01-06T09:37:49.119975",
+    "description": "Нормализация завершена: обновлено 268 ID",
+    "author": "system",
+    "change_type": "normalization_complete",
+    "hash": "870a53a4755b57fd185c074874935363",
+    "filename": "v51_data.json",
+    "data_size": 136321,
+    "probes_count": 290
   }
 ]

@@ -200,7 +200,7 @@ def normalize_probe_ids(data_file=DATA_FILE):
 
 def normalize_probe_structure(
         data_file: str = str(DATA_FILE),
-        default_value: Any = 0,
+        default_value: Any = False,
 ) -> Dict[str, Any]:
     with open(data_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -405,7 +405,7 @@ def index():
         # Заполняем у проб недостающие поля данных нулями
         normalize_result = normalize_probe_structure(
             data_file=str(DATA_FILE),
-            default_value=0
+            default_value=False
         )
 
         # Логируем заполнение нулями
@@ -973,6 +973,220 @@ def create_version():
             'error': str(e)
         }), 500
 
+@app.route('/api/probes/<int:probe_id>/update_probe', methods=['PUT'])
+def update_probe(probe_id):
+    """API для обновления данных пробы
+    
+    Args:
+        probe_id (int): id пробы для обновления
+    """
+    try:
+        # Получаем данные из запроса
+        update_data = request.get_json()
+        
+        if not update_data:
+            return jsonify({
+                'success': False,
+                'error': 'Нет данных для обновления'
+            }), 400
+            
+        # Проверяем ID в данных
+        if 'id' not in update_data or update_data['id'] != probe_id:
+            return jsonify({
+                'success': False,
+                'error': 'Несоответствие ID пробы'
+            }), 400
+            
+        # Загружаем текущие данные
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        # СОЗДАЕМ ВЕРСИЮ перед редактированием
+        version_info = vcs.create_version(
+            description=f"Редактирование пробы #{probe_id}",
+            author=request.headers.get('X-User-Email', 'anonymous'),
+            change_type='edit'
+        )        
+  
+        # Находим пробу для обновления
+        probes = data.get('probes', [])
+        probe_index = -1
+        
+        for i, probe in enumerate(probes):
+            if probe.get('id') == probe_id:
+                probe_index = i
+                break
+                
+        if probe_index == -1:
+            return jsonify({
+                'success': False,
+                'error': f'Проба с ID {probe_id} не найдена'
+            }), 404
+            
+        # Обновляем пробу
+        # Сохраняем старые значения для полей, которые не пришли в обновлении
+        old_probe = probes[probe_index]
+        updated_probe = {**old_probe, **update_data}
+        
+        # Обновляем timestamp
+        updated_probe['last_normalized'] = datetime.now().isoformat()
+        
+        # Заменяем пробу в списке
+        probes[probe_index] = updated_probe
+        
+        # Сохраняем обратно в файл
+        with open(DATA_FILE, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+            
+        # Логируем действие
+        user_email = request.headers.get('X-User-Email', 'anonymous')
+        app.logger.info(f"Probe #{probe_id} updated by {user_email}")
+        
+        return jsonify({
+            'success': True,
+            'message': f'Проба #{probe_id} успешно обновлена',
+            'probe': updated_probe,
+            'metadata': {
+                'timestamp': datetime.now().isoformat(),
+                'user': user_email
+            }
+        })
+        
+    except json.JSONDecodeError as e:
+        return jsonify({
+            'success': False,
+            'error': f'Неверный формат JSON: {str(e)}'
+        }), 400
+    except Exception as e:
+        app.logger.error(f"Error updating probe {probe_id}: {str(e)}")
+        
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'message': 'Ошибка при обновлении пробы'
+        }), 500
+
+
+# Функция для валидации данных пробы
+def validate_probe_data(probe_data):
+    """Валидация данных пробы"""
+    required_fields = ['name', 'sample_mass']
+    
+    for field in required_fields:
+        if field not in probe_data or not probe_data[field]:
+            return False, f'Отсутствует обязательное поле: {field}'
+    
+    # Проверка числовых полей
+    numeric_fields = ['sample_mass', 'Ca', 'Fe', 'Ni', 'Cu', 'Co', 
+                     'dCa', 'dFe', 'dNi', 'dCu', 'dCo']
+    
+    for field in numeric_fields:
+        if field in probe_data and probe_data[field] is not None:
+            try:
+                float(probe_data[field])
+            except (ValueError, TypeError):
+                return False, f'Некорректное значение в поле {field}'
+    
+    return True, 'Данные валидны'
+
+@app.route('/api/probes/<int:probe_id>/upload_to_edit', methods=['GET'])
+def upload_to_edit_prob(probe_id):
+    """API для загрузки информации для редактирования пробы
+    
+    Args:
+        probe_id (int): id пробы из базы данных
+    """
+    try:
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            
+        probe_to_edit = None
+        probes = data.get('probes', [])
+    
+        for i, probe in enumerate(probes):
+            if probe.get('id') == probe_id:
+                probe_to_edit = probe
+                break
+        
+        if not probe_to_edit:
+            return jsonify({
+                'success': False,
+                'error': f'Проба с ID {probe_id} не найдена'
+            }), 404
+        
+        # Получаем все возможные поля из всех проб для динамического создания формы
+        all_fields = set()
+        for probe in probes:
+            all_fields.update(probe.keys())
+        
+        # Определяем типы полей на основе первой пробы с таким полем
+        field_types = {}
+        for field in all_fields:
+            for probe in probes:
+                if field in probe:
+                    value = probe[field]
+                    if isinstance(value, bool):
+                        field_types[field] = 'boolean'
+                    elif isinstance(value, (int, float)):
+                        field_types[field] = 'number'
+                    elif isinstance(value, list):
+                        field_types[field] = 'array'
+                    else:
+                        field_types[field] = 'string'
+                    break
+        
+        # Определяем человекочитаемые названия полей
+        field_labels = {
+            'id': 'ID пробы',
+            'name': 'Название пробы',
+            'status_id': 'Статус',
+            'priority': 'Приоритет',
+            'last_normalized': 'Последнее обновление',
+            'is_solid': 'Твердая проба',
+            'is_solution': 'Раствор',
+            'sample_mass': 'Масса образца (g)',
+            'V (ml)': 'Объем (ml)',
+            'Масса навески (mg)': 'Масса навески (mg)',
+            'Разбавление': 'Разбавление',
+            'Ca': 'Кальций (Ca)',
+            'Fe': 'Железо (Fe)',
+            'Ni': 'Никель (Ni)',
+            'Cu': 'Медь (Cu)',
+            'Co': 'Кобальт (Co)',
+            'dCa': 'Погрешность Ca',
+            'dFe': 'Погрешность Fe',
+            'dNi': 'Погрешность Ni',
+            'dCu': 'Погрешность Cu',
+            'dCo': 'Погрешность Co',
+            'Кто готовил': 'Кто готовил',
+            'Среда': 'Среда',
+            'Аналиты': 'Аналиты',
+            'Описание': 'Описание',
+            'tags': 'Теги',
+        }
+        
+        return jsonify({
+            'success': True,
+            'message': f'Проба #{probe_id} успешно загружена',
+            'probe': probe_to_edit,
+            'metadata': {
+                'field_types': field_types,
+                'field_labels': field_labels,
+                'all_fields': list(all_fields),
+                'timestamp': datetime.now().isoformat(),
+                'user': request.headers.get('X-User-Email', 'anonymous')
+            }
+        })
+        
+    except Exception as e:
+        app.logger.error(f"Error upload probe {probe_id}: {str(e)}")
+        
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'message': 'Ошибка при загрузке пробы'
+        }), 500
+        
 @app.route('/api/probes/<int:probe_id>/delete', methods=['DELETE'])
 def delete_probe(probe_id):
     """
@@ -1155,4 +1369,3 @@ def health_check():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)
-    print(app.url_map)
