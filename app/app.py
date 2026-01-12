@@ -13,12 +13,23 @@ import hmac
 import time
 from pathlib import Path
 from typing import Dict, List, Any, Set
+import plotly
+import plotly.graph_objs as go
+from flask_cors import CORS
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).parent.parent
 
 app = Flask(__name__, template_folder=str(BASE_DIR / 'templates'), static_folder=str(BASE_DIR / 'static'))
+CORS(app)
+
+# Черный список полей, которые не должны отображаться как оси
+BLACKLIST_FIELDS = {
+    "Описание", "is_solid", "id", "last_normalized", 
+    "status_id", "is_solution", "name", "tags"
+}
+
 
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
@@ -1366,6 +1377,185 @@ def health_check():
         'upload_folder': app.config['UPLOAD_FOLDER'],
         'results_folder': app.config['RESULTS_FOLDER']
     })
+
+def get_available_columns():
+    """Получение списка доступных колонок для осей"""
+    data = load_data()
+    if not data["probes"]:
+        return [], []
+    
+    df = pd.DataFrame(data["probes"])
+    
+    # Фильтрация числовых колонок
+    numeric_cols = []
+    for col in df.columns:
+        if col not in BLACKLIST_FIELDS:
+            # Проверяем, есть ли числовые значения в колонке
+            sample_values = df[col].dropna().head(10)
+            if len(sample_values) > 0:
+                # Проверяем, можно ли преобразовать значения в числа
+                try:
+                    pd.to_numeric(sample_values)
+                    numeric_cols.append(col)
+                except:
+                    continue
+    
+    return sorted(numeric_cols)
+
+@app.route('/graph')
+def plot_graph():
+    """Главная страница"""
+    return render_template('plot_graph.html')
+
+@app.route('/api/columns', methods=['GET'])
+def get_columns():
+    """API для получения доступных колонок"""
+    columns = get_available_columns()
+    return jsonify({"columns": columns})
+
+@app.route('/api/plot', methods=['POST'])
+def create_plot():
+    """API для создания графика"""
+    try:
+        data = request.json
+        x_axis = data.get('x_axis') # type: ignore
+        y_axis = data.get('y_axis') # type: ignore
+        
+        print(f"API called with x_axis={x_axis}, y_axis={y_axis}")
+        
+        if not x_axis or not y_axis:
+            return jsonify({"error": "Не указаны оси X и Y"}), 400
+        
+        # Загружаем данные
+        db_data = load_data()
+        if not db_data["probes"]:
+            print("No probes data found")
+            return jsonify({"error": "Нет данных"}), 404
+        
+        df = pd.DataFrame(db_data["probes"])
+        print(f"DataFrame loaded with {len(df)} rows, columns: {list(df.columns)}")
+        
+        # Проверяем наличие колонок
+        if x_axis not in df.columns:
+            print(f"X axis column '{x_axis}' not found in DataFrame")
+            return jsonify({"error": f"Колонка X '{x_axis}' не найдена"}), 404
+        
+        if y_axis not in df.columns:
+            print(f"Y axis column '{y_axis}' not found in DataFrame")
+            return jsonify({"error": f"Колонка Y '{y_axis}' не найдена"}), 404
+        
+        print(f"Data sample for {x_axis}: {df[x_axis].head().tolist()}")
+        print(f"Data sample for {y_axis}: {df[y_axis].head().tolist()}")
+        
+        # Проверяем, есть ли числовые данные
+        print(f"X data type: {df[x_axis].dtype}, NaN count: {df[x_axis].isna().sum()}")
+        print(f"Y data type: {df[y_axis].dtype}, NaN count: {df[y_axis].isna().sum()}")
+        
+        # Создаем график
+        fig = go.Figure()
+        
+        # Разделяем точки по статусу (если есть)
+        if 'status_id' in df.columns:
+            statuses = df['status_id'].unique()
+            colors = ['#00ff88', '#0088ff', '#ff8800', '#ff0088', '#8800ff']
+            
+            print(f"Found {len(statuses)} unique statuses: {statuses}")
+            
+            for i, status in enumerate(statuses):
+                mask = df['status_id'] == status
+                mask_data = df.loc[mask]
+                print(f"Status {status}: {mask.sum()} points")
+                print(f"X values: {mask_data[x_axis].head().tolist()}")
+                print(f"Y values: {mask_data[y_axis].head().tolist()}")
+                
+                fig.add_trace(go.Scatter(
+                    x=mask_data[x_axis].tolist(),
+                    y=mask_data[y_axis].tolist(),
+                    mode='markers',
+                    name=f'Status {status}',
+                    marker=dict(
+                        size=12,
+                        color=colors[i % len(colors)],
+                        line=dict(width=2, color='white')
+                    ),
+                    hovertext=mask_data['name'].tolist() if 'name' in mask_data.columns else None,
+                    hoverinfo='text+x+y'
+                ))
+        else:
+            # Все точки одним цветом
+            print(f"Total points: {len(df)}")
+            print(f"X values: {df[x_axis].head().tolist()}")
+            print(f"Y values: {df[y_axis].head().tolist()}")
+            
+            fig.add_trace(go.Scatter(
+                x=df[x_axis].tolist(),
+                y=df[y_axis].tolist(),
+                mode='markers',
+                marker=dict(
+                    size=12,
+                    color='#00ff88',
+                    line=dict(width=2, color='white')
+                ),
+                hovertext=df['name'].tolist() if 'name' in df.columns else None,
+                hoverinfo='text+x+y'
+            ))
+        
+        # Настройка стиля графика
+        fig.update_layout(
+            plot_bgcolor='rgba(10, 10, 20, 0.9)',
+            paper_bgcolor='rgba(10, 10, 20, 0.7)',
+            font=dict(color='#ffffff', family='Arial, sans-serif'),
+            title=dict(
+                text=f'{y_axis} vs {x_axis}',
+                font=dict(size=20, color='#00ff88')
+            ),
+            xaxis=dict(
+                title=dict(text=x_axis, font=dict(size=14, color='#ffffff')),
+                gridcolor='rgba(255, 255, 255, 0.1)',
+                zerolinecolor='rgba(255, 255, 255, 0.3)'
+            ),
+            yaxis=dict(
+                title=dict(text=y_axis, font=dict(size=14, color='#ffffff')),
+                gridcolor='rgba(255, 255, 255, 0.1)',
+                zerolinecolor='rgba(255, 255, 255, 0.3)'
+            ),
+            hovermode='closest',
+            showlegend='status_id' in df.columns,
+            legend=dict(
+                font=dict(color='#ffffff'),
+                bgcolor='rgba(0, 0, 0, 0.5)'
+            ),
+            margin=dict(l=50, r=50, t=50, b=50)
+        )
+        
+        # Конвертируем в JSON
+        graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        
+        print(f"Generated plot JSON length: {len(graphJSON)}")
+        
+        return jsonify({
+            "plot": graphJSON,
+            "statistics": {
+                "total_points": len(df),
+                "x_mean": float(df[x_axis].mean()),
+                "y_mean": float(df[y_axis].mean()),
+                "x_std": float(df[x_axis].std()),
+                "y_std": float(df[y_axis].std())
+            }
+        })
+        
+    except Exception as e:
+        print(f"Error in create_plot: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/data/sample', methods=['GET'])
+def get_data_sample():
+    """API для получения образца данных"""
+    data = load_data()
+    sample = data["probes"]
+    return jsonify({"sample": sample})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)

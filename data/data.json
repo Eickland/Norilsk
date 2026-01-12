@@ -5838,26 +5838,6 @@
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
       "is_solid": false
-    },
-    {
-      "name": "null",
-      "Ca": "null",
-      "dCa": "null",
-      "Co": "null",
-      "dCo": "null",
-      "Cu": "null",
-      "dCu": "null",
-      "Fe": "null",
-      "dFe": "null",
-      "Ni": "null",
-      "dNi": "null",
-      "Описание": "null",
-      "is_solution": true,
-      "id": 290,
-      "tags": [],
-      "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false
     }
   ],
   "metadata": {

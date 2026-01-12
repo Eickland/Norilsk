@@ -61,7 +61,7 @@
   "probes": [
     {
       "name": "AOB 1.1",
-      "Ca": 13.95,
+      "Ca": 13.94,
       "dCa": 0.11,
       "Co": 0.01,
       "dCo": 0,
@@ -77,7 +77,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": "2026-01-06T22:31:04.999140"
+      "last_normalized": "2026-01-06T22:31:13.627301"
     },
     {
       "name": "AOB 1.2",
@@ -5834,26 +5834,6 @@
       "Описание": "САВ из TF1 начальной плотности 1.272 ",
       "is_solution": true,
       "id": 289,
-      "tags": [],
-      "status_id": 3,
-      "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false
-    },
-    {
-      "name": "null",
-      "Ca": "null",
-      "dCa": "null",
-      "Co": "null",
-      "dCo": "null",
-      "Cu": "null",
-      "dCu": "null",
-      "Fe": "null",
-      "dFe": "null",
-      "Ni": "null",
-      "dNi": "null",
-      "Описание": "null",
-      "is_solution": true,
-      "id": 290,
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
