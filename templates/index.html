@@ -76,6 +76,9 @@
                 <button class="btn btn-export" id="importData">
                     <i class="fa-solid fa-file-import"></i></i> Импорт обработанных данных
                 </button>
+                <button class="btn btn-success" id="addSeriesBtn">
+                    <i class="fas fa-layer-group"></i> Добавить серию проб
+                </button>
             </div>
         </div>
 
@@ -273,7 +276,45 @@
                 </button>
             </div>
         </div>
-
+        <!-- Добавьте модальное окно для создания серии проб -->
+        <div class="modal" id="seriesModal">
+            <div class="modal-content">
+                <h3><i class="fas fa-layer-group"></i> Добавить серию проб</h3>
+                
+                <div class="form-group">
+                    <label>Название основной пробы *</label>
+                    <input type="text" id="seriesBaseName" class="form-input" 
+                        placeholder="Пример: T2-4C1, где 4 - номер методики, 1 - номер повторности">
+                    <small class="form-text text-muted">
+                        Формат: T2-{номер_методики}C{номер_повторности}<br>
+                        Примеры: T2-4C1, T2-5C2, T2-6C3
+                    </small>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Масса образца (г)</label>
+                        <input type="number" id="seriesMass" class="form-input" step="0.01" value="1.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Объем (мл)</label>
+                        <input type="number" id="seriesVolume" class="form-input" step="0.1" value="100.0">
+                    </div>
+                </div>
+                
+                <div class="preview-section">
+                    <h4>Будут созданы пробы:</h4>
+                    <div id="seriesPreview" class="series-preview">
+                        <!-- Здесь будет предпросмотр названий проб -->
+                    </div>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" id="cancelSeriesBtn">Отмена</button>
+                    <button class="btn btn-success" id="saveSeriesBtn">Создать серию</button>
+                </div>
+            </div>
+        </div>
         <!-- Футер -->
         <footer class="footer">
             <div class="footer-content">
@@ -286,6 +327,6 @@
         </footer>
     </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

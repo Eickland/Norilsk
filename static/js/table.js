@@ -2,7 +2,7 @@ class DataTableViewer {
     constructor() {
         this.data = null;
         this.filteredData = null;
-        this.columnBlacklist = ['описание','last_normalized','is_solution','priority','is_solid','V (ml)','tags','status_id'];
+        this.columnBlacklist = ['описание','last_normalized','is_solution','priority','is_solid','V (ml)','tags','status_id', 'dCa','dFe','dNi','dCo','dCu'];
         
         this.elements = {
             loading: document.getElementById('loading'),

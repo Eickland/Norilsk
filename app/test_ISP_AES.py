@@ -19,10 +19,11 @@ def process_icp_aes_data(file_path):
     
     # Чтение данных из CSV файла
     df = pd.read_csv(file_path, sep=';', decimal='.', encoding='utf-8')
+    df.rename(columns={f'{df.columns[0]}':'name'})
     
     # Удаление строк, где в столбце 'Метки Образцов' есть 'некал' или пустые строки
-    df = df[~df['Метки Образцов'].astype(str).str.contains('некал', case=False, na=False)]
-    df = df[df['Метки Образцов'].astype(str).str.strip() != '']
+    df = df[~df[df.columns[0]].astype(str).str.contains('некал', case=False, na=False)]
+    df = df[df[df.columns[0]].astype(str).str.strip() != '']
     
     # Функция для очистки значений в ячейках
     def clean_value(val):
@@ -64,16 +65,16 @@ def process_icp_aes_data(file_path):
     
     # Применяем очистку ко всем столбцам, кроме 'Проб' и 'Метки Образцов'
     for col in df.columns:
-        if col not in ['Проб', 'Метки Образцов']:
+        if col not in ['Проб', 'name']:
             df[col] = df[col].apply(clean_value)
     
     # Удаляем строки, где все значения NaN (после удаления 'некал')
-    df = df.dropna(how='all', subset=[col for col in df.columns if col not in ['Проб', 'Метки Образцов']])
+    df = df.dropna(how='all', subset=[col for col in df.columns if col not in ['Проб', 'name']])
     
     # Определяем металлы и их длины волн
     metal_wavelengths = {}
     for col in df.columns:
-        if col not in ['Проб', 'Метки Образцов']:
+        if col not in ['Проб', 'name']:
             parts = col.split(' ')
             if len(parts) >= 2:
                 metal = parts[0]

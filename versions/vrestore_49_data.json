@@ -77,15 +77,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": "2026-01-06T22:31:13.627301",
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": "2026-01-06T22:31:13.627301"
     },
     {
       "name": "AOB 1.2",
@@ -105,15 +97,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "AOB 1.3",
@@ -133,15 +117,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "AV 11",
@@ -161,15 +137,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "AV 11 110",
@@ -189,15 +157,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "AV11-110-1",
@@ -217,15 +177,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "AV11-110-C",
@@ -245,15 +197,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "AV11-110-F",
@@ -273,15 +217,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "AV11-110-N",
@@ -301,15 +237,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "AV111F",
@@ -329,15 +257,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "AV111I",
@@ -357,15 +277,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "AV11C",
@@ -385,15 +297,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "AV12_1_1_C",
@@ -413,15 +317,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "NV_1_2_F",
@@ -441,15 +337,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "NV_AV_1_C",
@@ -469,15 +357,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "NV_AV1_F",
@@ -497,15 +377,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "NV_MSP_F",
@@ -525,15 +397,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "NV1_1",
@@ -553,15 +417,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": true,
-      "last_normalized": "2026-01-06T09:37:49.072952",
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": "2026-01-06T09:37:49.072952"
     },
     {
       "name": "NV1_2",
@@ -581,15 +437,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": true,
-      "last_normalized": "2026-01-06T09:37:49.072952",
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": "2026-01-06T09:37:49.072952"
     },
     {
       "name": "T13_105_0_1_C",
@@ -609,15 +457,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "T13_105_0_1_F",
@@ -637,15 +477,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "T13_105_0_1_I",
@@ -665,15 +497,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "T13_110_0_1_С",
@@ -693,15 +517,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "T13_115_0_1_F",
@@ -721,15 +537,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "T13_120_0_1_F",
@@ -749,15 +557,7 @@
       "tags": [],
       "status_id": 3,
       "is_solution": false,
-      "last_normalized": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "last_normalized": false
     },
     {
       "name": "T13_120_0_1_I",
@@ -777,15 +577,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_120_3_0_1_C",
@@ -805,15 +597,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_175_0_1_F",
@@ -833,15 +617,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_175_0_1_I",
@@ -861,15 +637,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_175_0_1_С",
@@ -889,15 +657,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_205_0_1_C",
@@ -917,15 +677,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_205_0_1_F",
@@ -945,15 +697,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_205_0_1_I",
@@ -973,15 +717,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_210_0_1_F",
@@ -1001,15 +737,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_210_0_1_I",
@@ -1029,15 +757,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_210_0_1_С",
@@ -1057,15 +777,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_215_0_1_F",
@@ -1085,15 +797,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_215_0_1_I",
@@ -1113,15 +817,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_215_0_1_С",
@@ -1141,15 +837,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_220_0_1_C",
@@ -1169,15 +857,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_220_0_1_F",
@@ -1197,15 +877,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_275_0_1_F",
@@ -1225,15 +897,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_305_0_1_C",
@@ -1253,15 +917,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_305_0_1_I",
@@ -1281,15 +937,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_310_0_1_C",
@@ -1309,15 +957,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_310_0_1_F",
@@ -1337,15 +977,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_310_0_1_I",
@@ -1365,15 +997,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_310_3_0_1_I",
@@ -1393,15 +1017,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_310_3_0_1_С",
@@ -1421,15 +1037,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_315_0_1_C",
@@ -1449,15 +1057,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-12T18:55:52.540399",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_315_0_1_F",
@@ -1477,15 +1077,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_315_0_1_I",
@@ -1505,15 +1097,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_375_0_1_C",
@@ -1533,15 +1117,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_375_0_1_F",
@@ -1561,15 +1137,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_375_0_1_I",
@@ -1589,15 +1157,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T15_105_2_1_С",
@@ -1617,15 +1177,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T15_110_1_1_C",
@@ -1645,15 +1197,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T15_110_1_1_I",
@@ -1673,15 +1217,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T15_115_1_1_C",
@@ -1701,15 +1237,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T15_115_2_1_С",
@@ -1729,15 +1257,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T15_115_310_1_1_I ???",
@@ -1757,15 +1277,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T15_210_1_1_C",
@@ -1785,15 +1297,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T15_210_1_1_F",
@@ -1813,15 +1317,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T15_210_1_1_I",
@@ -1841,15 +1337,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T15_310_0_1_С",
@@ -1869,15 +1357,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T17_105_2_1_C",
@@ -1897,15 +1377,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T17_110_1_1_C",
@@ -1925,15 +1397,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T17_110_1_1_I",
@@ -1953,15 +1417,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "аов 1.21f",
@@ -1981,15 +1437,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "аов 1.31F",
@@ -2009,15 +1457,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "АОВ 1.11",
@@ -2037,15 +1477,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "АОВ_1.1_1_I",
@@ -2065,15 +1497,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "АОВ_1.2_1_I",
@@ -2093,15 +1517,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "АОВ_1.2_1_С",
@@ -2121,15 +1537,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "АОВ_1.3_1_I",
@@ -2149,15 +1557,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.072952",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "АОВ_1.3_1_С",
@@ -2177,15 +1577,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "АОВ1.1_1_F",
@@ -2205,15 +1597,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "МСП 113.4",
@@ -2233,15 +1617,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "Т13_115_0_1_I",
@@ -2261,15 +1637,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "Т13",
@@ -2289,15 +1657,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV-1-3-I",
@@ -2317,15 +1677,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NVI-1",
@@ -2345,15 +1697,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "AVI3-2-1-F",
@@ -2373,15 +1717,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV1-10.2",
@@ -2401,15 +1737,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "AV-1-4.2",
@@ -2429,15 +1757,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "AV12-1-1-C-1",
@@ -2457,15 +1777,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "AV13-2-1-C",
@@ -2485,15 +1797,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "AV12-1-1-F",
@@ -2513,15 +1817,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "AVI3-2-1-I",
@@ -2541,15 +1837,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV-1-2-I",
@@ -2569,15 +1857,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV1-3-F",
@@ -2597,15 +1877,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV-1-2-C",
@@ -2625,15 +1897,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_110_0_1_F",
@@ -2653,15 +1917,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_110_0_1_I",
@@ -2681,15 +1937,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_275_0_1_I",
@@ -2709,15 +1957,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_275_0_1_С",
@@ -2737,15 +1977,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13-110-Б-1-С",
@@ -2765,15 +1997,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13-110-Б-1-I",
@@ -2793,15 +2017,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13-110-aБ-1-I",
@@ -2821,15 +2037,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "AV-1-42",
@@ -2849,15 +2057,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "AV-1-42-F",
@@ -2877,15 +2077,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "AV-1-131-C",
@@ -2905,15 +2097,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "AV-1-131-F",
@@ -2933,15 +2117,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV-MSP-I",
@@ -2961,15 +2137,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV-AV-1-I",
@@ -2989,15 +2157,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV1-6-0-1-F",
@@ -3017,15 +2177,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV1-3-C",
@@ -3045,15 +2197,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV1-6-0-1-I",
@@ -3073,15 +2217,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV1-6-0-1-C",
@@ -3101,15 +2237,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NVI_4_1_I",
@@ -3129,15 +2257,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T15_115_1_1_I",
@@ -3157,15 +2277,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T17_105_2_1_I",
@@ -3185,15 +2297,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T17_115_2_1_F",
@@ -3213,15 +2317,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T15_105_2_1_F",
@@ -3241,15 +2337,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV_MCP_C",
@@ -3269,15 +2357,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NVI_4_1_F",
@@ -3297,15 +2377,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NVI_4_1_C",
@@ -3325,15 +2397,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T15_105_2_1_I",
@@ -3353,15 +2417,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T17_115_2_1_I",
@@ -3381,15 +2437,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T17_105_2_1_F",
@@ -3409,15 +2457,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_110_A_1_F",
@@ -3437,15 +2477,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_110_АБ_1_F",
@@ -3465,15 +2497,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_110_A_1_I",
@@ -3493,15 +2517,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_110_АБ_1_C",
@@ -3521,15 +2537,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_110_A_1_C",
@@ -3549,15 +2557,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_110_АБ_1_I",
@@ -3577,15 +2577,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_110_БF_1_C",
@@ -3605,15 +2597,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_110_AF_1_C",
@@ -3633,15 +2617,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "Т13_110_АБf_1_C",
@@ -3661,15 +2637,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_110_AF гипс",
@@ -3689,15 +2657,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "Т13_110_АБF гипс",
@@ -3717,15 +2677,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "Т13_110_af_I",
@@ -3745,15 +2697,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T13_110_БF_гипс",
@@ -3773,15 +2717,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "Т13_110_qF_1_F",
@@ -3801,15 +2737,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "Т13_110_БF_1_F",
@@ -3829,15 +2757,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "Т13_110_АБF_1_I",
@@ -3857,15 +2777,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "Т13_110_АБF_1_F",
@@ -3885,15 +2797,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "Т13_110_БF_1_I",
@@ -3913,15 +2817,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "AV_1_4.2_F",
@@ -3941,15 +2837,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "AV_1_13.1_C",
@@ -3969,15 +2857,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV1_5_1_C",
@@ -3997,15 +2877,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV1_7_F",
@@ -4025,15 +2897,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "LST_3_C",
@@ -4053,15 +2917,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV1_5_I",
@@ -4081,15 +2937,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV1_7_I",
@@ -4109,15 +2957,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "ISO_4_I",
@@ -4137,15 +2977,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "ISO_4_F",
@@ -4165,15 +2997,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "ISO_4_C",
@@ -4193,15 +3017,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV_1_7_C",
@@ -4221,15 +3037,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "S_0_C",
@@ -4249,15 +3057,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "S_1_C",
@@ -4277,15 +3077,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "S_2_C",
@@ -4305,15 +3097,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "S_3_I",
@@ -4333,15 +3117,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "S_3_C",
@@ -4361,15 +3137,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "S_4_I",
@@ -4389,15 +3157,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "S_4_C",
@@ -4417,15 +3177,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "NV_1_7_C*5",
@@ -4445,15 +3197,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "LST_2_C",
@@ -4473,15 +3217,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "LST_2_I",
@@ -4501,15 +3237,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "LST_1_I",
@@ -4529,15 +3257,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "LST_1_F",
@@ -4557,15 +3277,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "LST_3_I",
@@ -4585,15 +3297,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "LST_1_C",
@@ -4613,15 +3317,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "LST_2_F",
@@ -4641,15 +3337,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "LST_3_F",
@@ -4669,15 +3357,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solution": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solution": false
     },
     {
       "name": "T12_115_0_1",
@@ -4697,15 +3377,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T12_120_0_1",
@@ -4725,15 +3397,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AOB1_1_1",
@@ -4753,15 +3417,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AV11_110",
@@ -4781,15 +3437,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AV11_110_1",
@@ -4809,15 +3457,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AV_1_42",
@@ -4837,15 +3477,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AV_1_102",
@@ -4865,15 +3497,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AV_1_131",
@@ -4893,15 +3517,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "обезм. Р-р",
@@ -4921,15 +3537,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "NV_M3I",
@@ -4949,15 +3557,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "NV_AV1",
@@ -4977,15 +3577,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "NV_KSH",
@@ -5005,15 +3597,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "NV1_1*10",
@@ -5033,15 +3617,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "NV1_2*10",
@@ -5061,15 +3637,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "NV_KSH*10",
@@ -5089,15 +3657,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "аов 1.2-1-f",
@@ -5117,15 +3677,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "nm1",
@@ -5145,15 +3697,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "nm2",
@@ -5173,15 +3717,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "nm1.5",
@@ -5201,15 +3737,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "nm2.5",
@@ -5229,15 +3757,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "nm3.5",
@@ -5257,15 +3777,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "nm0",
@@ -5285,15 +3797,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13 205 100",
@@ -5313,15 +3817,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13 205 10",
@@ -5341,15 +3837,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13 105",
@@ -5369,15 +3857,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13 305",
@@ -5397,15 +3877,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_115",
@@ -5425,15 +3897,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_215",
@@ -5453,15 +3917,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_315",
@@ -5481,15 +3937,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_120",
@@ -5509,15 +3957,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_220",
@@ -5537,15 +3977,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_320",
@@ -5565,15 +3997,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_205",
@@ -5593,15 +4017,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_305",
@@ -5621,15 +4037,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_210",
@@ -5649,15 +4057,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_310",
@@ -5677,15 +4077,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_175",
@@ -5705,15 +4097,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AV_1_1-s",
@@ -5733,15 +4117,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "NV_AV1-S",
@@ -5761,15 +4137,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "NV1_3_0_1-S",
@@ -5789,15 +4157,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "NV_MSP-S",
@@ -5817,15 +4177,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "АОВ_1.2_1-S",
@@ -5845,15 +4197,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AV_12-1-1-S",
@@ -5873,15 +4217,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AV-1-1-1-S",
@@ -5901,15 +4237,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AV-1-42-1-S",
@@ -5929,15 +4257,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AV13-2-1-S",
@@ -5957,15 +4277,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "NV1-2-0-1-S",
@@ -5985,15 +4297,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AV_1_131_1-S",
@@ -6013,15 +4317,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AOB_1.3_1-S",
@@ -6041,15 +4337,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T13_110 (27.11.25) 1",
@@ -6069,15 +4357,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T13_110 (27.11.25) 2",
@@ -6097,15 +4377,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T13_110 (27.11.25) 3",
@@ -6125,15 +4397,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T13_215_0_1-S",
@@ -6153,15 +4417,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T13_220_0_1-S",
@@ -6181,15 +4437,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T13_315_0_1-S",
@@ -6209,15 +4457,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T13_310_0_1-S",
@@ -6237,15 +4477,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T13_310_3_0_1-S",
@@ -6265,15 +4497,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T15_110_1_1-S",
@@ -6293,15 +4517,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T15_210_1_1-S",
@@ -6321,15 +4537,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T15_310_1_1-S",
@@ -6349,15 +4557,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T15_110-S",
@@ -6377,15 +4577,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T15_210-S",
@@ -6405,15 +4597,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T15_310-S",
@@ -6433,15 +4617,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T15_105_2_1-S",
@@ -6461,15 +4637,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T15_115_1_1-S",
@@ -6489,15 +4657,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T15_105-S",
@@ -6517,15 +4677,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T15_115-S",
@@ -6545,15 +4697,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T13_110_a_1-S",
@@ -6573,15 +4717,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T13_110_b_1-S",
@@ -6601,15 +4737,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T13_110_ab_1-S",
@@ -6629,15 +4757,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T17_105_2_1-S",
@@ -6657,15 +4777,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T17_110_1_1-S",
@@ -6685,15 +4797,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T17_115_2_1-S",
@@ -6713,15 +4817,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T17_105-S",
@@ -6741,15 +4837,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T17_110-S",
@@ -6769,15 +4857,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "T17_115-S",
@@ -6797,15 +4877,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_110_0_1",
@@ -6825,15 +4897,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_175_0_1",
@@ -6853,15 +4917,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_205_1",
@@ -6881,15 +4937,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_210_0_1",
@@ -6909,15 +4957,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_275",
@@ -6937,15 +4977,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_275_0_1",
@@ -6965,15 +4997,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_305_1_1",
@@ -6993,15 +5017,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_375",
@@ -7021,15 +5037,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Т13_375_0_1",
@@ -7049,15 +5057,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "PV1",
@@ -7077,15 +5077,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "PV2",
@@ -7105,15 +5097,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "PO1",
@@ -7133,15 +5117,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "PO2",
@@ -7161,15 +5137,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "PO3",
@@ -7189,15 +5157,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "FO",
@@ -7217,15 +5177,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "TO",
@@ -7245,15 +5197,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "IM",
@@ -7273,15 +5217,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "AV_1_4.2.",
@@ -7301,15 +5237,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "LST_1",
@@ -7329,15 +5257,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "LST_2",
@@ -7357,15 +5277,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "LST_3",
@@ -7385,15 +5297,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "LST_A",
@@ -7413,15 +5317,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "LST_B",
@@ -7441,15 +5337,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "NV1_7",
@@ -7469,15 +5357,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "CS*10",
@@ -7497,15 +5377,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "ISO_4",
@@ -7525,15 +5397,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "S_A",
@@ -7553,15 +5417,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "S_B",
@@ -7581,15 +5437,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "S_B2",
@@ -7609,15 +5457,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "S_0",
@@ -7637,15 +5477,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "S_1",
@@ -7665,15 +5497,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "S_2",
@@ -7693,15 +5517,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "S_3",
@@ -7721,15 +5537,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "S_4",
@@ -7749,15 +5557,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "PV1_100",
@@ -7777,15 +5577,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "PV2_100",
@@ -7805,15 +5597,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "LST_A _10",
@@ -7833,15 +5617,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "LST_B_10",
@@ -7861,15 +5637,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "S_A_10",
@@ -7889,15 +5657,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Vd_148_1",
@@ -7917,15 +5677,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Vd_148",
@@ -7945,15 +5697,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Vd_148 x10",
@@ -7973,15 +5717,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "ISO_2",
@@ -8001,15 +5737,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "ISO_3",
@@ -8029,15 +5757,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Vd_1272",
@@ -8057,15 +5777,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Vd_1272_1",
@@ -8085,15 +5797,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Vd_115_1",
@@ -8113,15 +5817,7 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
     },
     {
       "name": "Vd_1272 x10",
@@ -8141,15 +5837,375 @@
       "tags": [],
       "status_id": 3,
       "last_normalized": "2026-01-06T09:37:49.073950",
-      "is_solid": false,
-      "repeat_number": false,
-      "created_at": false,
-      "V (ml)": false,
-      "sample_mass": false,
-      "method_number": false,
-      "priority": false,
-      "series_base": false,
-      "is_series": false
+      "is_solid": false
+    },
+    {
+      "id": 290,
+      "name": "T2-4A1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359046"
+    },
+    {
+      "id": 291,
+      "name": "T2-4B1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359046"
+    },
+    {
+      "id": 292,
+      "name": "T2-L4C1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359046"
+    },
+    {
+      "id": 293,
+      "name": "T2-L4A1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359046"
+    },
+    {
+      "id": 294,
+      "name": "T2-L4B1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359046"
+    },
+    {
+      "id": 295,
+      "name": "T2-L4P4C1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359046"
+    },
+    {
+      "id": 296,
+      "name": "T2-L4P4A1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359046"
+    },
+    {
+      "id": 297,
+      "name": "T2-L4P4B1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359046"
+    },
+    {
+      "id": 298,
+      "name": "T2-L4P4F4C1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359046"
+    },
+    {
+      "id": 299,
+      "name": "T2-L4P4F4A1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359572"
+    },
+    {
+      "id": 300,
+      "name": "T2-L4P4F4B1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359572"
+    },
+    {
+      "id": 301,
+      "name": "T2-L4P4F4D1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359572"
+    },
+    {
+      "id": 302,
+      "name": "T2-L4P4F4N4C1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359572"
+    },
+    {
+      "id": 303,
+      "name": "T2-L4P4F4N4A1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359572"
+    },
+    {
+      "id": 304,
+      "name": "T2-L4P4F4N4B1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359572"
+    },
+    {
+      "id": 305,
+      "name": "T2-L4P4F4N4E1",
+      "sample_mass": 150,
+      "V (ml)": 100,
+      "status_id": 1,
+      "priority": 1,
+      "Fe": 0,
+      "Ni": 0,
+      "Cu": 0,
+      "tags": [
+        "методика_4",
+        "серия_T2-4C1",
+        "методика_4",
+        "серия_T2-4C1"
+      ],
+      "method_number": "4",
+      "repeat_number": "1",
+      "is_series": true,
+      "series_base": "T2-4C1",
+      "created_at": "2026-01-15 04:35:20",
+      "last_normalized": "2026-01-15T04:35:20.359572"
     }
   ],
   "metadata": {

@@ -326,28 +326,28 @@ def check_id_consistency(data_file=str(DATA_FILE)):
     }
 
 def get_next_probe_id(data_file=DATA_FILE):
-    
+    """Получение следующего доступного ID для пробы"""
     try:
-        # Загружаем данные
         with open(data_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
         probes = data.get('probes', [])
         
-        list_id = []
+        if not probes:
+            return 1
         
+        # Находим максимальный ID
+        max_id = 0
         for probe in probes:
-            
             current_id = probe.get('id')
-            list_id.append(current_id)
-    
-        next_probe_id = max(list_id)
-
-        return next_probe_id
+            if current_id and current_id > max_id:
+                max_id = current_id
+        
+        return max_id + 1
                     
     except Exception as e:
-        return False, f"Ошибка получения ID: {str(e)}", 0    
-
+        print(f"Ошибка получения ID: {str(e)}")
+        return 1
 def verify_telegram_auth(auth_data):
     """Проверка хеша данных от Telegram"""
     check_hash = auth_data.get('hash')
@@ -402,9 +402,8 @@ def telegram_login():
 @app.route('/')
 def index():
     """
-    Главная страница с принудительной нормализацией ID при каждой загрузке
+    Главная страница с принудительной нормализацией ID и пересчетом зависимых полей
     """
-
     try:
         # Принудительно нормализуем ID
         success, message, changes = normalize_probe_ids()
@@ -424,6 +423,15 @@ def index():
         if stats.get('fields_added_total',0) > 0:
             app.logger.info(f"Normalized probe structure: added {stats['fields_added_total']} fields to {stats['probes_modified']} probes")
 
+        # Пересчитываем зависимые поля
+        recalculation_result = check_and_recalculate_dependent_fields(str(DATA_FILE))
+        
+        # Логируем результат пересчета
+        if recalculation_result.get('success'):
+            app.logger.info(f"Recalculated dependent fields: {recalculation_result.get('message')}")
+            if recalculation_result.get('errors'):
+                app.logger.warning(f"Recalculation errors: {recalculation_result.get('errors')}")
+
         # Загружаем данные для отображения
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -436,12 +444,16 @@ def index():
                                 'success': success,
                                 'message': message,
                                 'changes': changes
+                            },
+                            recalculation_info={
+                                'success': recalculation_result.get('success', False),
+                                'message': recalculation_result.get('message', ''),
+                                'stats': recalculation_result
                             })
         
     except Exception as e:
         app.logger.error(f"Error loading index: {str(e)}")
         return render_template('index.html', probes=[], error=str(e))
-
 @app.route('/table')
 def render_table():
     
@@ -1556,6 +1568,358 @@ def get_data_sample():
     data = load_data()
     sample = data["probes"]
     return jsonify({"sample": sample})
+
+@app.route('/api/add_series', methods=['POST'])
+def add_series():
+    """API для создания серии проб"""
+    try:
+        data = request.json
+        
+        if not data:
+            return jsonify({
+                'success': False,
+                'error': 'Нет данных'
+            }), 400
+        
+        base_name = data.get('base_name')
+        method_number = data.get('method_number')
+        repeat_number = data.get('repeat_number')
+        probes_data = data.get('probes', [])
+        
+        if not base_name or not probes_data:
+            return jsonify({
+                'success': False,
+                'error': 'Отсутствуют обязательные данные'
+            }), 400
+        
+        # Загружаем текущие данные
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
+            db_data = json.load(f)
+        
+        # Создаем версию перед изменением
+        vcs.create_version(
+            description=f"Создание серии проб '{base_name}' (методика {method_number})",
+            author=request.headers.get('X-User-Email', 'anonymous'),
+            change_type='series_creation'
+        )
+        
+        # Получаем следующий доступный ID
+        current_probes = db_data.get('probes', [])
+        max_id = max([p.get('id', 0) for p in current_probes], default=0)
+        
+        created_count = 0
+        new_probes = []
+        
+        # Добавляем каждую пробу из серии
+        for probe_data in probes_data:
+            max_id += 1
+            
+            new_probe = {
+                'id': max_id,
+                'name': probe_data['name'],
+                'sample_mass': probe_data.get('sample_mass', 1.0),
+                'V (ml)': probe_data.get('V_ml', 100.0),
+                'status_id': probe_data.get('status_id', 1),
+                'priority': probe_data.get('priority', 1),
+                'Fe': probe_data.get('Fe', 0),
+                'Ni': probe_data.get('Ni', 0),
+                'Cu': probe_data.get('Cu', 0),
+                'tags': probe_data.get('tags', []),
+                'method_number': method_number,
+                'repeat_number': repeat_number,
+                'is_series': True,
+                'series_base': base_name,
+                'created_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                'last_normalized': datetime.now().isoformat()
+            }
+            
+            new_probes.append(new_probe)
+            created_count += 1
+        
+        # Добавляем новые пробы к существующим
+        db_data['probes'].extend(new_probes)
+        
+        # Сохраняем обновленные данные
+        with open(DATA_FILE, 'w', encoding='utf-8') as f:
+            json.dump(db_data, f, ensure_ascii=False, indent=2)
+        
+        # Создаем финальную версию
+        vcs.create_version(
+            description=f"Серия '{base_name}' создана: {created_count} проб",
+            author='system',
+            change_type='series_complete'
+        )
+        
+        return jsonify({
+            'success': True,
+            'message': f'Серия проб создана успешно',
+            'created_count': created_count,
+            'base_name': base_name,
+            'method_number': method_number,
+            'probes_created': [p['name'] for p in new_probes],
+            'metadata': {
+                'timestamp': datetime.now().isoformat(),
+                'user': request.headers.get('X-User-Email', 'anonymous'),
+                'total_probes': len(db_data['probes'])
+            }
+        })
+        
+    except Exception as e:
+        app.logger.error(f"Error creating series: {str(e)}")
+        
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'message': 'Ошибка при создании серии проб'
+        }), 500
+
+
+@app.route('/api/validate_series_name', methods=['POST'])
+def validate_series_name():
+    """API для валидации названия серии"""
+    try:
+        data = request.json
+        base_name = data.get('base_name', '').strip() # type: ignore
+        
+        # Паттерн для проверки: T2-{число}C{число}
+        import re
+        pattern = r'^T2-(\d+)C(\d+)$'
+        
+        if not re.match(pattern, base_name):
+            return jsonify({
+                'valid': False,
+                'error': 'Неверный формат. Используйте: T2-{номер_методики}C{номер_повторности}'
+            })
+        
+        # Проверяем, нет ли уже проб с таким именем
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
+            db_data = json.load(f)
+        
+        existing_names = [p.get('name') for p in db_data.get('probes', [])]
+        
+        match = re.match(pattern, base_name)
+        method_number = match.group(1) # type: ignore
+        repeat_number = match.group(2) # type: ignore
+        
+        # Генерируем предварительные названия для проверки
+        templates = [
+            'T2-{m}A{r}', 'T2-{m}B{r}', 'T2-L{m}C{r}', 'T2-L{m}A{r}',
+            'T2-L{m}B{r}', 'T2-L{m}P{m}C{r}', 'T2-L{m}P{m}A{r}',
+            'T2-L{m}P{m}B{r}', 'T2-L{m}P{m}F{m}C{r}', 'T2-L{m}P{m}F{m}A{r}',
+            'T2-L{m}P{m}F{m}B{r}', 'T2-L{m}P{m}F{m}D{r}', 'T2-L{m}P{m}F{m}N{m}C{r}',
+            'T2-L{m}P{m}F{m}N{m}A{r}', 'T2-L{m}P{m}F{m}N{m}B{r}', 'T2-L{m}P{m}F{m}N{m}E{r}'
+        ]
+        
+        generated_names = []
+        for template in templates:
+            name = template.replace('{m}', method_number).replace('{r}', repeat_number)
+            generated_names.append(name)
+        
+        # Проверяем, какие имена уже существуют
+        existing_in_series = [name for name in generated_names if name in existing_names]
+        
+        return jsonify({
+            'valid': True,
+            'method_number': method_number,
+            'repeat_number': repeat_number,
+            'generated_names': generated_names,
+            'existing_in_series': existing_in_series,
+            'warning': f'Найдено {len(existing_in_series)} существующих проб в этой серии' if existing_in_series else None
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'valid': False,
+            'error': str(e)
+        }), 500
+
+def recalculate_dependent_fields(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
+    """
+    Пересчитывает зависимые поля для всех проб:
+    - "Масса твердого (g)" = 1.5 * ("sample_mass" - "V (ml)")
+    - "Плотность" = "sample_mass" / "V (ml)"
+    
+    Args:
+        data_file: Путь к JSON файлу с данными
+    
+    Returns:
+        Словарь со статистикой пересчета
+    """
+    try:
+        # Загружаем данные
+        with open(data_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        probes = data.get('probes', [])
+        
+        if not probes:
+            return {
+                'success': True,
+                'message': 'Нет проб для пересчета',
+                'updated_mass': 0,
+                'updated_density': 0,
+                'total_probes': 0
+            }
+        
+        # Создаем версию перед пересчетом
+        version_info = vcs.create_version(
+            description="Автоматический пересчет зависимых полей",
+            author="system",
+            change_type="recalculation"
+        )
+        
+        # Статистика
+        stats = {
+            'total_probes': len(probes),
+            'updated_mass': 0,      # Обновлено поле "Масса твердого (g)"
+            'updated_density': 0,    # Обновлено поле "Плотность"
+            'skipped_mass': 0,       # Пропущено из-за ошибок
+            'skipped_density': 0,    # Пропущено из-за ошибок
+            'errors': []
+        }
+        
+        # Пересчитываем для каждой пробы
+        for index, probe in enumerate(probes):
+            probe_id = probe.get('id', index + 1)
+            
+            try:
+                # 1. Расчет "Масса твердого (g)"
+                if 'sample_mass' in probe and 'V (ml)' in probe:
+                    try:
+                        sample_mass = float(probe['sample_mass'])
+                        volume = float(probe['V (ml)'])
+                        
+                        # Проверяем корректность значений
+                        if not (isinstance(sample_mass, (int, float)) and 
+                                isinstance(volume, (int, float))):
+                            raise ValueError("Значения не являются числами")
+                        
+                        # Рассчитываем массу твердого
+                        solid_mass = 1.5 * (sample_mass - volume)
+                        
+                        # Сохраняем значение
+                        probe['Масса твердого (g)'] = float(solid_mass)
+                        stats['updated_mass'] += 1
+                        
+                    except (ValueError, TypeError, KeyError) as e:
+                        stats['skipped_mass'] += 1
+                        stats['errors'].append({
+                            'probe_id': probe_id,
+                            'field': 'Масса твердого (g)',
+                            'error': str(e)
+                        })
+                
+                # 2. Расчет "Плотность"
+                if 'sample_mass' in probe and 'V (ml)' in probe:
+                    try:
+                        sample_mass = float(probe['sample_mass'])
+                        volume = float(probe['V (ml)'])
+                        
+                        # Проверяем корректность значений
+                        if not (isinstance(sample_mass, (int, float)) and 
+                                isinstance(volume, (int, float))):
+                            raise ValueError("Значения не являются числами")
+                        
+                        # Проверяем, что объем не ноль (деление на ноль)
+                        if volume == 0:
+                            raise ValueError("Объем равен нулю, деление невозможно")
+                        
+                        # Рассчитываем плотность
+                        density = sample_mass / volume
+                        
+                        # Сохраняем значение
+                        probe['Плотность'] = float(density)
+                        stats['updated_density'] += 1
+                        
+                    except (ValueError, TypeError, ZeroDivisionError, KeyError) as e:
+                        stats['skipped_density'] += 1
+                        stats['errors'].append({
+                            'probe_id': probe_id,
+                            'field': 'Плотность',
+                            'error': str(e)
+                        })
+                        
+            except Exception as e:
+                # Общая ошибка для пробы
+                stats['errors'].append({
+                    'probe_id': probe_id,
+                    'field': 'общая',
+                    'error': f'Необработанная ошибка: {str(e)}'
+                })
+        
+        # Обновляем метаданные
+        if 'metadata' not in data:
+            data['metadata'] = {}
+        
+        data['metadata'].update({
+            'last_recalculation': datetime.now().isoformat(),
+            'recalculation_stats': stats
+        })
+        
+        # Сохраняем обновленные данные
+        with open(data_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        
+        # Создаем финальную версию
+        vcs.create_version(
+            description=f"Пересчет зависимых полей завершен: масса - {stats['updated_mass']}, плотность - {stats['updated_density']}",
+            author="system",
+            change_type="recalculation_complete"
+        )
+        
+        # Формируем сообщение о результатах
+        message_parts = []
+        if stats['updated_mass'] > 0:
+            message_parts.append(f"обновлена 'Масса твердого (g)' у {stats['updated_mass']} проб")
+        if stats['updated_density'] > 0:
+            message_parts.append(f"обновлена 'Плотность' у {stats['updated_density']} проб")
+        
+        message = "Пересчет зависимых полей: " + ", ".join(message_parts) if message_parts else "Изменений не требуется"
+        
+        return {
+            'success': True,
+            'message': message,
+            **stats,
+            'version_created': version_info is not None,
+            'version_id': version_info['id'] if version_info else None
+        }
+        
+    except Exception as e:
+        return {
+            'success': False,
+            'message': f"Ошибка пересчета: {str(e)}",
+            'total_probes': 0,
+            'updated_mass': 0,
+            'updated_density': 0,
+            'errors': [{'field': 'система', 'error': str(e)}]
+        }
+
+
+def check_and_recalculate_dependent_fields(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
+    """
+    Проверяет необходимость пересчета и выполняет его.
+    Можно добавить логику проверки временных меток.
+    """
+    try:
+        # Проверяем, когда был последний пересчет
+        with open(data_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        metadata = data.get('metadata', {})
+        last_recalc = metadata.get('last_recalculation')
+        
+        # Здесь можно добавить логику для определения необходимости пересчета
+        # Например, если прошло больше суток с последнего пересчета
+        # или если были изменения в данных
+        
+        # Пока всегда выполняем пересчет
+        return recalculate_dependent_fields(data_file)
+        
+    except Exception as e:
+        return {
+            'success': False,
+            'message': f"Ошибка проверки необходимости пересчета: {str(e)}"
+        }
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)
