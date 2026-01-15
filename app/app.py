@@ -402,37 +402,40 @@ def telegram_login():
 @app.route('/')
 def index():
     """
-    Главная страница с принудительной нормализацией ID и пересчетом зависимых полей
+    Главная страница с нормализацией, пересчетом и форматированием
     """
     try:
-        # Принудительно нормализуем ID
+        # 1. Принудительно нормализуем ID
         success, message, changes = normalize_probe_ids()
         
-        # Логируем результат
         if changes > 0:
-            app.logger.info(f"Normalized {changes} probe IDs on page load: {message}")
+            app.logger.info(f"Normalized {changes} probe IDs: {message}")
 
-        # Заполняем у проб недостающие поля данных нулями
+        # 2. Заполняем у проб недостающие поля
         normalize_result = normalize_probe_structure(
             data_file=str(DATA_FILE),
             default_value=False
         )
 
-        # Логируем заполнение нулями
         stats = normalize_result.get('stats',{})
         if stats.get('fields_added_total',0) > 0:
-            app.logger.info(f"Normalized probe structure: added {stats['fields_added_total']} fields to {stats['probes_modified']} probes")
+            app.logger.info(f"Normalized structure: added {stats['fields_added_total']} fields")
 
-        # Пересчитываем зависимые поля
+        # 3. Пересчитываем зависимые поля
         recalculation_result = check_and_recalculate_dependent_fields(str(DATA_FILE))
         
-        # Логируем результат пересчета
         if recalculation_result.get('success'):
             app.logger.info(f"Recalculated dependent fields: {recalculation_result.get('message')}")
-            if recalculation_result.get('errors'):
-                app.logger.warning(f"Recalculation errors: {recalculation_result.get('errors')}")
 
-        # Загружаем данные для отображения
+        # 4. Форматируем числовые значения
+        formatting_result = check_and_format_numeric_values(str(DATA_FILE))
+        
+        if formatting_result.get('success') and not formatting_result.get('skipped', False):
+            app.logger.info(f"Formatted numeric values: {formatting_result.get('message')}")
+            if formatting_result.get('errors'):
+                app.logger.warning(f"Formatting errors: {formatting_result.get('errors')}")
+
+        # 5. Загружаем данные для отображения
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
@@ -449,11 +452,17 @@ def index():
                                 'success': recalculation_result.get('success', False),
                                 'message': recalculation_result.get('message', ''),
                                 'stats': recalculation_result
+                            },
+                            formatting_info={
+                                'success': formatting_result.get('success', False),
+                                'message': formatting_result.get('message', ''),
+                                'skipped': formatting_result.get('skipped', False)
                             })
         
     except Exception as e:
         app.logger.error(f"Error loading index: {str(e)}")
         return render_template('index.html', probes=[], error=str(e))
+    
 @app.route('/table')
 def render_table():
     
@@ -599,7 +608,7 @@ def upload_file():
         
         # Обрабатываем файл с помощью Python-скрипта
         result_data, _ = process_icp_aes_data(
-            file_path=file_path
+            file_path=file_path, json_data_path=str(DATA_FILE)
         )
         
         json_data = convert_df_to_dict(result_data)
@@ -1919,6 +1928,184 @@ def check_and_recalculate_dependent_fields(data_file: str = str(DATA_FILE)) -> D
         return {
             'success': False,
             'message': f"Ошибка проверки необходимости пересчета: {str(e)}"
+        }
+
+def format_numeric_values(data_file: str = str(DATA_FILE), decimal_places: int = 4) -> Dict[str, Any]:
+    """
+    Форматирует все числовые значения в базе данных до указанного количества знаков после запятой.
+    
+    Args:
+        data_file: Путь к JSON файлу с данными
+        decimal_places: Количество знаков после запятой (по умолчанию 4)
+    
+    Returns:
+        Словарь со статистикой форматирования
+    """
+    try:
+        # Загружаем данные
+        with open(data_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        probes = data.get('probes', [])
+        
+        if not probes:
+            return {
+                'success': True,
+                'message': 'Нет проб для форматирования',
+                'formatted_count': 0,
+                'total_probes': 0
+            }
+        
+        # Создаем версию перед форматированием
+        version_info = vcs.create_version(
+            description=f"Автоматическое форматирование числовых значений до {decimal_places} знаков",
+            author="system",
+            change_type="formatting"
+        )
+        
+        # Статистика
+        stats = {
+            'total_probes': len(probes),
+            'formatted_values': 0,
+            'formatted_probes': 0,
+            'errors': []
+        }
+        
+        # Поля, которые не нужно форматировать (строковые, булевы и т.д.)
+        non_numeric_fields = {
+            'id', 'name', 'tags', 'created_at', 'last_normalized',
+            'Описание', 'Кто готовил', 'Среда', 'Аналиты',
+            'merged_from', 'merge_date', 'recalculation_history'
+        }
+        
+        # Функция для определения, является ли поле числовым
+        def is_numeric_field(field_name, value):
+            # Пропускаем специальные поля
+            if field_name in non_numeric_fields:
+                return False
+            
+            # Пропускаем поля, которые заведомо не числовые
+            if field_name.startswith('d') and len(field_name) > 1:
+                # Это поле погрешности - проверяем значение
+                return isinstance(value, (int, float))
+            
+            # Проверяем тип значения
+            return isinstance(value, (int, float))
+        
+        # Форматируем значения для каждой пробы
+        for index, probe in enumerate(probes):
+            probe_id = probe.get('id', index + 1)
+            probe_formatted = False
+            
+            try:
+                for field_name, value in list(probe.items()):
+                    if is_numeric_field(field_name, value):
+                        try:
+                            # Форматируем значение
+                            formatted_value = round(float(value), decimal_places)
+                            probe[field_name] = formatted_value
+                            stats['formatted_values'] += 1
+                            probe_formatted = True
+                        except (ValueError, TypeError) as e:
+                            # Оставляем оригинальное значение при ошибке
+                            stats['errors'].append({
+                                'probe_id': probe_id,
+                                'field': field_name,
+                                'value': value,
+                                'error': str(e)
+                            })
+                
+                if probe_formatted:
+                    stats['formatted_probes'] += 1
+                    
+            except Exception as e:
+                stats['errors'].append({
+                    'probe_id': probe_id,
+                    'field': 'общая',
+                    'error': f'Необработанная ошибка: {str(e)}'
+                })
+        
+        # Обновляем метаданные
+        if 'metadata' not in data:
+            data['metadata'] = {}
+        
+        data['metadata'].update({
+            'last_formatting': datetime.now().isoformat(),
+            'formatting_decimal_places': decimal_places,
+            'formatting_stats': stats
+        })
+        
+        # Сохраняем обновленные данные
+        with open(data_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        
+        # Создаем финальную версию
+        vcs.create_version(
+            description=f"Форматирование завершено: {stats['formatted_values']} значений в {stats['formatted_probes']} пробах",
+            author="system",
+            change_type="formatting_complete"
+        )
+        
+        # Формируем сообщение о результатах
+        message = f"Отформатировано {stats['formatted_values']} числовых значений в {stats['formatted_probes']} пробах до {decimal_places} знаков"
+        
+        return {
+            'success': True,
+            'message': message,
+            **stats,
+            'version_created': version_info is not None,
+            'version_id': version_info['id'] if version_info else None
+        }
+        
+    except Exception as e:
+        return {
+            'success': False,
+            'message': f"Ошибка форматирования: {str(e)}",
+            'formatted_values': 0,
+            'formatted_probes': 0,
+            'errors': [{'field': 'система', 'error': str(e)}]
+        }
+
+
+def check_and_format_numeric_values(data_file: str = str(DATA_FILE), force: bool = False) -> Dict[str, Any]:
+    """
+    Проверяет необходимость форматирования и выполняет его.
+    
+    Args:
+        data_file: Путь к JSON файлу
+        force: Принудительное форматирование, даже если уже было выполнено
+    
+    Returns:
+        Результат форматирования
+    """
+    try:
+        # Проверяем, когда было последнее форматирование
+        with open(data_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        metadata = data.get('metadata', {})
+        last_formatting = metadata.get('last_formatting')
+        
+        # Если force=False, проверяем необходимость
+        if not force and last_formatting:
+            # Можно добавить логику, например, форматировать раз в день
+            from datetime import datetime, timedelta
+            last_date = datetime.fromisoformat(last_formatting.replace('Z', '+00:00'))
+            if datetime.now() - last_date < timedelta(days=1):
+                return {
+                    'success': True,
+                    'message': 'Форматирование не требуется (выполнялось менее суток назад)',
+                    'skipped': True,
+                    'last_formatting': last_formatting
+                }
+        
+        # Выполняем форматирование
+        return format_numeric_values(data_file, decimal_places=4)
+        
+    except Exception as e:
+        return {
+            'success': False,
+            'message': f"Ошибка проверки необходимости форматирования: {str(e)}"
         }
 
 if __name__ == '__main__':
