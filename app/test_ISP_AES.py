@@ -735,7 +735,7 @@ def convert_df_to_database_format(df: pd.DataFrame, json_data_path: str) -> List
 # Пример использования функции
 if __name__ == "__main__":
     # Сохраните ваш CSV файл и укажите путь к нему
-    file_path = "металлы-01-12-2025 (2).csv"
+    file_path = r"C:\Users\Kirill\Downloads\Telegram Desktop\16-01-2025-Norilsk.csv"
     
     # Укажите путь к базе данных
     json_data_path = str(Path(__file__).parent.parent / 'data' / 'data.json')  # Измените на актуальный путь
