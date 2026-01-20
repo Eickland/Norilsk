@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление пробами - Лабораторная система</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manager.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Заголовок -->
+        <header class="header">
+            <h1><i class="fas fa-flask"></i> Система управления пробами</h1>
+            <div class="stats-bar" id="statsBar">
+                <span>Загрузка статистики...</span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Боковая панель с инструментами -->
+            <aside class="sidebar">
+                <div class="tool-section">
+                    <h3><i class="fas fa-search"></i> Поиск проб</h3>
+                    
+                    <div class="search-method">
+                        <label>
+                            <input type="radio" name="searchMethod" value="name" checked>
+                            По имени
+                        </label>
+                        <label>
+                            <input type="radio" name="searchMethod" value="concentration">
+                            По концентрации
+                        </label>
+                    </div>
+
+                    <!-- Поиск по имени -->
+                    <div id="searchByName" class="search-option">
+                        <input type="text" id="nameSubstring" placeholder="Подстрока в имени" class="form-input">
+                        <label class="checkbox">
+                            <input type="checkbox" id="caseSensitive">
+                            Учитывать регистр
+                        </label>
+                        <button onclick="searchProbes()" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Найти
+                        </button>
+                    </div>
+
+                    <!-- Поиск по концентрации -->
+                    <div id="searchByConcentration" class="search-option" style="display: none;">
+                        <select id="concentrationElement" class="form-input">
+                            <option value="Ca">Ca (Кальций)</option>
+                            <option value="Co">Co (Кобальт)</option>
+                            <option value="Cu">Cu (Медь)</option>
+                            <option value="Fe">Fe (Железо)</option>
+                            <option value="Ni">Ni (Никель)</option>
+                        </select>
+                        <div class="range-inputs">
+                            <input type="number" id="concentrationMin" placeholder="Мин" step="0.01" class="form-input small">
+                            <span>—</span>
+                            <input type="number" id="concentrationMax" placeholder="Макс" step="0.01" class="form-input small">
+                        </div>
+                        <button onclick="searchByConcentration()" class="btn btn-primary">
+                            <i class="fas fa-filter"></i> Фильтровать
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tool-section">
+                    <h3><i class="fas fa-tags"></i> Управление тегами</h3>
+                    
+                    <div class="selected-info" id="selectedInfo">
+                        Выбрано проб: <span id="selectedCount">0</span>
+                    </div>
+                    
+                    <input type="text" id="newTag" placeholder="Новый тег" class="form-input">
+                    <div class="button-group">
+                        <button onclick="addTagToSelected()" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Добавить тег
+                        </button>
+                        <button onclick="removeTagFromSelected()" class="btn btn-warning">
+                            <i class="fas fa-minus"></i> Удалить тег
+                        </button>
+                    </div>
+                    
+                    <button onclick="addStateTags()" class="btn btn-info">
+                        <i class="fas fa-vial"></i> Добавить теги состояний
+                    </button>
+                </div>
+
+                <div class="tool-section">
+                    <h3><i class="fas fa-layer-group"></i> Группировка</h3>
+                    
+                    <input type="text" id="groupName" placeholder="Имя группы" class="form-input">
+                    <button onclick="createGroup()" class="btn btn-secondary">
+                        <i class="fas fa-object-group"></i> Создать группу
+                    </button>
+                </div>
+
+                <div class="tool-section">
+                    <h3><i class="fas fa-magic"></i> Автоматизация</h3>
+                    
+                    <button onclick="showFieldModal()" class="btn btn-purple">
+                        <i class="fas fa-plus-circle"></i> Добавить поле
+                    </button>
+                    
+                    <button onclick="showRulesModal()" class="btn btn-purple">
+                        <i class="fas fa-robot"></i> Правила тегирования
+                    </button>
+                </div>
+
+                <div class="tool-section">
+                    <h3><i class="fas fa-chart-bar"></i> Экспорт</h3>
+                    
+                    <button onclick="exportToCSV()" class="btn btn-export">
+                        <i class="fas fa-file-csv"></i> Экспорт в CSV
+                    </button>
+                    
+                    <button onclick="loadStatistics()" class="btn btn-info">
+                        <i class="fas fa-chart-pie"></i> Статистика
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Основная область с таблицей проб -->
+            <main class="content">
+                <div class="content-header">
+                    <h2><i class="fas fa-list"></i> Пробы</h2>
+                    <div class="controls">
+                        <button onclick="loadProbes()" class="btn btn-refresh">
+                            <i class="fas fa-sync-alt"></i> Обновить
+                        </button>
+                        <button onclick="clearSelection()" class="btn btn-clear">
+                            <i class="fas fa-times"></i> Сбросить выбор
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Фильтр по тегам -->
+                <div class="tag-filter">
+                    <input type="text" id="tagFilter" placeholder="Фильтр по тегам (через запятую)" class="form-input">
+                    <label class="checkbox">
+                        <input type="checkbox" id="matchAllTags" checked>
+                        Все теги
+                    </label>
+                    <button onclick="filterByTags()" class="btn btn-primary">
+                        <i class="fas fa-filter"></i> Применить
+                    </button>
+                </div>
+
+                <!-- Таблица проб -->
+                <div class="table-container">
+                    <table class="probes-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)">
+                                </th>
+                                <th>ID</th>
+                                <th>Название</th>
+                                <th>Ca</th>
+                                <th>Fe</th>
+                                <th>Cu</th>
+                                <th>Теги</th>
+                                <th>Состояние</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="probesTableBody">
+                            <!-- Данные загружаются через JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Детальная информация о пробе -->
+                <div class="probe-detail" id="probeDetail">
+                    <h3><i class="fas fa-info-circle"></i> Детальная информация</h3>
+                    <div class="detail-content" id="detailContent">
+                        Выберите пробу для просмотра деталей
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="fieldModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('fieldModal')">&times;</span>
+            <h3><i class="fas fa-plus-circle"></i> Добавить поле на основе имени</h3>
+            
+            <div class="form-group">
+                <label>Имя поля:</label>
+                <input type="text" id="fieldName" placeholder="temperature" class="form-input">
+            </div>
+            
+            <div class="form-group">
+                <label>Позиция в имени (начиная с 0):</label>
+                <input type="number" id="fieldPosition" value="0" min="0" class="form-input">
+            </div>
+            
+            <div class="form-group">
+                <label>Подстрока для поиска:</label>
+                <input type="text" id="fieldSubstring" placeholder="AOB" class="form-input">
+            </div>
+            
+            <div class="form-group">
+                <label>Тип сравнения:</label>
+                <select id="fieldMatchType" class="form-input">
+                    <option value="exact">Точное совпадение</option>
+                    <option value="contains" selected>Содержит подстроку</option>
+                    <option value="regex">Регулярное выражение</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Значение поля:</label>
+                <input type="text" id="fieldValue" placeholder="25.5" class="form-input">
+            </div>
+            
+            <button onclick="addField()" class="btn btn-primary">
+                <i class="fas fa-check"></i> Добавить поле
+            </button>
+        </div>
+    </div>
+
+    <div id="rulesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('rulesModal')">&times;</span>
+            <h3><i class="fas fa-robot"></i> Правила автоматического тегирования</h3>
+            
+            <div id="rulesContainer">
+                <!-- Правила добавляются динамически -->
+            </div>
+            
+            <button onclick="addRule()" class="btn btn-success">
+                <i class="fas fa-plus"></i> Добавить правило
+            </button>
+            
+            <button onclick="applyRules()" class="btn btn-primary">
+                <i class="fas fa-play"></i> Применить правила
+            </button>
+        </div>
+    </div>
+
+    <div id="statisticsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('statisticsModal')">&times;</span>
+            <h3><i class="fas fa-chart-pie"></i> Статистика</h3>
+            <div id="statisticsContent"></div>
+        </div>
+    </div>
+
+    <!-- Уведомления -->
+    <div id="notification" class="notification"></div>
+
+    <script src="{{ url_for('static', filename='js/manager.js') }}"></script>
+</body>
+</html>

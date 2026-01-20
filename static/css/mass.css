@@ -1,0 +1,32 @@
+/* Можно добавить дополнительные стили в отдельный файл */
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.chart-container {
+    position: relative;
+    margin: 20px 0;
+}
+
+.percentage-display {
+    transition: all 0.3s ease;
+}
+
+.percentage-display:hover {
+    transform: scale(1.05);
+}
+
+.series-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.series-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}

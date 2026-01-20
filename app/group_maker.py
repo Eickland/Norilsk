@@ -15,11 +15,3 @@ manager.add_tag_to_probes('T15', T13_probes)
 T17_probes = manager.find_probes_by_name_substring('T17')
 print(f"Найдено проб T17: {len(T17_probes)}")
 manager.add_tag_to_probes('T17', T13_probes)
-
-temperature_pattern = {
-    'position': 0,  # первая часть имени
-    'substring': 'AOB',
-    'value': 25.5,
-    'match_type': 'exact'
-}
-manager.add_field_based_on_name_pattern('temperature', temperature_pattern)

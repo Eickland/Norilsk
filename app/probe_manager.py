@@ -3,6 +3,7 @@ import re
 from typing import Dict, List, Any, Optional, Union, Tuple
 from dataclasses import dataclass, asdict
 from datetime import datetime
+import copy
 
 @dataclass
 class Probe:
@@ -25,27 +26,30 @@ class Probe:
     status_id: int
     is_solution: bool
     last_normalized: str
-    # Дополнительные поля, которые могут быть добавлены
-    temperature: Optional[float] = None
-    pressure: Optional[float] = None
+    # Дополнительные поля
     group_id: Optional[int] = None
-    # ... можно добавить другие поля
+    custom_fields: Optional[Dict] = None
+    
+    def __post_init__(self):
+        if self.custom_fields is None:
+            self.custom_fields = {}
     
     def to_dict(self) -> Dict:
         """Конвертирует объект Probe в словарь"""
-        return asdict(self)
+        result = asdict(self)
+        # Конвертируем dataclass в обычный dict
+        result['custom_fields'] = self.custom_fields or {}
+        return result
+
 
 class ProbeManager:
     def __init__(self, json_file_path: str):
         """
         Инициализация менеджера проб
-        
-        Args:
-            json_file_path: путь к JSON файлу с данными
         """
         self.json_file_path = json_file_path
         self.probes = self.load_probes()
-        self.groups = {}  # словарь групп: {group_id: [probe_ids]}
+        self.groups = {}
         
     def load_probes(self) -> List[Probe]:
         """Загружает пробы из JSON файла"""
@@ -54,19 +58,24 @@ class ProbeManager:
         
         probes = []
         for probe_data in data.get("probes", []):
-            # Создаем объект Probe, пропуская лишние поля
-            probe_kwargs = {k: v for k, v in probe_data.items() 
-                          if k in Probe.__annotations__}
-            probes.append(Probe(**probe_kwargs))
+            # Обрабатываем custom_fields
+            custom_fields = probe_data.pop('custom_fields', {}) if 'custom_fields' in probe_data else {}
+            
+            # Создаем объект Probe
+            probe_kwargs = {}
+            for field in Probe.__annotations__:
+                if field in probe_data:
+                    probe_kwargs[field] = probe_data[field]
+            
+            probe = Probe(**probe_kwargs)
+            probe.custom_fields = custom_fields
+            probes.append(probe)
         
         return probes
     
     def save_probes(self, output_path: Optional[str] = None):
         """
         Сохраняет пробы в JSON файл
-        
-        Args:
-            output_path: путь для сохранения (если None, сохраняет в исходный файл)
         """
         save_path = output_path or self.json_file_path
         
@@ -81,13 +90,6 @@ class ProbeManager:
                                      case_sensitive: bool = False) -> List[int]:
         """
         Находит пробы по подстроке в имени
-        
-        Args:
-            substring: искомая подстрока
-            case_sensitive: чувствительность к регистру
-            
-        Returns:
-            Список ID проб
         """
         result = []
         
@@ -105,14 +107,6 @@ class ProbeManager:
                                           max_val: Optional[float] = None) -> List[int]:
         """
         Находит пробы по диапазону концентраций элемента
-        
-        Args:
-            element: элемент (например, 'Ca', 'Fe', 'Ni')
-            min_val: минимальное значение
-            max_val: максимальное значение
-            
-        Returns:
-            Список ID проб
         """
         if element not in ['Ca', 'Co', 'Cu', 'Fe', 'Ni']:
             raise ValueError(f"Элемент {element} не поддерживается")
@@ -132,25 +126,23 @@ class ProbeManager:
         return result
     
     def add_state_tags(self):
-        """Добавляет теги 'твердая' и 'жидкая' на основе полей is_solid и is_solution"""
+        """Добавляет теги 'твердая' и 'жидкая'"""
         for probe in self.probes:
-            # Удаляем старые теги состояния, если они есть
+            # Удаляем старые теги состояния
             probe.tags = [tag for tag in probe.tags 
-                         if tag not in ['твердая', 'жидкая']]
+                         if tag not in ['твердая', 'жидкая', 'solid', 'liquid']]
             
             # Добавляем новые теги
             if probe.is_solid:
                 probe.tags.append('твердая')
+                probe.tags.append('solid')
             if probe.is_solution:
                 probe.tags.append('жидкая')
+                probe.tags.append('liquid')
     
     def add_tag_to_probes(self, tag: str, probe_ids: List[int]):
         """
         Добавляет тег к указанным пробам
-        
-        Args:
-            tag: тег для добавления
-            probe_ids: список ID проб
         """
         probe_id_set = set(probe_ids)
         
@@ -162,10 +154,6 @@ class ProbeManager:
     def remove_tag_from_probes(self, tag: str, probe_ids: List[int]):
         """
         Удаляет тег из указанных проб
-        
-        Args:
-            tag: тег для удаления
-            probe_ids: список ID проб
         """
         probe_id_set = set(probe_ids)
         
@@ -177,13 +165,6 @@ class ProbeManager:
     def group_probes(self, group_name: str, probe_ids: List[int]) -> int:
         """
         Создает группу из проб
-        
-        Args:
-            group_name: имя группы
-            probe_ids: список ID проб в группе
-            
-        Returns:
-            ID созданной группы
         """
         group_id = len(self.groups) + 1
         
@@ -208,14 +189,7 @@ class ProbeManager:
     def parse_probe_name(self, probe_name: str) -> Dict[str, str]:
         """
         Парсит имя пробы по разделителям
-        
-        Args:
-            probe_name: имя пробы
-            
-        Returns:
-            Словарь с частями имени
         """
-        # Используем различные разделители
         separators = r'[_\-\s]+'
         parts = re.split(separators, probe_name)
         
@@ -229,20 +203,8 @@ class ProbeManager:
                                        pattern: Dict[str, Any]):
         """
         Добавляет поле на основе паттерна в имени пробы
-        
-        Args:
-            field_name: имя добавляемого поля
-            pattern: словарь с паттерном, например:
-                {
-                    'position': 1,  # позиция в разделенном имени (начиная с 0)
-                    'subposition': 1, # позиция в позиции
-                    'substring': 'AOB',  # искомая подстрока
-                    'value': 25.5,  # значение для установки
-                    'match_type': 'exact'  # 'exact', 'contains', 'regex'
-                }
         """
         position = pattern.get('position')
-        subposition = pattern.get('subposition')
         substring = pattern.get('substring')
         value = pattern.get('value')
         match_type = pattern.get('match_type', 'contains')
@@ -251,7 +213,6 @@ class ProbeManager:
             raise ValueError("Не все обязательные поля указаны в паттерне")
         
         for probe in self.probes:
-            
             parsed_name = self.parse_probe_name(probe.name)
             name_part_key = f'part_{position}'
             
@@ -259,21 +220,6 @@ class ProbeManager:
                 continue
             
             name_part = parsed_name[name_part_key]
-            
-            if subposition:
-                
-                try:
-                    number_part = int(name_part)
-                    number_list = [int(digit) for digit in str(number_part)]
-                    
-                    if number_list[0] == 1:
-                        
-                        
-                    
-                except:
-                    raise KeyError("Ошибка в определении подпозиции")
-                
-            
             should_set = False
             
             if match_type == 'exact':
@@ -286,33 +232,12 @@ class ProbeManager:
                 raise ValueError(f"Неизвестный тип сравнения: {match_type}")
             
             if should_set:
-                setattr(probe, field_name, value)
+                # Добавляем в custom_fields
+                probe.custom_fields[field_name] = value # type: ignore
     
     def batch_add_tags_by_rules(self, rules: List[Dict]):
         """
         Пакетное добавление тегов по правилам
-        
-        Args:
-            rules: список правил, например:
-                [
-                    {
-                        'name': 'Высокое железо',
-                        'condition': {
-                            'type': 'concentration_range',
-                            'element': 'Fe',
-                            'min': 300
-                        },
-                        'tag': 'высокое_Fe'
-                    },
-                    {
-                        'name': 'Пробы AOB',
-                        'condition': {
-                            'type': 'name_substring',
-                            'substring': 'AOB'
-                        },
-                        'tag': 'AOB_группа'
-                    }
-                ]
         """
         for rule in rules:
             condition = rule['condition']
@@ -348,14 +273,6 @@ class ProbeManager:
                           match_all: bool = True) -> List[Probe]:
         """
         Получает пробы по тегам
-        
-        Args:
-            tags: список тегов для поиска
-            match_all: если True, возвращает пробы со всеми тегами,
-                      если False, возвращает пробы с любым из тегов
-        
-        Returns:
-            Список проб
         """
         result = []
         
@@ -379,7 +296,8 @@ class ProbeManager:
             'solid_probes': sum(1 for p in self.probes if p.is_solid),
             'solution_probes': sum(1 for p in self.probes if p.is_solution),
             'tags_count': {},
-            'average_concentrations': {}
+            'average_concentrations': {},
+            'elements': {}
         }
         
         # Подсчет тегов
@@ -394,17 +312,23 @@ class ProbeManager:
         elements = ['Ca', 'Co', 'Cu', 'Fe', 'Ni']
         for element in elements:
             values = [getattr(p, element) for p in self.probes]
-            stats['average_concentrations'][element] = sum(values) / len(values)
+            stats['average_concentrations'][element] = {
+                'mean': sum(values) / len(values),
+                'min': min(values),
+                'max': max(values)
+            }
+        
+        # Группировка по элементам
+        for element in elements:
+            stats['elements'][element] = {
+                'probes': [p.id for p in self.probes if getattr(p, element) > 0]
+            }
         
         return stats
     
     def export_to_csv(self, output_path: str, delimiter: str = ','):
         """
         Экспортирует пробы в CSV файл
-        
-        Args:
-            output_path: путь для сохранения CSV
-            delimiter: разделитель
         """
         import csv
         
@@ -420,74 +344,3 @@ class ProbeManager:
             
             for probe in self.probes:
                 writer.writerow(probe.to_dict())
-
-
-# Пример использования
-def main():
-    # Инициализация менеджера
-    manager = ProbeManager('data/data.json')
-    
-    # 1. Добавление тегов состояний
-    manager.add_state_tags()
-    
-    # 2. Поиск проб по подстроке в имени
-    aob_probes = manager.find_probes_by_name_substring('AOB')
-    print(f"Найдено проб AOB: {len(aob_probes)}")
-    
-    # 3. Поиск проб с высоким содержанием железа
-    high_fe_probes = manager.find_probes_by_concentration_range('Fe', min_val=300)
-    print(f"Проб с Fe > 300: {len(high_fe_probes)}")
-    
-    # 4. Добавление тега для проб AOB
-    manager.add_tag_to_probes('AOB_группа', aob_probes)
-    
-    # 5. Добавление поля температура на основе имени
-    temperature_pattern = {
-        'position': 0,  # первая часть имени
-        'substring': 'AOB',
-        'value': 25.5,
-        'match_type': 'exact'
-    }
-    manager.add_field_based_on_name_pattern('temperature', temperature_pattern)
-    
-    # 6. Пакетное добавление тегов по правилам
-    rules = [
-        {
-            'name': 'Высокое железо',
-            'condition': {
-                'type': 'concentration_range',
-                'element': 'Fe',
-                'min': 300
-            },
-            'tag': 'высокое_Fe'
-        },
-        {
-            'name': 'Низкая медь',
-            'condition': {
-                'type': 'concentration_range',
-                'element': 'Cu',
-                'max': 1.0
-            },
-            'tag': 'низкое_Cu'
-        }
-    ]
-    manager.batch_add_tags_by_rules(rules)
-    
-    # 7. Создание группы
-    manager.group_probes('Группа_AOB_высокое_Fe', aob_probes[:5])
-    
-    # 8. Получение статистики
-    stats = manager.get_statistics()
-    print(f"Всего проб: {stats['total_probes']}")
-    print(f"Теги: {stats['tags_count']}")
-    
-    # 9. Сохранение изменений
-    manager.save_probes('data/data.json')
-    
-    # Пример поиска по тегам
-    probes_with_tags = manager.get_probes_by_tags(['AOB_группа', 'высокое_Fe'])
-    print(f"Проб с тегами AOB_группа и высокое_Fe: {len(probes_with_tags)}")
-
-
-if __name__ == "__main__":
-    main()

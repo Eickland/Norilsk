@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
+import re
 
 def process_icp_aes_data(file_path):
     """
@@ -16,10 +17,24 @@ def process_icp_aes_data(file_path):
     9. Печатает в терминал отчёт (сколько удалено, найден ли BLNK, по каким полям вычитали)
     10. Делает бэкап data.json.bak
     """
-    
+    encoding = 'utf-8'
+    sep = ';'
     # Чтение данных из CSV файла
-    df = pd.read_csv(file_path, sep=';', decimal='.', encoding='utf-8')
-    df.rename(columns={f'{df.columns[0]}':'name'})
+    try:
+        # Пробуем с точкой
+        data = pd.read_csv(file_path, sep=sep, decimal='.', encoding=encoding)
+        
+        # Быстрая проверка на наличие чисел с запятой
+        sample = data.head(100).to_string()  # Проверяем первые 100 строк
+        if re.search(r'\d,\d{2}\b', sample):  # Ищем паттерн типа 123,45
+            data = pd.read_csv(file_path, sep=sep, decimal=',', encoding=encoding)
+
+    except:
+        data = pd.read_csv(file_path, sep=sep, decimal=',', encoding=encoding)
+    
+    df = data
+    
+    df.rename(columns={f'{df.columns[0]}':'name'}, inplace=True)
     
     # Удаление строк, где в столбце 'Метки Образцов' есть 'некал' или пустые строки
     df = df[~df[df.columns[0]].astype(str).str.contains('некал', case=False, na=False)]
@@ -136,7 +151,7 @@ def process_icp_aes_data(file_path):
         return result
     
     # Выбираем столбцы для каждого металла
-    selected_columns = ['Метки Образцов']
+    selected_columns = ['name']
     metal_selected_wavelengths = {}
     
     for metal, wavelengths in metal_wavelengths.items():
@@ -149,7 +164,7 @@ def process_icp_aes_data(file_path):
     result_df = df[selected_columns].copy()
     
     final_df = pd.DataFrame()
-    final_df['Название пробы'] = result_df['Метки Образцов']
+    final_df['name'] = result_df['name']
     
     metal_mean_data = {}
     metal_std_data = {}
@@ -172,7 +187,7 @@ def process_icp_aes_data(file_path):
     for metal in metal_std_data.keys():
         final_df[f'd{metal}'] = metal_std_data[metal]
     
-    sorted_columns = ['Название пробы']
+    sorted_columns = ['name']
     metals_sorted = sorted(metal_mean_data.keys())
 
     for metal in metals_sorted:
@@ -213,22 +228,22 @@ if __name__ == "__main__":
         processed_data, wavelengths_info = process_icp_aes_data(file_path)
         
         print("Обработанные данные (первые 5 строк):")
-        print(processed_data.head())
-        print(f"\nРазмер таблицы: {processed_data.shape}")
+        print(processed_data.head()) # type: ignore
+        print(f"\nРазмер таблицы: {processed_data.shape}") # type: ignore
         
         print("\nИнформация о выбранных длинах волн:")
         print(wavelengths_info)
         
         print("\nСтолбцы таблицы с данными:")
-        columns_list = list(processed_data.columns)
+        columns_list = list(processed_data.columns) # type: ignore
         for i, col in enumerate(columns_list, 1):
             print(f"{i:3d}. {col}")
         
         output_data_path = "Обработанные_данные_ИСП_АЭС_с_погрешностями.csv"
         output_wl_path = "Информация_о_длинах_волн.csv"
         
-        processed_data.to_csv(output_data_path, index=False, encoding='utf-8-sig')
-        wavelengths_info.to_csv(output_wl_path, index=False, encoding='utf-8-sig')
+        processed_data.to_csv(output_data_path, index=False, encoding='utf-8-sig') # type: ignore
+        wavelengths_info.to_csv(output_wl_path, index=False, encoding='utf-8-sig') # type: ignore
         
         print(f"\nОсновные данные сохранены в файл: {output_data_path}")
         print(f"Информация о длинах волн сохранена в файл: {output_wl_path}")

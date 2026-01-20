@@ -16,6 +16,8 @@ from typing import Dict, List, Any, Set
 import plotly
 import plotly.graph_objs as go
 from flask_cors import CORS
+import re
+from collections import defaultdict
 
 load_dotenv()
 
@@ -74,7 +76,8 @@ def convert_df_to_dict(df:pd.DataFrame, add_mass=True):
     
     df['id'] = df.index + 1
     df['tags'] = [[] for _ in range(len(df))]
-    df['status_id'] = 3
+    if 'status_id' not in df.columns:
+        df['status_id'] = 3
     
     if add_mass:
         
@@ -602,7 +605,7 @@ def upload_file():
             file_path=file_path
         )
         
-        json_data = convert_df_to_dict(result_data)
+        json_data = convert_df_to_dict(result_data) # type: ignore
         
         # ЗАГРУЖАЕМ ТЕКУЩИЕ ДАННЫЕ ПЕРЕД ИЗМЕНЕНИЕМ
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
@@ -1920,6 +1923,484 @@ def check_and_recalculate_dependent_fields(data_file: str = str(DATA_FILE)) -> D
             'success': False,
             'message': f"Ошибка проверки необходимости пересчета: {str(e)}"
         }
+from probe_manager import ProbeManager
+
+
+probe_manager = ProbeManager(str(DATA_FILE)) # type: ignore
+
+@app.route('/probe_manager')
+def render_manager():
+    """Главная страница"""
+    return render_template('probe_manager.html')
+
+# API endpoints
+
+@app.route('/api/probes', methods=['GET'])
+def get_probes():
+    """Получить все пробы"""
+    try:
+        probes = probe_manager.probes # type: ignore
+        return jsonify({
+            'success': True,
+            'data': [probe.to_dict() for probe in probes],
+            'count': len(probes)
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/probes/search', methods=['POST'])
+def search_probes():
+    """Поиск проб по различным критериям"""
+    try:
+        data = request.json
+        result_ids = []
+        
+        if data.get('name_substring'): # pyright: ignore[reportOptionalMemberAccess]
+            result_ids = probe_manager.find_probes_by_name_substring( # type: ignore
+                data['name_substring'], # type: ignore
+                data.get('case_sensitive', False) # type: ignore
+            )
+        
+        elif data.get('concentration_range'): # type: ignore
+            range_data = data['concentration_range'] # type: ignore
+            result_ids = probe_manager.find_probes_by_concentration_range( # type: ignore
+                range_data['element'],
+                range_data.get('min'),
+                range_data.get('max')
+            )
+        
+        # Фильтруем пробы по ID
+        filtered_probes = [p for p in probe_manager.probes if p.id in result_ids] # type: ignore
+        
+        return jsonify({
+            'success': True,
+            'data': [probe.to_dict() for probe in filtered_probes],
+            'count': len(filtered_probes)
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/probes/tags', methods=['POST'])
+def manage_tags():
+    """Управление тегами проб"""
+    try:
+        data = request.json
+        action = data.get('action')  # pyright: ignore[reportOptionalMemberAccess] # 'add' или 'remove'
+        tag = data.get('tag') # type: ignore
+        probe_ids = data.get('probe_ids', []) # type: ignore
+        
+        if action == 'add':
+            probe_manager.add_tag_to_probes(tag, probe_ids) # type: ignore
+        elif action == 'remove':
+            probe_manager.remove_tag_from_probes(tag, probe_ids) # type: ignore
+        else:
+            return jsonify({'success': False, 'error': 'Неизвестное действие'}), 400
+        
+        probe_manager.save_probes() # type: ignore
+        
+        return jsonify({
+            'success': True,
+            'message': f'Тег "{tag}" успешно {action}'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/probes/state-tags', methods=['POST'])
+def add_state_tags():
+    """Добавить теги состояний (твердая/жидкая)"""
+    try:
+        probe_manager.add_state_tags() # type: ignore
+        probe_manager.save_probes() # type: ignore
+        
+        return jsonify({
+            'success': True,
+            'message': 'Теги состояний добавлены'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/probes/group', methods=['POST'])
+def create_group():
+    """Создать группу проб"""
+    try:
+        data = request.json
+        group_name = data.get('name') # pyright: ignore[reportOptionalMemberAccess]
+        probe_ids = data.get('probe_ids', []) # pyright: ignore[reportOptionalMemberAccess]
+        
+        group_id = probe_manager.group_probes(group_name, probe_ids) # pyright: ignore[reportFunctionMemberAccess]
+        probe_manager.save_probes() # pyright: ignore[reportFunctionMemberAccess]
+        
+        return jsonify({
+            'success': True,
+            'message': f'Группа "{group_name}" создана',
+            'group_id': group_id
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/probes/add-field', methods=['POST'])
+def add_field():
+    """Добавить поле на основе имени пробы"""
+    try:
+        data = request.json
+        field_name = data.get('field_name') # pyright: ignore[reportOptionalMemberAccess]
+        pattern = data.get('pattern') # pyright: ignore[reportOptionalMemberAccess]
+        
+        probe_manager.add_field_based_on_name_pattern(field_name, pattern) # pyright: ignore[reportFunctionMemberAccess]
+        probe_manager.save_probes() # pyright: ignore[reportFunctionMemberAccess]
+        
+        return jsonify({
+            'success': True,
+            'message': f'Поле "{field_name}" добавлено'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/probes/batch-tags', methods=['POST'])
+def batch_tags():
+    """Пакетное добавление тегов по правилам"""
+    try:
+        data = request.json
+        rules = data.get('rules', []) # pyright: ignore[reportOptionalMemberAccess]
+        
+        probe_manager.batch_add_tags_by_rules(rules) # pyright: ignore[reportFunctionMemberAccess]
+        probe_manager.save_probes() # pyright: ignore[reportFunctionMemberAccess]
+        
+        return jsonify({
+            'success': True,
+            'message': f'Применено {len(rules)} правил'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/probes/filter', methods=['POST'])
+def filter_probes():
+    """Фильтрация проб по тегам"""
+    try:
+        data = request.json
+        tags = data.get('tags', []) # pyright: ignore[reportOptionalMemberAccess]
+        match_all = data.get('match_all', True) # pyright: ignore[reportOptionalMemberAccess]
+        
+        filtered_probes = probe_manager.get_probes_by_tags(tags, match_all) # pyright: ignore[reportFunctionMemberAccess]
+        
+        return jsonify({
+            'success': True,
+            'data': [probe.to_dict() for probe in filtered_probes],
+            'count': len(filtered_probes)
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/statistics', methods=['GET'])
+def get_statistics():
+    """Получить статистику по пробам"""
+    try:
+        stats = probe_manager.get_statistics() # pyright: ignore[reportFunctionMemberAccess]
+        return jsonify({
+            'success': True,
+            'data': stats
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/probes/update_probes_manager', methods=['POST'])
+def update_probe_by_manager():
+    """Обновить данные пробы"""
+    try:
+        data = request.json
+        probe_id = data.get('id') # type: ignore
+        
+        # Находим пробу
+        probe = next((p for p in probe_manager.probes if p.id == probe_id), None) # type: ignore
+        if not probe:
+            return jsonify({'success': False, 'error': 'Проба не найдена'}), 404
+        
+        # Обновляем поля (кроме id)
+        for key, value in data.items(): # type: ignore
+            if key != 'id' and hasattr(probe, key):
+                setattr(probe, key, value)
+        
+        probe_manager.save_probes() # type: ignore
+        
+        return jsonify({
+            'success': True,
+            'message': 'Проба обновлена',
+            'data': probe.to_dict()
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/probes/parse-name', methods=['POST'])
+def parse_probe_name():
+    """Парсинг имени пробы"""
+    try:
+        data = request.json
+        probe_name = data.get('name', '') # type: ignore
+        
+        parsed = probe_manager.parse_probe_name(probe_name) # type: ignore
+        
+        return jsonify({
+            'success': True,
+            'data': parsed
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/mass')
+def render_mass():
+    return render_template('mass.html')
+
+# Масс баланс, Функция для парсинга имени пробы
+def parse_probe_name_mass(name):
+    # Ищем нулевую пробу вида T2-{m}C{n}
+    base_match = re.match(r'T2-(\d+)C(\d+)$', name)
+    if base_match:
+        return {
+            'type': 'base',
+            'method': int(base_match.group(1)),
+            'repeat': int(base_match.group(2)),
+            'stage': 'C',
+            'full_method': base_match.group(1)
+        }
+    
+    # Ищем пробы типа A и B
+    simple_match = re.match(r'T2-(\d+)([AB])(\d+)$', name)
+    if simple_match:
+        return {
+            'type': 'simple',
+            'method': int(simple_match.group(1)),
+            'stage': simple_match.group(2),
+            'repeat': int(simple_match.group(3)),
+            'full_method': simple_match.group(1)
+        }
+    
+    # Ищем пробы с L
+    l_match = re.match(r'T2-L(\d+)([ABCP])(\d+)$', name)
+    if l_match:
+        return {
+            'type': 'L_simple',
+            'method': int(l_match.group(1)),
+            'stage': l_match.group(2),
+            'repeat': int(l_match.group(3)),
+            'full_method': l_match.group(1)
+        }
+    
+    # Ищем пробы с LPF
+    lpf_match = re.match(r'T2-L(\d+)P\1F\1([D])(\d+)$', name)
+    if lpf_match:
+        return {
+            'type': 'final1',
+            'method': int(lpf_match.group(1)),
+            'stage': lpf_match.group(2),
+            'repeat': int(lpf_match.group(3)),
+            'full_method': lpf_match.group(1)
+        }
+    
+    # Ищем пробы с LPFN
+    lpfne_match = re.match(r'T2-L(\d+)P\1F\1N\1([E])(\d+)$', name)
+    if lpfne_match:
+        return {
+            'type': 'final2',
+            'method': int(lpfne_match.group(1)),
+            'stage': lpfne_match.group(2),
+            'repeat': int(lpfne_match.group(3)),
+            'full_method': lpfne_match.group(1)
+        }
+    
+    # Ищем другие пробы с более сложными названиями
+    complex_match = re.match(r'T2-L(\d+)P\1F\1([ABC])(\d+)$', name)
+    if complex_match:
+        return {
+            'type': 'complex',
+            'method': int(complex_match.group(1)),
+            'stage': complex_match.group(2),
+            'repeat': int(complex_match.group(3)),
+            'full_method': complex_match.group(1)
+        }
+    
+    complex_match2 = re.match(r'T2-L(\d+)P(\d+)F(\d+)([ABC])(\d+)$', name)
+    if complex_match2:
+        return {
+            'type': 'complex',
+            'method': int(complex_match2.group(1)),
+            'stage': complex_match2.group(4),
+            'repeat': int(complex_match2.group(5)),
+            'full_method': f"{complex_match2.group(1)}-{complex_match2.group(2)}-{complex_match2.group(3)}"
+        }
+    
+    return None
+
+# Поиск серий
+@app.route('/api/series', methods=['GET'])
+def get_series():
+    data = load_data()
+    probes = data.get('probes', [])
+    
+    # Группируем пробы по методике и повторности
+    series_dict = defaultdict(list)
+    
+    for probe in probes:
+        parsed = parse_probe_name_mass(probe['name'])
+        if parsed:
+            key = (parsed['method'], parsed['repeat'])
+            probe['parsed'] = parsed
+            series_dict[key].append(probe)
+    
+    # Фильтруем только полные серии (есть нулевая проба C)
+    complete_series = []
+    for (method_num, repeat_num), probes_list in series_dict.items():
+        # Проверяем наличие нулевой пробы T2-{m}C{n}
+        has_base = any(p['parsed']['type'] == 'base' for p in probes_list)
+        
+        if has_base:
+            # Сортируем пробы по типам для удобства
+            series_probes = {
+                'method': method_num,
+                'repeat': repeat_num,
+                'probes': probes_list,
+                'base': next(p for p in probes_list if p['parsed']['type'] == 'base'),
+                'source_A': next((p for p in probes_list if 'A' in p['parsed']['stage'] and p['parsed']['type'] in ['simple', 'complex']), None),
+                'source_B': next((p for p in probes_list if 'B' in p['parsed']['stage'] and p['parsed']['type'] in ['simple', 'complex']), None),
+                'final_D': next((p for p in probes_list if p['parsed']['stage'] == 'D'), None),
+                'final_E': next((p for p in probes_list if p['parsed']['stage'] == 'E'), None)
+            }
+            complete_series.append(series_probes)
+    
+    return jsonify({'series': complete_series})
+
+# Расчет масс-баланса
+@app.route('/api/mass-balance/<int:method>/<int:repeat>', methods=['GET'])
+def calculate_mass_balance(method, repeat):
+    data = load_data()
+    probes = data.get('probes', [])
+    
+    # Находим нужные пробы
+    series_probes = []
+    for probe in probes:
+        parsed = parse_probe_name_mass(probe['name'])
+        if parsed and parsed['method'] == method and parsed['repeat'] == repeat:
+            probe['parsed'] = parsed
+            series_probes.append(probe)
+    
+    if not series_probes:
+        return jsonify({'error': 'Series not found'}), 404
+    
+    # Извлекаем конкретные пробы
+    source_A = next((p for p in series_probes if 'A' in p['parsed']['stage'] and p['parsed']['type'] in ['simple', 'complex']), None)
+    source_B = next((p for p in series_probes if 'B' in p['parsed']['stage'] and p['parsed']['type'] in ['simple', 'complex']), None)
+    final_D = next((p for p in series_probes if p['parsed']['stage'] == 'D'), None)
+    final_E = next((p for p in series_probes if p['parsed']['stage'] == 'E'), None)
+    
+    if not all([source_A, source_B]):
+        return jsonify({'error': 'Source probes not found'}), 400
+    
+    metals = ['Fe', 'Cu', 'Ni']
+    results = {}
+    
+    for metal in metals:
+        # Сумма исходных проб
+        source_total = source_A.get(metal, 0) + source_B.get(metal, 0) # type: ignore
+        
+        # Сумма конечных продуктов (если есть)
+        final_total = 0
+        if final_D:
+            final_total += final_D.get(metal, 0)
+        if final_E:
+            final_total += final_E.get(metal, 0)
+        
+        if source_total > 0:
+            percentage_remaining = (final_total / source_total) * 100 if final_total > 0 else 0
+            percentage_lost = 100 - percentage_remaining
+        else:
+            percentage_remaining = 0
+            percentage_lost = 0
+        
+        results[metal] = {
+            'source_total': round(source_total, 2),
+            'final_total': round(final_total, 2),
+            'percentage_remaining': round(percentage_remaining, 2),
+            'percentage_lost': round(percentage_lost, 2),
+            'source_A': round(source_A.get(metal, 0), 2), # type: ignore
+            'source_B': round(source_B.get(metal, 0), 2), # type: ignore
+            'final_D': round(final_D.get(metal, 0), 2) if final_D else 0,
+            'final_E': round(final_E.get(metal, 0), 2) if final_E else 0
+        }
+    
+    return jsonify({
+        'method': method,
+        'repeat': repeat,
+        'results': results,
+        'probes_found': {
+            'source_A': source_A['name'] if source_A else 'Not found',
+            'source_B': source_B['name'] if source_B else 'Not found',
+            'final_D': final_D['name'] if final_D else 'Not found',
+            'final_E': final_E['name'] if final_E else 'Not found'
+        }
+    })
+
+# Данные для barplot
+@app.route('/api/metal-content/<int:method>/<int:repeat>', methods=['GET'])
+def get_metal_content(method, repeat):
+    data = load_data()
+    probes = data.get('probes', [])
+    
+    series_probes = []
+    for probe in probes:
+        parsed = parse_probe_name_mass(probe['name'])
+        if parsed and parsed['method'] == method and parsed['repeat'] == repeat:
+            probe['parsed'] = parsed
+            series_probes.append(probe)
+    
+    if not series_probes:
+        return jsonify({'error': 'Series not found'}), 404
+    
+    # Группируем пробы по стадиям (буквам)
+    stages = defaultdict(list)
+    for probe in series_probes:
+        stage = probe['parsed']['stage']
+        stages[stage].append(probe)
+    
+    # Подготавливаем данные для графика
+    metals = ['Fe', 'Cu', 'Ni']
+    chart_data = {}
+    
+    for metal in metals:
+        stage_data = []
+        for stage, probes_list in sorted(stages.items()):
+            if stage in ['A', 'B', 'C', 'D', 'E']:  # Только интересующие нас стадии
+                values = [p.get(metal, 0) for p in probes_list]
+                if values:
+                    avg_value = sum(values) / len(values)
+                    stage_data.append({
+                        'stage': stage,
+                        'value': round(avg_value, 2),
+                        'individual_values': [round(v, 2) for v in values],
+                        'probe_names': [p['name'] for p in probes_list]
+                    })
+        
+        chart_data[metal] = stage_data
+    
+    return jsonify({
+        'method': method,
+        'repeat': repeat,
+        'chart_data': chart_data,
+        'stages_found': list(stages.keys())
+    })
+
+# Обновление базы данных
+@app.route('/api/update-database', methods=['POST'])
+def update_database():
+    try:
+        data = request.get_json()
+        save_data(data)
+        return jsonify({'status': 'success', 'message': 'Database updated'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Получение всей базы данных
+@app.route('/api/database', methods=['GET'])
+def get_database():
+    return jsonify(load_data())
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)
