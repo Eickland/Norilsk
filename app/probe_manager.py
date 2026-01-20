@@ -66,7 +66,6 @@ class ProbeManager:
             for field in Probe.__annotations__:
                 if field in probe_data:
                     probe_kwargs[field] = probe_data[field]
-            
             probe = Probe(**probe_kwargs)
             probe.custom_fields = custom_fields
             probes.append(probe)

@@ -1,105 +1,6 @@
 [
   {
     "id": 1,
-    "timestamp": "2026-01-12T09:20:44.777320",
-    "description": "Подтверждение удаления пробы #290",
-    "author": "system",
-    "change_type": "delete_confirm",
-    "hash": "300cdfc4b0e470f90d55a7a2339d454d",
-    "filename": "v51_data.json",
-    "data_size": 142524,
-    "probes_count": 289
-  },
-  {
-    "id": 2,
-    "timestamp": "2026-01-12T18:55:52.529583",
-    "description": "Редактирование пробы #50",
-    "author": "anonymous",
-    "change_type": "edit",
-    "hash": "d32eb5ab8c484af085bd9e0369481a8a",
-    "filename": "v51_data.json",
-    "data_size": 142525,
-    "probes_count": 289
-  },
-  {
-    "id": 3,
-    "timestamp": "2026-01-15T04:35:20.341921",
-    "description": "Создание серии проб 'T2-4C1' (методика 4)",
-    "author": "anonymous",
-    "change_type": "series_creation",
-    "hash": "f946832fcb10a7601136fccb1de23021",
-    "filename": "v51_data.json",
-    "data_size": 142523,
-    "probes_count": 289
-  },
-  {
-    "id": 4,
-    "timestamp": "2026-01-15T04:35:20.385546",
-    "description": "Серия 'T2-4C1' создана: 16 проб",
-    "author": "system",
-    "change_type": "series_complete",
-    "hash": "f22952a15d4bba975b9332817214fe19",
-    "filename": "v51_data.json",
-    "data_size": 150551,
-    "probes_count": 305
-  },
-  {
-    "id": 5,
-    "timestamp": "2026-01-15T04:52:54.485921",
-    "description": "Backup before restoring version 49",
-    "author": "system",
-    "change_type": "backup",
-    "hash": "60dd81632680c75caf052321f6c9e05b",
-    "filename": "v51_data.json",
-    "data_size": 202528,
-    "probes_count": 305
-  },
-  {
-    "id": 6,
-    "timestamp": "2026-01-15T04:52:54.514614",
-    "description": "Restored from version 49",
-    "author": "system",
-    "change_type": "restore",
-    "hash": "f22952a15d4bba975b9332817214fe19",
-    "filename": "restore_v49_20260115_045254.json",
-    "data_size": 150551,
-    "probes_count": 305
-  },
-  {
-    "id": 7,
-    "timestamp": "2026-01-15T04:53:14.485145",
-    "description": "Backup before restoring version 47",
-    "author": "system",
-    "change_type": "backup",
-    "hash": "60dd81632680c75caf052321f6c9e05b",
-    "filename": "v52_data.json",
-    "data_size": 202528,
-    "probes_count": 305
-  },
-  {
-    "id": 8,
-    "timestamp": "2026-01-15T04:53:14.510050",
-    "description": "Restored from version 47",
-    "author": "system",
-    "change_type": "restore",
-    "hash": "60dd81632680c75caf052321f6c9e05b",
-    "filename": "restore_v47_20260115_045314.json",
-    "data_size": 202528,
-    "probes_count": 305
-  },
-  {
-    "id": 9,
-    "timestamp": "2026-01-15T04:53:51.947996",
-    "description": "Restored from version 43",
-    "author": "system",
-    "change_type": "restore",
-    "hash": "60dd81632680c75caf052321f6c9e05b",
-    "filename": "restore_v43_20260115_045351.json",
-    "data_size": 202528,
-    "probes_count": 305
-  },
-  {
-    "id": 10,
     "timestamp": "2026-01-15T06:38:38.203883",
     "description": "Автоматический пересчет зависимых полей",
     "author": "system",
@@ -110,7 +11,7 @@
     "probes_count": 289
   },
   {
-    "id": 11,
+    "id": 2,
     "timestamp": "2026-01-15T06:38:38.259599",
     "description": "Пересчет зависимых полей завершен: масса - 289, плотность - 0",
     "author": "system",
@@ -121,7 +22,7 @@
     "probes_count": 289
   },
   {
-    "id": 12,
+    "id": 3,
     "timestamp": "2026-01-15T06:39:19.948725",
     "description": "Автоматический пересчет зависимых полей",
     "author": "system",
@@ -132,7 +33,7 @@
     "probes_count": 289
   },
   {
-    "id": 13,
+    "id": 4,
     "timestamp": "2026-01-15T06:39:20.020693",
     "description": "Пересчет зависимых полей завершен: масса - 289, плотность - 1",
     "author": "system",
@@ -143,7 +44,7 @@
     "probes_count": 289
   },
   {
-    "id": 14,
+    "id": 5,
     "timestamp": "2026-01-15T06:39:57.946376",
     "description": "Автоматический пересчет зависимых полей",
     "author": "system",
@@ -154,7 +55,7 @@
     "probes_count": 289
   },
   {
-    "id": 15,
+    "id": 6,
     "timestamp": "2026-01-15T06:39:58.006149",
     "description": "Пересчет зависимых полей завершен: масса - 289, плотность - 0",
     "author": "system",
@@ -165,7 +66,7 @@
     "probes_count": 289
   },
   {
-    "id": 16,
+    "id": 7,
     "timestamp": "2026-01-19T23:41:08.920645",
     "description": "Пересчет зависимых полей завершен: масса - 289, плотность - 0",
     "author": "system",
@@ -176,7 +77,7 @@
     "probes_count": 289
   },
   {
-    "id": 17,
+    "id": 8,
     "timestamp": "2026-01-19T23:41:20.036204",
     "description": "Пересчет зависимых полей завершен: масса - 289, плотность - 0",
     "author": "system",
@@ -187,7 +88,7 @@
     "probes_count": 289
   },
   {
-    "id": 18,
+    "id": 9,
     "timestamp": "2026-01-19T23:41:33.129564",
     "description": "Импорт файла 'export_20260119_203633.csv' - обновлено: 293, добавлено: 190",
     "author": "anonymous",
@@ -198,7 +99,7 @@
     "probes_count": 479
   },
   {
-    "id": 19,
+    "id": 10,
     "timestamp": "2026-01-19T23:41:36.431520",
     "description": "Нормализация завершена: обновлено 179 ID",
     "author": "system",
@@ -209,7 +110,7 @@
     "probes_count": 479
   },
   {
-    "id": 20,
+    "id": 11,
     "timestamp": "2026-01-19T23:41:36.543931",
     "description": "Автоматический пересчет зависимых полей",
     "author": "system",
@@ -220,7 +121,7 @@
     "probes_count": 479
   },
   {
-    "id": 21,
+    "id": 12,
     "timestamp": "2026-01-19T23:41:36.631173",
     "description": "Пересчет зависимых полей завершен: масса - 100, плотность - 16",
     "author": "system",
@@ -231,7 +132,7 @@
     "probes_count": 479
   },
   {
-    "id": 22,
+    "id": 13,
     "timestamp": "2026-01-19T23:46:04.110923",
     "description": "Пересчет зависимых полей завершен: масса - 100, плотность - 16",
     "author": "system",
@@ -242,7 +143,7 @@
     "probes_count": 479
   },
   {
-    "id": 23,
+    "id": 14,
     "timestamp": "2026-01-19T23:49:09.369080",
     "description": "Автоматический пересчет зависимых полей",
     "author": "system",
@@ -253,7 +154,7 @@
     "probes_count": 483
   },
   {
-    "id": 24,
+    "id": 15,
     "timestamp": "2026-01-19T23:49:09.535034",
     "description": "Пересчет зависимых полей завершен: масса - 148, плотность - 63",
     "author": "system",
@@ -264,7 +165,7 @@
     "probes_count": 483
   },
   {
-    "id": 25,
+    "id": 16,
     "timestamp": "2026-01-19T23:51:30.829615",
     "description": "Пересчет зависимых полей завершен: масса - 148, плотность - 63",
     "author": "system",
@@ -275,7 +176,7 @@
     "probes_count": 483
   },
   {
-    "id": 26,
+    "id": 17,
     "timestamp": "2026-01-20T00:45:34.782608",
     "description": "Пересчет зависимых полей завершен: масса - 148, плотность - 63",
     "author": "system",
@@ -286,7 +187,7 @@
     "probes_count": 483
   },
   {
-    "id": 27,
+    "id": 18,
     "timestamp": "2026-01-20T00:56:48.404484",
     "description": "Пересчет зависимых полей завершен: масса - 148, плотность - 63",
     "author": "system",
@@ -297,7 +198,7 @@
     "probes_count": 483
   },
   {
-    "id": 28,
+    "id": 19,
     "timestamp": "2026-01-20T00:58:46.126348",
     "description": "Пересчет зависимых полей завершен: масса - 148, плотность - 63",
     "author": "system",
@@ -308,7 +209,7 @@
     "probes_count": 483
   },
   {
-    "id": 29,
+    "id": 20,
     "timestamp": "2026-01-20T00:59:33.471253",
     "description": "Импорт файла '16-01-2025-Norilsk.csv' - обновлено: 32, добавлено: 9",
     "author": "anonymous",
@@ -319,7 +220,7 @@
     "probes_count": 492
   },
   {
-    "id": 30,
+    "id": 21,
     "timestamp": "2026-01-20T00:59:36.973481",
     "description": "Нормализация завершена: обновлено 38 ID",
     "author": "system",
@@ -330,7 +231,7 @@
     "probes_count": 492
   },
   {
-    "id": 31,
+    "id": 22,
     "timestamp": "2026-01-20T00:59:37.127496",
     "description": "Автоматический пересчет зависимых полей",
     "author": "system",
@@ -341,7 +242,7 @@
     "probes_count": 492
   },
   {
-    "id": 32,
+    "id": 23,
     "timestamp": "2026-01-20T00:59:37.255257",
     "description": "Пересчет зависимых полей завершен: масса - 157, плотность - 63",
     "author": "system",
@@ -352,7 +253,7 @@
     "probes_count": 492
   },
   {
-    "id": 33,
+    "id": 24,
     "timestamp": "2026-01-20T00:59:57.860473",
     "description": "Пересчет зависимых полей завершен: масса - 157, плотность - 63",
     "author": "system",
@@ -363,7 +264,7 @@
     "probes_count": 492
   },
   {
-    "id": 34,
+    "id": 25,
     "timestamp": "2026-01-20T01:03:06.709594",
     "description": "Restored from version 45",
     "author": "system",
@@ -374,7 +275,7 @@
     "probes_count": 492
   },
   {
-    "id": 35,
+    "id": 26,
     "timestamp": "2026-01-20T01:03:08.861615",
     "description": "Пересчет зависимых полей завершен: масса - 157, плотность - 63",
     "author": "system",
@@ -385,7 +286,7 @@
     "probes_count": 492
   },
   {
-    "id": 36,
+    "id": 27,
     "timestamp": "2026-01-20T01:03:10.053519",
     "description": "Пересчет зависимых полей завершен: масса - 157, плотность - 63",
     "author": "system",
@@ -396,7 +297,7 @@
     "probes_count": 492
   },
   {
-    "id": 37,
+    "id": 28,
     "timestamp": "2026-01-20T01:04:07.252333",
     "description": "Автоматический пересчет зависимых полей",
     "author": "system",
@@ -407,7 +308,7 @@
     "probes_count": 483
   },
   {
-    "id": 38,
+    "id": 29,
     "timestamp": "2026-01-20T01:04:07.346220",
     "description": "Пересчет зависимых полей завершен: масса - 148, плотность - 63",
     "author": "system",
@@ -418,7 +319,7 @@
     "probes_count": 483
   },
   {
-    "id": 39,
+    "id": 30,
     "timestamp": "2026-01-20T10:11:28.273322",
     "description": "Автоматический пересчет зависимых полей",
     "author": "system",
@@ -429,7 +330,7 @@
     "probes_count": 483
   },
   {
-    "id": 40,
+    "id": 31,
     "timestamp": "2026-01-20T10:11:28.360727",
     "description": "Пересчет зависимых полей завершен: масса - 155, плотность - 70",
     "author": "system",
@@ -440,7 +341,7 @@
     "probes_count": 483
   },
   {
-    "id": 41,
+    "id": 32,
     "timestamp": "2026-01-20T10:20:53.631427",
     "description": "Импорт файла 'csv' - состояние до импорта",
     "author": "anonymous",
@@ -451,7 +352,7 @@
     "probes_count": 483
   },
   {
-    "id": 42,
+    "id": 33,
     "timestamp": "2026-01-20T10:20:53.716061",
     "description": "Импорт файла 'csv' - обновлено: 483, добавлено: 0",
     "author": "anonymous",
@@ -462,7 +363,7 @@
     "probes_count": 483
   },
   {
-    "id": 43,
+    "id": 34,
     "timestamp": "2026-01-20T10:20:57.068028",
     "description": "Пересчет зависимых полей завершен: масса - 483, плотность - 70",
     "author": "system",
@@ -473,7 +374,7 @@
     "probes_count": 483
   },
   {
-    "id": 44,
+    "id": 35,
     "timestamp": "2026-01-20T10:24:31.243510",
     "description": "Restored from version 48",
     "author": "system",
@@ -484,7 +385,7 @@
     "probes_count": 483
   },
   {
-    "id": 45,
+    "id": 36,
     "timestamp": "2026-01-20T10:24:33.346496",
     "description": "Пересчет зависимых полей завершен: масса - 483, плотность - 70",
     "author": "system",
@@ -495,7 +396,7 @@
     "probes_count": 483
   },
   {
-    "id": 46,
+    "id": 37,
     "timestamp": "2026-01-20T10:36:24.676150",
     "description": "Пересчет зависимых полей завершен: масса - 483, плотность - 70",
     "author": "system",
@@ -506,7 +407,7 @@
     "probes_count": 483
   },
   {
-    "id": 47,
+    "id": 38,
     "timestamp": "2026-01-20T10:37:35.270472",
     "description": "Импорт файла '13-14_01_1.csv' - обновлено: 46, добавлено: 13",
     "author": "anonymous",
@@ -517,7 +418,7 @@
     "probes_count": 496
   },
   {
-    "id": 48,
+    "id": 39,
     "timestamp": "2026-01-20T10:37:38.729923",
     "description": "Нормализация завершена: обновлено 59 ID",
     "author": "system",
@@ -528,7 +429,7 @@
     "probes_count": 496
   },
   {
-    "id": 49,
+    "id": 40,
     "timestamp": "2026-01-20T10:37:38.834492",
     "description": "Автоматический пересчет зависимых полей",
     "author": "system",
@@ -539,7 +440,7 @@
     "probes_count": 496
   },
   {
-    "id": 50,
+    "id": 41,
     "timestamp": "2026-01-20T10:37:38.910369",
     "description": "Пересчет зависимых полей завершен: масса - 496, плотность - 70",
     "author": "system",
@@ -548,5 +449,104 @@
     "filename": "v51_data.json",
     "data_size": 705802,
     "probes_count": 496
+  },
+  {
+    "id": 42,
+    "timestamp": "2026-01-20T11:57:21.756915",
+    "description": "Автоматическая нормализация ID проб",
+    "author": "system",
+    "change_type": "normalization",
+    "hash": "b6be983a3dab1ac5d822d8ffe8f7908f",
+    "filename": "v51_data.json",
+    "data_size": 449398,
+    "probes_count": 290
+  },
+  {
+    "id": 43,
+    "timestamp": "2026-01-20T11:57:21.803616",
+    "description": "Нормализация завершена: обновлено 2 ID",
+    "author": "system",
+    "change_type": "normalization_complete",
+    "hash": "bd75e4b746c087dd0d0e35f5184d048f",
+    "filename": "v51_data.json",
+    "data_size": 447513,
+    "probes_count": 290
+  },
+  {
+    "id": 44,
+    "timestamp": "2026-01-20T11:57:21.865725",
+    "description": "Автоматический пересчет зависимых полей",
+    "author": "system",
+    "change_type": "recalculation",
+    "hash": "c080054331b62f25ebd91f4e109a221c",
+    "filename": "v51_data.json",
+    "data_size": 467959,
+    "probes_count": 290
+  },
+  {
+    "id": 45,
+    "timestamp": "2026-01-20T11:57:21.916036",
+    "description": "Пересчет зависимых полей завершен: масса - 290, плотность - 0",
+    "author": "system",
+    "change_type": "recalculation_complete",
+    "hash": "3336d9e1d2e6de52bb4145697e506a0c",
+    "filename": "v51_data.json",
+    "data_size": 468249,
+    "probes_count": 290
+  },
+  {
+    "id": 46,
+    "timestamp": "2026-01-20T11:57:21.988741",
+    "description": "Форматирование завершено: 8989 значений в 290 пробах",
+    "author": "system",
+    "change_type": "formatting_complete",
+    "hash": "488a624063f72046ada0f5918029b13f",
+    "filename": "v51_data.json",
+    "data_size": 467558,
+    "probes_count": 290
+  },
+  {
+    "id": 47,
+    "timestamp": "2026-01-20T11:57:31.873198",
+    "description": "Импорт файла 'csv' - обновлено: 294, добавлено: 189",
+    "author": "anonymous",
+    "change_type": "import",
+    "hash": "c6c7f22788b28d626b5a7a8a2efa9c74",
+    "filename": "v51_data.json",
+    "data_size": 699243,
+    "probes_count": 479
+  },
+  {
+    "id": 48,
+    "timestamp": "2026-01-20T11:57:34.919937",
+    "description": "Нормализация завершена: обновлено 179 ID",
+    "author": "system",
+    "change_type": "normalization_complete",
+    "hash": "9a66caf3c87df3db4c8b929769c8d594",
+    "filename": "v51_data.json",
+    "data_size": 701381,
+    "probes_count": 479
+  },
+  {
+    "id": 49,
+    "timestamp": "2026-01-20T11:57:35.043567",
+    "description": "Автоматический пересчет зависимых полей",
+    "author": "system",
+    "change_type": "recalculation",
+    "hash": "78710fcc062106e99b74a5cea0c6b8de",
+    "filename": "v51_data.json",
+    "data_size": 737206,
+    "probes_count": 479
+  },
+  {
+    "id": 50,
+    "timestamp": "2026-01-20T11:57:35.155888",
+    "description": "Пересчет зависимых полей завершен: масса - 479, плотность - 70",
+    "author": "system",
+    "change_type": "recalculation_complete",
+    "hash": "3f43e07bc9dd753cb31bbe5a3f4d9101",
+    "filename": "v51_data.json",
+    "data_size": 772537,
+    "probes_count": 479
   }
 ]

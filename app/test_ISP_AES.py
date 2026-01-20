@@ -1,40 +1,454 @@
 import pandas as pd
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
+import json
+import shutil
+from pathlib import Path
+from typing import Any, Dict, List, Set, Tuple, Optional
 import re
 
-def process_icp_aes_data(file_path):
-    """
-    Обрабатывает данные ИСП АЭС:
-    1. Удаляет строки со значением 'некал'
-    2. Заменяет ячейки с 'uv' или 'ox' на 0
-    3. Удаляет 'x' из значений, оставляя только число
-    4. Группирует данные по металлам, выбирая 3 наиболее близких значения длин волн
-    5. Вычисляет среднее значение и стандартную погрешность (стандартное отклонение) для каждого металла
-    6. Возвращает таблицу с пробами, средними концентрациями металлов и их погрешностями
-    7. Удаляет из data.json пробы с именами "Стандарт 1" … "Стандарт 10"
-    8. Находит пробу "BLNK", вычитает её значения металлов из всех остальных проб, после вычитания удаляет BLNK из базы
-    9. Печатает в терминал отчёт (сколько удалено, найден ли BLNK, по каким полям вычитали)
-    10. Делает бэкап data.json.bak
-    """
-    encoding = 'utf-8'
-    sep = ';'
-    # Чтение данных из CSV файла
-    try:
-        # Пробуем с точкой
-        data = pd.read_csv(file_path, sep=sep, decimal='.', encoding=encoding)
-        
-        # Быстрая проверка на наличие чисел с запятой
-        sample = data.head(100).to_string()  # Проверяем первые 100 строк
-        if re.search(r'\d,\d{2}\b', sample):  # Ищем паттерн типа 123,45
-            data = pd.read_csv(file_path, sep=sep, decimal=',', encoding=encoding)
+def load_json_data(json_path: Path) -> Dict:
+    """Загрузка данных из JSON файла"""
+    if not json_path.exists():
+        raise FileNotFoundError(f"Файл данных не найден: {json_path}")
+    
+    with open(json_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
-    except:
-        data = pd.read_csv(file_path, sep=sep, decimal=',', encoding=encoding)
+def save_json_data(json_path: Path, data: Dict) -> None:
+    """Сохранение данных в JSON файл"""
+    # Создаем бэкап
+    backup_path = json_path.with_suffix(f'.backup_{pd.Timestamp.now().strftime("%Y%m%d_%H%M%S")}.json')
+    shutil.copy2(json_path, backup_path)
     
-    df = data
+    with open(json_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
     
-    df.rename(columns={f'{df.columns[0]}':'name'}, inplace=True)
+    print(f"[JSON] Бэкап создан: {backup_path}")
+
+def is_number(x: Any) -> bool:
+    """Проверка, является ли значение числом"""
+    return isinstance(x, (int, float)) and not isinstance(x, bool)
+
+def postprocess_json_database(json_path: Path) -> Dict[str, Any]:
+    """
+    Постобработка базы данных JSON:
+    1. Удаление стандартов (Стандарт 1-10)
+    2. Вычитание значений BLNK из всех проб
+    3. Удаление BLNK
+    """
+    if not json_path.exists():
+        print(f"\n[JSON] Файл не найден: {json_path} — пропускаю постобработку базы.")
+        return {'success': False, 'error': 'Файл не найден'}
+    
+    data = load_json_data(json_path)
+    
+    if "probes" not in data or not isinstance(data["probes"], list):
+        print("\n[JSON] В базе нет ключа 'probes' (ожидался список проб) — пропускаю.")
+        return {'success': False, 'error': 'Нет списка проб'}
+    
+    probes: List[Dict[str, Any]] = data["probes"]
+    original_count = len(probes)
+    
+    # Статистика
+    stats = {
+        'original_count': original_count,
+        'removed_standards': 0,
+        'blank_found': False,
+        'blank_subtracted_fields': set(),
+        'blank_removed': False
+    }
+    
+    # 1) Удалить стандарты
+    standard_names = {f"Стандарт {i}" for i in range(1, 11)}
+    removed_standards = [p for p in probes if p.get("name") in standard_names]
+    probes = [p for p in probes if p.get("name") not in standard_names]
+    stats['removed_standards'] = len(removed_standards)
+    
+    # 2) Найти BLNK
+    blank = None
+    for p in probes:
+        if p.get("name") == "BLNK":
+            blank = p
+            stats['blank_found'] = True
+            break
+    
+    metals_subtracted = set()
+    if blank is not None:
+        # Определяем, какие поля являются концентрациями металлов
+        # Ищем поля, которые могут быть металлами (исключаем служебные поля)
+        non_metal_keys = {"name", "id", "tags", "status_id", "sample_mass", 
+                         "V (ml)", "Масса навески (g)", "Масса твердого (g)", 
+                         "Плотность", "created_at", "last_normalized"}
+        
+        # Вычитаем только по числовым полям BLNK
+        for key, bval in blank.items():
+            # Пропускаем служебные поля
+            if key in non_metal_keys:
+                continue
+            # Пропускаем поля погрешностей (начинаются с 'd')
+            if isinstance(key, str) and key.startswith("d"):
+                continue
+            # Проверяем, что значение числовое
+            if not is_number(bval):
+                continue
+            
+            # Вычитаем из всех проб
+            for p in probes:
+                if p is blank:  # Пропускаем сам BLNK
+                    continue
+                if key in p and is_number(p[key]):
+                    p[key] = float(p[key]) - float(bval)
+                    metals_subtracted.add(key)
+        
+        # 3) Удалить сам BLNK после вычитания
+        probes = [p for p in probes if p.get("name") != "BLNK"]
+        stats['blank_removed'] = True
+        stats['blank_subtracted_fields'] = metals_subtracted
+    
+    # Сохраняем обновленные данные
+    data["probes"] = probes
+    save_json_data(json_path, data)
+    
+    # Формируем отчет
+    report = {
+        'success': True,
+        'original_probes': original_count,
+        'current_probes': len(probes),
+        'standards_removed': stats['removed_standards'],
+        'blank_found': stats['blank_found'],
+        'blank_removed': stats['blank_removed'],
+        'fields_subtracted': list(metals_subtracted) if metals_subtracted else [],
+        'removed_standard_names': [p.get('name') for p in removed_standards]
+    }
+    
+    # Выводим отчет в терминал
+    print("\n" + "="*60)
+    print("[JSON] ПОСТОБРАБОТКА БАЗЫ ДАННЫХ ЗАВЕРШЕНА")
+    print("="*60)
+    print(f"[JSON] Исходное количество проб: {original_count}")
+    print(f"[JSON] Текущее количество проб: {len(probes)}")
+    print(f"[JSON] Удалено стандартов: {stats['removed_standards']}")
+    if removed_standards:
+        print("[JSON] Удаленные стандарты:")
+        for p in removed_standards[:5]:  # Показываем первые 5
+            print(f"  - {p.get('name')} (id={p.get('id')})")
+        if len(removed_standards) > 5:
+            print(f"  ... и еще {len(removed_standards) - 5} стандартов")
+    
+    if stats['blank_found']:
+        print("[JSON] BLNK найден: значения вычтены, затем BLNK удалён.")
+        if metals_subtracted:
+            print("[JSON] Поля, по которым вычитали BLNK:")
+            for k in sorted(metals_subtracted):
+                print(f"  - {k}")
+        else:
+            print("[JSON] Не нашлось подходящих числовых полей для вычитания.")
+    else:
+        print("[JSON] BLNK не найден: вычитание не выполнялось.")
+    
+    print("="*60)
+    
+    return report
+
+def merge_probes_by_numbering(json_path: Path) -> Dict[str, Any]:
+    """
+    Объединение проб по нумерации:
+    1. Для проб, где два последних символа это цифры
+    2. Арифметически усреднить концентрации металлов тех проб, 
+       которые отличаются по названию только последней цифрой
+    3. В названии усредненной пробы убирается последний символ
+    4. Исходные пробы удаляются
+    """
+    data = load_json_data(json_path)
+    probes = data["probes"]
+    
+    original_count = len(probes)
+    
+    # Группируем пробы по базовому названию (без последнего символа)
+    probes_by_base_name = {}
+    
+    for probe in probes:
+        name = probe.get('name', '')
+        if len(name) >= 2 and name[-1].isdigit() and name[-2].isdigit():
+            base_name = name[:-1]  # Убираем последний символ
+            if base_name not in probes_by_base_name:
+                probes_by_base_name[base_name] = []
+            probes_by_base_name[base_name].append(probe)
+    
+    # Создаем новые усредненные пробы
+    new_probes = []
+    merged_count = 0
+    created_count = 0
+    
+    for base_name, probe_group in probes_by_base_name.items():
+        if len(probe_group) > 1:
+            # Создаем новую усредненную пробу
+            merged_probe = {}
+            
+            # Копируем общие поля из первой пробы
+            first_probe = probe_group[0]
+            for key, value in first_probe.items():
+                if key != 'id':  # ID будет сгенерирован позже
+                    merged_probe[key] = value
+            
+            # Устанавливаем новое имя
+            merged_probe['name'] = base_name
+            
+            # Усредняем числовые поля (концентрации металлов)
+            # Ищем все числовые поля
+            numeric_fields = {}
+            for probe in probe_group:
+                for key, value in probe.items():
+                    if key not in ['id', 'name', 'tags', 'status_id', 'created_at', 'last_normalized']:
+                        if is_number(value):
+                            if key not in numeric_fields:
+                                numeric_fields[key] = []
+                            numeric_fields[key].append(float(value))
+            
+            # Вычисляем средние значения
+            for field, values in numeric_fields.items():
+                if len(values) > 0:
+                    merged_probe[field] = np.mean(values)
+            
+            # Добавляем информацию о слиянии
+            if 'tags' not in merged_probe:
+                merged_probe['tags'] = []
+            merged_probe['tags'].append('автослияние')
+            merged_probe['merged_from'] = [p.get('name') for p in probe_group]
+            merged_probe['merge_date'] = pd.Timestamp.now().isoformat()
+            
+            new_probes.append(merged_probe)
+            merged_count += len(probe_group)
+            created_count += 1
+            
+            # Удаляем исходные пробы
+            for probe in probe_group:
+                if probe in probes:
+                    probes.remove(probe)
+    
+    # Добавляем новые пробы к существующим
+    probes.extend(new_probes)
+    
+    # Обновляем данные
+    data["probes"] = probes
+    
+    # Сохраняем изменения
+    save_json_data(json_path, data)
+    
+    report = {
+        'success': True,
+        'original_probes': original_count,
+        'current_probes': len(probes),
+        'merged_groups': len(probes_by_base_name),
+        'probes_merged': merged_count,
+        'new_probes_created': created_count
+    }
+    
+    print("\n" + "="*60)
+    print("[JSON] СЛИЯНИЕ ПРОБ ПО НУМЕРАЦИИ ЗАВЕРШЕНО")
+    print("="*60)
+    print(f"[JSON] Исходное количество проб: {original_count}")
+    print(f"[JSON] Текущее количество проб: {len(probes)}")
+    print(f"[JSON] Объединено групп проб: {len(probes_by_base_name)}")
+    print(f"[JSON] Объединено проб: {merged_count}")
+    print(f"[JSON] Создано новых проб: {created_count}")
+    print("="*60)
+    
+    return report
+
+def recalculate_concentrations(json_path: Path) -> Dict[str, Any]:
+    """
+    Пересчет концентраций металлов по правилам:
+    1. Если предпоследний символ названия пробы A (жидкие пробы):
+       - Если имя вида T2-{m}A1: концентрация × 50 × (V(ml)/1000)
+       - Другие имена: концентрация × 10 × (V(ml)/1000)
+    
+    2. Если предпоследний символ названия пробы B (твердые пробы):
+       - концентрация × 0.05 / масса_навески × масса_твердого
+    """
+    data = load_json_data(json_path)
+    probes = data["probes"]
+    
+    stats = {
+        'total_probes': len(probes),
+        'liquid_processed': 0,
+        'solid_processed': 0,
+        'volume_error': 0,
+        'mass_error': 0,
+        'solid_mass_error': 0,
+        'skipped': 0
+    }
+    
+    for probe in probes:
+        name = probe.get('name', '')
+        if len(name) < 2:
+            stats['skipped'] += 1
+            continue
+        
+        # Определяем тип пробы по предпоследнему символу
+        second_last_char = name[-2] if len(name) >= 2 else ''
+        
+        if second_last_char.upper() == 'A':
+            # Жидкая проба
+            stats['liquid_processed'] += 1
+            process_liquid_probe(probe, name, stats)
+            
+        elif second_last_char.upper() == 'B':
+            # Твердая проба
+            stats['solid_processed'] += 1
+            process_solid_probe(probe, name, stats)
+            
+        else:
+            stats['skipped'] += 1
+    
+    # Сохраняем изменения
+    data["probes"] = probes
+    save_json_data(json_path, data)
+    
+    print("\n" + "="*60)
+    print("[JSON] ПЕРЕСЧЕТ КОНЦЕНТРАЦИЙ ЗАВЕРШЕН")
+    print("="*60)
+    print(f"[JSON] Всего проб: {stats['total_probes']}")
+    print(f"[JSON] Обработано жидких проб: {stats['liquid_processed']}")
+    print(f"[JSON] Обработано твердых проб: {stats['solid_processed']}")
+    print(f"[JSON] Пропущено (не A/B): {stats['skipped']}")
+    print(f"[JSON] Ошибки объема: {stats['volume_error']}")
+    print(f"[JSON] Ошибки массы навески: {stats['mass_error']}")
+    print(f"[JSON] Ошибки массы твердого: {stats['solid_mass_error']}")
+    print("="*60)
+    
+    return stats
+
+def process_liquid_probe(probe: Dict, name: str, stats: Dict) -> None:
+    """Обработка жидкой пробы"""
+    # Проверяем наличие объема
+    volume = probe.get('V (ml)')
+    if volume is None or not is_number(volume):
+        # Добавляем тег об ошибке
+        if 'tags' not in probe:
+            probe['tags'] = []
+        probe['tags'].append('ошибка объема пробы')
+        stats['volume_error'] += 1
+        return
+    
+    volume = float(volume)
+    
+    # Определяем коэффициент умножения
+    # Проверяем паттерн T2-{m}A1
+    import re
+    pattern_t2 = r'^T2-\d+A\d+$'
+    
+    if re.match(pattern_t2, name):
+        multiplier = 50
+    else:
+        multiplier = 10
+    
+    # Коэффициент пересчета
+    conversion_factor = multiplier * (volume / 1000.0)
+    
+    # Пересчитываем все концентрации металлов
+    for key, value in probe.items():
+        # Пропускаем служебные поля
+        if key in ['name', 'id', 'tags', 'status_id', 'sample_mass', 
+                  'V (ml)', 'Масса навески (g)', 'Масса твердого (g)', 
+                  'Плотность', 'created_at', 'last_normalized']:
+            continue
+        # Пропускаем поля погрешностей
+        if key.startswith('d'):
+            continue
+        # Пересчитываем только числовые значения
+        if is_number(value):
+            probe[key] = float(value) * conversion_factor
+            # Также пересчитываем погрешность, если она есть
+            dkey = f'd{key}'
+            if dkey in probe and is_number(probe[dkey]):
+                probe[dkey] = float(probe[dkey]) * conversion_factor
+    
+    # Добавляем информацию о пересчете
+    if 'recalculation_history' not in probe:
+        probe['recalculation_history'] = []
+    probe['recalculation_history'].append({
+        'type': 'liquid_conversion',
+        'multiplier': multiplier,
+        'volume_ml': volume,
+        'conversion_factor': conversion_factor,
+        'date': pd.Timestamp.now().isoformat()
+    })
+
+def process_solid_probe(probe: Dict, name: str, stats: Dict) -> None:
+    """Обработка твердой пробы"""
+    # Проверяем наличие массы навески
+    aliquot_mass = probe.get('Масса навески (g)')
+    if aliquot_mass is None or not is_number(aliquot_mass):
+        # Добавляем тег об ошибке
+        if 'tags' not in probe:
+            probe['tags'] = []
+        probe['tags'].append('ошибка массы навески')
+        stats['mass_error'] += 1
+        return
+    
+    aliquot_mass = float(aliquot_mass)
+    
+    # Проверяем наличие массы твердого
+    solid_mass = probe.get('Масса твердого (g)')
+    if solid_mass is None or not is_number(solid_mass):
+        # Добавляем тег об ошибке
+        if 'tags' not in probe:
+            probe['tags'] = []
+        probe['tags'].append('ошибка массы твердого')
+        stats['solid_mass_error'] += 1
+        return
+    
+    solid_mass = float(solid_mass)
+    
+    # Коэффициент пересчета: 0.05 / масса_навески × масса_твердого
+    # 0.05 - объем аликвоты в литрах
+    conversion_factor = 0.05 / aliquot_mass * solid_mass
+    
+    # Пересчитываем все концентрации металлов
+    for key, value in probe.items():
+        # Пропускаем служебные поля
+        if key in ['name', 'id', 'tags', 'status_id', 'sample_mass', 
+                  'V (ml)', 'Масса навески (g)', 'Масса твердого (g)', 
+                  'Плотность', 'created_at', 'last_normalized']:
+            continue
+        # Пропускаем поля погрешностей
+        if key.startswith('d'):
+            continue
+        # Пересчитываем только числовые значения
+        if is_number(value):
+            probe[key] = float(value) * conversion_factor
+            # Также пересчитываем погрешность, если она есть
+            dkey = f'd{key}'
+            if dkey in probe and is_number(probe[dkey]):
+                probe[dkey] = float(probe[dkey]) * conversion_factor
+    
+    # Добавляем информацию о пересчете
+    if 'recalculation_history' not in probe:
+        probe['recalculation_history'] = []
+    probe['recalculation_history'].append({
+        'type': 'solid_conversion',
+        'aliquot_mass_g': aliquot_mass,
+        'solid_mass_g': solid_mass,
+        'conversion_factor': conversion_factor,
+        'date': pd.Timestamp.now().isoformat()
+    })
+
+def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Обрабатывает данные ИСП АЭС и интегрирует с базой данных
+    
+    Args:
+        file_path: Путь к CSV файлу с данными ИСП АЭС
+        json_data_path: Путь к JSON файлу базы данных (опционально)
+    
+    Returns:
+        Tuple[DataFrame, DataFrame]: обработанные данные и информацию о длинах волн
+    """
+    # Чтение данных из CSV файла
+    df = pd.read_csv(file_path, sep=';', decimal='.', encoding='utf-8')
+    df.rename(columns={f'{df.columns[0]}':'name'},inplace=True)
     
     # Удаление строк, где в столбце 'name' есть 'некал' или пустые строки
     df = df[~df[df.columns[0]].astype(str).str.contains('некал', case=False, na=False)]
@@ -152,7 +566,6 @@ def process_icp_aes_data(file_path):
     
     # Выбираем столбцы для каждого металла
     selected_columns = ['name']
-    selected_columns = ['name']
     metal_selected_wavelengths = {}
     
     for metal, wavelengths in metal_wavelengths.items():
@@ -165,7 +578,7 @@ def process_icp_aes_data(file_path):
     result_df = df[selected_columns].copy()
     
     final_df = pd.DataFrame()
-    final_df['name'] = result_df['name']
+    final_df['Название пробы'] = result_df['name']
     
     metal_mean_data = {}
     metal_std_data = {}
@@ -188,7 +601,7 @@ def process_icp_aes_data(file_path):
     for metal in metal_std_data.keys():
         final_df[f'd{metal}'] = metal_std_data[metal]
     
-    sorted_columns = ['name']
+    sorted_columns = ['Название пробы']
     metals_sorted = sorted(metal_mean_data.keys())
 
     for metal in metals_sorted:
@@ -322,7 +735,7 @@ def convert_df_to_database_format(df: pd.DataFrame, json_data_path: str) -> List
 # Пример использования функции
 if __name__ == "__main__":
     # Сохраните ваш CSV файл и укажите путь к нему
-    file_path = r"C:\Users\Kirill\Downloads\Telegram Desktop\16-01-2025-Norilsk.csv"
+    file_path = "металлы-01-12-2025 (2).csv"
     
     # Укажите путь к базе данных
     json_data_path = str(Path(__file__).parent.parent / 'data' / 'data.json')  # Измените на актуальный путь
@@ -330,23 +743,23 @@ if __name__ == "__main__":
     try:
         processed_data, wavelengths_info = process_icp_aes_data(file_path, json_data_path)
         
-        print("Обработанные данные (первые 5 строк):")
-        print(processed_data.head()) # type: ignore
-        print(f"\nРазмер таблицы: {processed_data.shape}") # type: ignore
+        print("\nОбработанные данные (первые 5 строк):")
+        print(processed_data.head())
+        print(f"\nРазмер таблицы: {processed_data.shape}")
         
         print("\nИнформация о выбранных длинах волн:")
         print(wavelengths_info)
         
         print("\nСтолбцы таблицы с данными:")
-        columns_list = list(processed_data.columns) # type: ignore
+        columns_list = list(processed_data.columns)
         for i, col in enumerate(columns_list, 1):
             print(f"{i:3d}. {col}")
         
         output_data_path = "Обработанные_данные_ИСП_АЭС_с_погрешностями.csv"
         output_wl_path = "Информация_о_длинах_волн.csv"
         
-        processed_data.to_csv(output_data_path, index=False, encoding='utf-8-sig') # type: ignore
-        wavelengths_info.to_csv(output_wl_path, index=False, encoding='utf-8-sig') # type: ignore
+        processed_data.to_csv(output_data_path, index=False, encoding='utf-8-sig')
+        wavelengths_info.to_csv(output_wl_path, index=False, encoding='utf-8-sig')
         
         print(f"\nОсновные данные сохранены в файл: {output_data_path}")
         print(f"Информация о длинах волн сохранена в файл: {output_wl_path}")

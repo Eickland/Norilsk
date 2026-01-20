@@ -611,7 +611,7 @@ def upload_file():
         
         # Обрабатываем файл с помощью Python-скрипта
         result_data, _ = process_icp_aes_data(
-            file_path=file_path, json_data_path=str(DATA_FILE)
+            file_path=file_path
         )
         
         json_data = convert_df_to_dict(result_data) # type: ignore
@@ -1934,7 +1934,7 @@ def check_and_recalculate_dependent_fields(data_file: str = str(DATA_FILE)) -> D
         }
 from probe_manager import ProbeManager
 
-
+'''
 probe_manager = ProbeManager(str(DATA_FILE)) # type: ignore
 
 @app.route('/probe_manager')
@@ -2154,7 +2154,7 @@ def parse_probe_name():
         })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
-
+'''
 @app.route('/mass')
 def render_mass():
     return render_template('mass.html')
