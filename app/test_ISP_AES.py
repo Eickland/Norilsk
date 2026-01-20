@@ -36,7 +36,7 @@ def process_icp_aes_data(file_path):
     
     df.rename(columns={f'{df.columns[0]}':'name'}, inplace=True)
     
-    # Удаление строк, где в столбце 'Метки Образцов' есть 'некал' или пустые строки
+    # Удаление строк, где в столбце 'name' есть 'некал' или пустые строки
     df = df[~df[df.columns[0]].astype(str).str.contains('некал', case=False, na=False)]
     df = df[df[df.columns[0]].astype(str).str.strip() != '']
     
@@ -78,7 +78,7 @@ def process_icp_aes_data(file_path):
         except:
             return 0
     
-    # Применяем очистку ко всем столбцам, кроме 'Проб' и 'Метки Образцов'
+    # Применяем очистку ко всем столбцам, кроме 'Проб' и 'name'
     for col in df.columns:
         if col not in ['Проб', 'name']:
             df[col] = df[col].apply(clean_value)
@@ -152,6 +152,7 @@ def process_icp_aes_data(file_path):
     
     # Выбираем столбцы для каждого металла
     selected_columns = ['name']
+    selected_columns = ['name']
     metal_selected_wavelengths = {}
     
     for metal, wavelengths in metal_wavelengths.items():
@@ -216,16 +217,118 @@ def process_icp_aes_data(file_path):
     
     wavelengths_df = pd.DataFrame(wavelengths_info)
     
+    # Если указан путь к базе данных, выполняем интеграцию
+    if json_data_path:
+        try:
+            print("\n" + "="*60)
+            print("[ИНТЕГРАЦИЯ] НАЧАЛО ИНТЕГРАЦИИ С БАЗОЙ ДАННЫХ")
+            print("="*60)
+            
+            # Конвертируем DataFrame в формат базы данных
+            json_data = convert_df_to_database_format(final_df, json_data_path)
+            
+            # Выполняем постобработку базы данных
+            postprocess_result = postprocess_json_database(Path(json_data_path))
+            
+            # Объединяем пробы по нумерации
+            merge_result = merge_probes_by_numbering(Path(json_data_path))
+            
+            # Пересчитываем концентрации
+            recalculation_result = recalculate_concentrations(Path(json_data_path))
+            
+            print("\n" + "="*60)
+            print("[ИНТЕГРАЦИЯ] ИНТЕГРАЦИЯ ЗАВЕРШЕНА УСПЕШНО")
+            print("="*60)
+            
+        except Exception as e:
+            print(f"\n[ОШИБКА] Ошибка при интеграции с базой данных: {e}")
+            import traceback
+            traceback.print_exc()
+    
     return final_df, wavelengths_df
+
+def convert_df_to_database_format(df: pd.DataFrame, json_data_path: str) -> List[Dict]:
+    """
+    Конвертирует DataFrame с данными ИСП АЭС в формат базы данных
+    и интегрирует с существующей базой
+    """
+    json_path = Path(json_data_path)
+    data = load_json_data(json_path)
+    
+    # Загружаем существующие пробы
+    existing_probes = data.get('probes', [])
+    
+    # Создаем словарь существующих проб по имени для быстрого поиска
+    existing_probes_dict = {}
+    for probe in existing_probes:
+        name = probe.get('name')
+        if name:
+            existing_probes_dict[name] = probe
+    
+    # Конвертируем DataFrame в список проб
+    new_probes = []
+    for _, row in df.iterrows():
+        probe_name = row['Название пробы']
+        
+        # Создаем новую пробу
+        new_probe = {
+            'name': probe_name,
+            'tags': ['импорт_исп_аэс', pd.Timestamp.now().strftime('%Y-%m-%d')]
+        }
+        
+        # Добавляем концентрации металлов
+        for col in df.columns:
+            if col != 'Название пробы':
+                if pd.notna(row[col]):
+                    new_probe[col] = float(row[col])
+        
+        # Проверяем, существует ли уже такая проба
+        if probe_name in existing_probes_dict:
+            # Обновляем существующую пробу
+            existing_probe = existing_probes_dict[probe_name]
+            # Объединяем данные
+            for key, value in new_probe.items():
+                if key not in ['id', 'created_at']:  # Не перезаписываем системные поля
+                    existing_probe[key] = value
+            # Обновляем теги
+            if 'tags' not in existing_probe:
+                existing_probe['tags'] = []
+            existing_probe['tags'].extend(new_probe.get('tags', []))
+            # Убираем дубликаты тегов
+            if 'tags' in existing_probe:
+                existing_probe['tags'] = list(set(existing_probe['tags']))
+        else:
+            # Добавляем новую пробу
+            new_probes.append(new_probe)
+    
+    # Добавляем новые пробы к существующим
+    existing_probes.extend(new_probes)
+    
+    # Обновляем данные
+    data['probes'] = existing_probes
+    
+    # Сохраняем изменения
+    save_json_data(json_path, data)
+    
+    # Отчет
+    print(f"[ИНТЕГРАЦИЯ] Загружено строк из CSV: {len(df)}")
+    print(f"[ИНТЕГРАЦИЯ] Обновлено существующих проб: {len(df) - len(new_probes)}")
+    print(f"[ИНТЕГРАЦИЯ] Добавлено новых проб: {len(new_probes)}")
+    print(f"[ИНТЕГРАЦИЯ] Всего проб в базе: {len(existing_probes)}")
+    
+    return new_probes
 
 
 # Пример использования функции
 if __name__ == "__main__":
     # Сохраните ваш CSV файл и укажите путь к нему
-    file_path = "металлы-01-12-2025 (2).csv"
+    file_path = r"C:\Users\Kirill\Downloads\Telegram Desktop\16-01-2025-Norilsk.csv"
+    
+    # Укажите путь к базе данных
+    json_data_path = str(Path(__file__).parent.parent / 'data' / 'data.json')  # Измените на актуальный путь
     
     try:
-        processed_data, wavelengths_info = process_icp_aes_data(file_path)
+        processed_data, wavelengths_info = process_icp_aes_data(file_path, json_data_path)
         
         print("Обработанные данные (первые 5 строк):")
         print(processed_data.head()) # type: ignore
@@ -254,99 +357,3 @@ if __name__ == "__main__":
         print(f"Произошла ошибка при обработке данных: {e}")
         import traceback
         traceback.print_exc()
-
-    # ---------------------------------------------------------------------
-    # ДОБАВЛЕННЫЙ БЛОК: чистка data.json (удаление стандартов, BLNK-субтракция, удаление BLNK)
-    # ---------------------------------------------------------------------
-    import json
-    import shutil
-    from pathlib import Path
-    from typing import Any, Dict, List, Set
-
-
-    JSON_PATH = Path("/mnt/data/data.json")   # при необходимости поменяйте путь
-    BACKUP_PATH = JSON_PATH.with_suffix(".json.bak")
-
-    STANDARD_NAMES = {f"Стандарт {i}" for i in range(1, 11)}
-    BLANK_NAME = "BLNK"
-
-    # ключи, которые точно не являются концентрациями
-    NON_METAL_KEYS = {"name", "id", "tags", "status_id", "sample_mass"}
-
-
-    def is_number(x: Any) -> bool:
-        return isinstance(x, (int, float)) and not isinstance(x, bool)
-
-
-    def postprocess_json_database(json_path: Path) -> None:
-        if not json_path.exists():
-            print(f"\n[JSON] Файл не найден: {json_path} — пропускаю постобработку базы.")
-            return
-
-        data = json.loads(json_path.read_text(encoding="utf-8"))
-
-        if "probes" not in data or not isinstance(data["probes"], list):
-            print("\n[JSON] В базе нет ключа 'probes' (ожидался список проб) — пропускаю.")
-            return
-
-        probes: List[Dict[str, Any]] = data["probes"]
-
-        # 1) удалить стандарты
-        removed_standards = [p for p in probes if p.get("name") in STANDARD_NAMES]
-        probes = [p for p in probes if p.get("name") not in STANDARD_NAMES]
-
-        # 2) найти BLNK
-        blank = None
-        for p in probes:
-            if p.get("name") == BLANK_NAME:
-                blank = p
-                break
-
-        metals_subtracted: Set[str] = set()
-        if blank is not None:
-            # вычитаем только по числовым полям BLNK, исключая d* и служебные ключи
-            for key, bval in blank.items():
-                if key in NON_METAL_KEYS:
-                    continue
-                if isinstance(key, str) and key.startswith("d"):
-                    continue
-                if not is_number(bval):
-                    continue
-
-                for p in probes:
-                    if p is blank:
-                        continue
-                    if key in p and is_number(p[key]):
-                        p[key] = p[key] - bval
-                        metals_subtracted.add(key)
-
-            # 3) удалить сам BLNK после вычитания
-            probes = [p for p in probes if p.get("name") != BLANK_NAME]
-
-        # сохранить
-        data["probes"] = probes
-        shutil.copy2(json_path, BACKUP_PATH)
-        json_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-
-        # отчёт
-        print("\n[JSON] Постобработка базы завершена.")
-        print(f"[JSON] Бэкап: {BACKUP_PATH}")
-        print(f"[JSON] Удалено стандартов: {len(removed_standards)}")
-        if removed_standards:
-            for p in removed_standards:
-                print(f"  - {p.get('name')} (id={p.get('id')})")
-
-        if blank is None:
-            print("[JSON] BLNK не найден: вычитание не выполнялось.")
-        else:
-            print("[JSON] BLNK найден: значения вычтены, затем BLNK удалён.")
-            if metals_subtracted:
-                print("[JSON] Поля, по которым вычитали BLNK:")
-                for k in sorted(metals_subtracted):
-                    print(f"  - {k}")
-            else:
-                print("[JSON] Не нашлось подходящих числовых полей для вычитания.")
-
-
-    # запуск постобработки
-    postprocess_json_database(JSON_PATH)
