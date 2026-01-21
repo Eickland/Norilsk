@@ -56,6 +56,522 @@ app.config['DATA_FILE'] = DATA_FILE
 # Инициализация системы управления версиями
 vcs = VersionControlSystem(app.config['DATA_FILE'], app.config['VERSIONS_DIR'])
 
+def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
+    """
+    Перерасчет концентраций металлов в абсолютную массу по правилам:
+    
+    1. Для жидких проб (не нулевое "Разбавление"):
+       m(Me) = [Me] * Разбавление * V(ml) / 1000
+       Добавляется тег "ошибка расчета жидкой пробы" при ошибке
+    
+    2. Для твердых проб (не нулевое "Масса твердого (g)"):
+       m(Me) = V_aliq(l) * [Me] * 1000 * Масса твердого(g) / Масса навески(mg)
+       Добавляется тег "ошибка расчета твердой пробы" при ошибке
+    
+    Прямо изменяет базу данных, добавляя поля mFe, mCu и т.д.
+    
+    Args:
+        data_file: Путь к JSON файлу с данными
+    
+    Returns:
+        Словарь со статистикой перерасчета
+    """
+    try:
+        # Загружаем данные
+        with open(data_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        probes = data.get('probes', [])
+        
+        if not probes:
+            return {
+                'success': True,
+                'message': 'Нет проб для перерасчета массы металлов',
+                'total_probes': 0,
+                'liquid_probes': 0,
+                'solid_probes': 0,
+                'elements_calculated': 0,
+                'errors': 0,
+                'probes_modified': 0
+            }
+        
+        # Создаем версию перед перерасчетом
+        version_info = vcs.create_version(
+            description="Перерасчет концентраций металлов в абсолютную массу",
+            author="system",
+            change_type="metal_mass_recalculation"
+        )
+        
+        # Статистика
+        stats = {
+            'total_probes': len(probes),
+            'liquid_probes': 0,           # Пробы с разбавлением
+            'solid_probes': 0,            # Пробы с массой твердого
+            'elements_calculated': 0,     # Всего рассчитанных полей mX
+            'probes_modified': 0,         # Проб, в которых что-то изменилось
+            'errors': 0,                  # Количество ошибок
+            'liquid_errors': 0,           # Ошибки в жидких пробах
+            'solid_errors': 0,            # Ошибки в твердых пробах
+            'new_mass_fields': []         # Созданные поля масс
+        }
+        
+        # Список химических элементов для расчета (из всех проб)
+        metal_elements = set()
+        for probe in probes:
+            for key in probe.keys():
+                # Проверяем, является ли поле химическим элементом
+                if (len(key) <= 3 and 
+                    key[0].isupper() and 
+                    key not in ['V', 'Ca', 'Co', 'Cu', 'Fe', 'Ni', 'Pd', 'Pt', 'Rh'] and
+                    key not in BLACKLIST_FIELDS):
+                    # Проверяем остальные символы (если есть)
+                    if all(c.islower() for c in key[1:]):
+                        metal_elements.add(key)
+        
+        # Добавляем основные элементы, которые точно есть
+        basic_elements = ['Fe', 'Cu', 'Ni', 'Ca', 'Co', 'Pd', 'Pt', 'Rh', 
+                         'Al', 'Mg', 'Zn', 'Pb', 'Cr', 'Mn', 'Ag', 'Au', 'Ti']
+        metal_elements.update(basic_elements)
+        
+        # Перебираем все пробы
+        for probe in probes:
+            probe_id = probe.get('id')
+            probe_name = probe.get('name', f'ID: {probe_id}')
+            probe_modified = False
+            mass_fields_added = []
+            
+            # Инициализируем теги, если их нет
+            if 'tags' not in probe:
+                probe['tags'] = []
+            
+            # Удаляем старые теги ошибок расчета (если были)
+            old_error_tags = ['ошибка расчета жидкой пробы', 'ошибка расчета твердой пробы']
+            original_tags = probe['tags'].copy()
+            probe['tags'] = [tag for tag in probe['tags'] if tag not in old_error_tags]
+            if probe['tags'] != original_tags:
+                probe_modified = True
+            
+            # Пытаемся определить тип пробы и выполнить расчет
+            try:
+                # 1. Проверка для жидкой пробы
+                dilution = probe.get('Разбавление')
+                if dilution is not None and dilution != 0 and dilution != 'null':
+                    try:
+                        dilution_float = float(dilution)
+                        volume_ml = probe.get('V (ml)', 0)
+                        
+                        if volume_ml and volume_ml != 'null':
+                            volume_float = float(volume_ml)
+                            
+                            # Расчет для каждого металла, который есть в пробе
+                            for element in metal_elements:
+                                if element in probe and probe[element] not in [None, 'null', '']:
+                                    try:
+                                        concentration = float(probe[element])
+                                        
+                                        # Расчет массы металла
+                                        mass = concentration * dilution_float * ((volume_float - probe.get('Масса твердого (g)')/3) / 1000.0)
+                                        
+                                        # Сохраняем результат
+                                        mass_field = f'm{element}'
+                                        probe[mass_field] = float(mass)
+                                        mass_fields_added.append(mass_field)
+                                        stats['elements_calculated'] += 1
+                                        probe_modified = True
+                                        
+                                    except (ValueError, TypeError):
+                                        # Пропускаем этот элемент, если нет значения
+                                        continue
+                            
+                            stats['liquid_probes'] += 1
+                            
+                    except (ValueError, TypeError) as e:
+                        # Ошибка в расчете жидкой пробы
+                        if 'ошибка расчета жидкой пробы' not in probe['tags']:
+                            probe['tags'].append('ошибка расчета жидкой пробы')
+                            probe_modified = True
+                        stats['liquid_errors'] += 1
+                        stats['errors'] += 1
+                
+                # 2. Проверка для твердой пробы
+                solid_mass = probe.get('Масса навески (g)')
+                if solid_mass is not None and solid_mass != 0 and solid_mass != 'null':
+                    try:
+                        solid_mass_float = float(solid_mass)
+                        aliquot_volume = probe.get('V_aliq (l)', 0)
+                        sample_weight = probe.get('sample_mass', 0)
+                        
+                        if (aliquot_volume and aliquot_volume != 'null' and 
+                            sample_weight and sample_weight != 'null'):
+                            
+                            aliquot_float = float(aliquot_volume)
+                            sample_weight_float = float(sample_weight)
+                            
+                            if sample_weight_float == 0:
+                                raise ValueError("Масса навески не может быть нулевой")
+                            
+                            # Расчет для каждого металла, который есть в пробе
+                            for element in metal_elements:
+                                if element in probe and probe[element] not in [None, 'null', '']:
+                                    try:
+                                        concentration = float(probe[element])
+                                        
+                                        # Расчет массы металла
+                                        mass = (aliquot_float * concentration * 
+                                                sample_weight_float) / solid_mass_float
+                                        
+                                        # Сохраняем результат
+                                        mass_field = f'm{element}'
+                                        probe[mass_field] = float(mass)
+                                        mass_fields_added.append(mass_field)
+                                        stats['elements_calculated'] += 1
+                                        probe_modified = True
+                                        
+                                    except (ValueError, TypeError):
+                                        # Пропускаем этот элемент, если нет значения
+                                        continue
+                            
+                            stats['solid_probes'] += 1
+                            
+                    except (ValueError, TypeError, ZeroDivisionError) as e:
+                        # Ошибка в расчете твердой пробы
+                        if 'ошибка расчета твердой пробы' not in probe['tags']:
+                            probe['tags'].append('ошибка расчета твердой пробы')
+                            probe_modified = True
+                        stats['solid_errors'] += 1
+                        stats['errors'] += 1
+                        
+            except Exception as e:
+                # Общая ошибка для пробы
+                if 'ошибка расчета жидкой пробы' not in probe['tags']:
+                    probe['tags'].append('ошибка расчета жидкой пробы')
+                    probe_modified = True
+                stats['errors'] += 1
+            
+            # Если пробу изменили, обновляем статистику
+            if probe_modified:
+                stats['probes_modified'] += 1
+                
+                # Записываем поля масс, которые были добавлены
+                for field in mass_fields_added:
+                    if field not in stats['new_mass_fields']:
+                        stats['new_mass_fields'].append(field)
+                
+                # Добавляем метку времени последнего пересчета
+                probe['last_mass_recalculation'] = datetime.now().isoformat()
+        
+        # Обновляем метаданные
+        if 'metadata' not in data:
+            data['metadata'] = {}
+        
+        data['metadata'].update({
+            'last_metal_mass_recalculation': datetime.now().isoformat(),
+            'metal_mass_stats': stats
+        })
+        
+        # СОХРАНЯЕМ ИЗМЕНЕННЫЕ ДАННЫЕ ОБРАТНО В ФАЙЛ
+        with open(data_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        
+        # Создаем финальную версию
+        vcs.create_version(
+            description=f"Перерасчет массы металлов: жидких - {stats['liquid_probes']}, твердых - {stats['solid_probes']}, полей mX - {stats['elements_calculated']}, ошибок - {stats['errors']}",
+            author="system",
+            change_type="metal_mass_recalculation_complete"
+        )
+        
+        # Формируем сообщение о результатах
+        message_parts = []
+        if stats['liquid_probes'] > 0:
+            message_parts.append(f"жидких проб: {stats['liquid_probes']}")
+        if stats['solid_probes'] > 0:
+            message_parts.append(f"твердых проб: {stats['solid_probes']}")
+        if stats['elements_calculated'] > 0:
+            message_parts.append(f"полей mX: {stats['elements_calculated']}")
+        if stats['errors'] > 0:
+            message_parts.append(f"ошибок: {stats['errors']}")
+        
+        message = "Перерасчет массы металлов: " + ", ".join(message_parts) if message_parts else "Изменений не требуется"
+        
+        # Добавляем информацию о созданных полях
+        if stats['new_mass_fields']:
+            message += f". Созданы поля: {', '.join(sorted(stats['new_mass_fields']))}"
+        
+        return {
+            'success': True,
+            'message': message,
+            **stats,
+            'version_created': version_info is not None,
+            'version_id': version_info['id'] if version_info else None
+        }
+        
+    except Exception as e:
+        return {
+            'success': False,
+            'message': f"Ошибка перерасчета массы металлов: {str(e)}",
+            'total_probes': 0,
+            'liquid_probes': 0,
+            'solid_probes': 0,
+            'elements_calculated': 0,
+            'errors': 1,
+            'probes_modified': 0
+        }
+
+def copy_mass_and_volume_from_C_to_AB(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
+    """
+    Находит пробы, отличающиеся только предпоследним символом (A, B, C),
+    и копирует поля 'Масса образца (g)' и 'V (ml)' из пробы C в пробы A и B.
+    
+    Правила:
+    1. Ищем группы проб с одинаковыми именами, кроме предпоследнего символа
+    2. Предпоследний символ должен быть A, B или C
+    3. Из пробы C копируем поля в пробы A и B той же группы
+    4. Если поля в A/B уже существуют, они перезаписываются значениями из C
+    
+    Args:
+        data_file: Путь к JSON файлу с данными
+    
+    Returns:
+        Словарь со статистикой операции
+    """
+    try:
+        # Загружаем данные
+        with open(data_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        probes = data.get('probes', [])
+        
+        if not probes:
+            return {
+                'success': True,
+                'message': 'Нет проб для обработки',
+                'total_groups': 0,
+                'updated_probes': 0,
+                'copied_fields': 0
+            }
+        
+        # Создаем версию перед изменениями
+        version_info = vcs.create_version(
+            description="Копирование массы и объема из проб C в пробы A/B",
+            author="system",
+            change_type="mass_volume_copy"
+        )
+        
+        # Создаем словарь для группировки проб по базовому имени
+        # Ключ: базовое имя (без предпоследнего символа)
+        # Значение: словарь с пробами A, B, C
+        probe_groups = defaultdict(lambda: {'A': None, 'B': None, 'C': None})
+        
+        # Собираем пробы по группам
+        for probe in probes:
+            name = probe.get('name', '')
+            if not name:
+                continue
+                
+            # Проверяем длину имени (должно быть хотя бы 2 символа для предпоследнего)
+            if len(name) < 2:
+                continue
+                
+            # Получаем предпоследний символ
+            second_last_char = name[-2] if len(name) >= 2 else ''
+            
+            # Проверяем, что предпоследний символ - A, B или C
+            if second_last_char in ['A', 'C']:
+                # Создаем базовое имя (без предпоследнего символа)
+                base_name = name[:-2] + name[-1]  # Удаляем предпоследний символ
+                
+                # Сохраняем пробу в соответствующую группу
+                probe_groups[base_name][second_last_char] = probe
+        
+        # Статистика
+        stats = {
+            'total_groups': 0,
+            'valid_groups': 0,        # Группы, где есть проба C и хотя бы одна из A/B
+            'updated_probes': 0,      # Пробы A/B, в которые скопированы данные
+            'copied_fields': 0,       # Всего скопированных полей
+            'missing_fields': 0,      # Поля, которых нет в пробе C
+            'errors': []              # Ошибки при обработке
+        }
+        
+        # Обрабатываем каждую группу
+        for base_name, group in probe_groups.items():
+            stats['total_groups'] += 1
+            
+            # Проверяем, есть ли проба C в группе
+            probe_C = group.get('C')
+            if not probe_C:
+                continue  # Пропускаем группы без пробы C
+            
+            # Проверяем наличие полей в пробе C
+            mass_C = probe_C.get('Масса образца (g)')  # Пробуем оба варианта написания
+            if mass_C is None:
+                mass_C = probe_C.get('sample_mass')
+                
+            volume_C = probe_C.get('V (ml)')
+            
+            # Если нет ни одного поля, пропускаем группу
+            if mass_C is None and volume_C is None:
+                stats['missing_fields'] += 1
+                continue
+            
+            # Копируем поля в пробы A и B
+            for probe_type in ['A', 'B']:
+                probe_target = group.get(probe_type)
+                if probe_target:
+                    fields_copied = 0
+                    
+                    try:
+                        # Копируем массу образца
+                        if mass_C is not None:
+                            # Пробуем оба варианта поля
+                            if 'Масса образца (g)' in probe_target:
+                                probe_target['Масса образца (g)'] = mass_C
+                                fields_copied += 1
+                            elif 'sample_mass' in probe_target:
+                                probe_target['sample_mass'] = mass_C
+                                fields_copied += 1
+                            else:
+                                # Если ни одного поля нет, создаем 'sample_mass'
+                                probe_target['sample_mass'] = mass_C
+                                fields_copied += 1
+                        
+                        # Копируем объем
+                        if volume_C is not None:
+                            if 'V (ml)' in probe_target:
+                                probe_target['V (ml)'] = volume_C
+                                fields_copied += 1
+                            else:
+                                # Создаем поле, если его нет
+                                probe_target['V (ml)'] = volume_C
+                                fields_copied += 1
+                        
+                        if fields_copied > 0:
+                            stats['updated_probes'] += 1
+                            stats['copied_fields'] += fields_copied
+                            
+                            # Добавляем метку времени обновления
+                            probe_target['last_mass_volume_update'] = datetime.now().isoformat()
+                            probe_target['mass_volume_source'] = probe_C.get('name', 'Unknown')
+                            
+                    except Exception as e:
+                        stats['errors'].append({
+                            'group': base_name,
+                            'probe': probe_target.get('name', 'Unknown'),
+                            'error': str(e)
+                        })
+            
+            if stats['updated_probes'] > 0:
+                stats['valid_groups'] += 1
+        
+        # Если были изменения, сохраняем данные
+        if stats['updated_probes'] > 0:
+            # Обновляем метаданные
+            if 'metadata' not in data:
+                data['metadata'] = {}
+            
+            data['metadata'].update({
+                'last_mass_volume_copy': datetime.now().isoformat(),
+                'mass_volume_copy_stats': stats
+            })
+            
+            # Сохраняем обновленные данные
+            with open(data_file, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+            
+            # Создаем финальную версию
+            vcs.create_version(
+                description=f"Копирование массы/объема завершено: обновлено {stats['updated_probes']} проб в {stats['valid_groups']} группах",
+                author="system",
+                change_type="mass_volume_copy_complete"
+            )
+        
+        # Формируем сообщение о результатах
+        if stats['updated_probes'] > 0:
+            message = f"Обновлено {stats['updated_probes']} проб (A/B) в {stats['valid_groups']} группах. Скопировано {stats['copied_fields']} полей из проб C."
+        else:
+            message = "Нет подходящих групп для копирования или поля уже совпадают"
+        
+        if stats['missing_fields'] > 0:
+            message += f" Пропущено {stats['missing_fields']} групп без полей в пробе C."
+        
+        return {
+            'success': True,
+            'message': message,
+            **stats,
+            'version_created': version_info is not None,
+            'version_id': version_info['id'] if version_info else None,
+            'data_modified': stats['updated_probes'] > 0
+        }
+        
+    except Exception as e:
+        return {
+            'success': False,
+            'message': f"Ошибка копирования массы и объема: {str(e)}",
+            'total_groups': 0,
+            'valid_groups': 0,
+            'updated_probes': 0,
+            'copied_fields': 0,
+            'errors': [{'error': str(e)}]
+        }
+
+
+def find_probe_groups_by_name_pattern(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
+    """
+    Вспомогательная функция для поиска и отладки групп проб.
+    Находит все группы проб, отличающиеся только предпоследним символом.
+    
+    Args:
+        data_file: Путь к JSON файлу
+    
+    Returns:
+        Словарь с найденными группами для отладки
+    """
+    try:
+        with open(data_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        probes = data.get('probes', [])
+        
+        # Группируем пробы
+        probe_groups = defaultdict(lambda: {'A': None, 'B': None, 'C': None})
+        found_probes = []
+        
+        for probe in probes:
+            name = probe.get('name', '')
+            if not name or len(name) < 2:
+                continue
+                
+            second_last_char = name[-2]
+            if second_last_char in ['A', 'B', 'C']:
+                base_name = name[:-2] + name[-1]
+                probe_groups[base_name][second_last_char] = { # type: ignore
+                    'name': name,
+                    'id': probe.get('id'),
+                    'sample_mass': probe.get('sample_mass') or probe.get('Масса образца (g)'),
+                    'V_ml': probe.get('V (ml)')
+                }
+                found_probes.append(name)
+        
+        # Фильтруем только полные группы
+        complete_groups = {}
+        for base_name, group in probe_groups.items():
+            if group['C'] and (group['A'] or group['B']):
+                complete_groups[base_name] = group
+        
+        return {
+            'success': True,
+            'total_probes': len(found_probes),
+            'total_groups': len(probe_groups),
+            'complete_groups': len(complete_groups),
+            'groups': complete_groups,
+            'sample_probes': found_probes[:10]  # Первые 10 проб для примера
+        }
+        
+    except Exception as e:
+        return {
+            'success': False,
+            'error': str(e)
+        }    
 # Глобальная функция для создания версии при изменениях
 def create_version_on_change(description, author="system"):
     """Обертка для создания версии при изменениях"""
@@ -214,7 +730,7 @@ def normalize_probe_ids(data_file=DATA_FILE):
 
 def normalize_probe_structure(
         data_file: str = str(DATA_FILE),
-        default_value: Any = False,
+        default_value: Any = 0,
 ) -> Dict[str, Any]:
     with open(data_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -402,6 +918,21 @@ def telegram_login():
     
     return "Доступ запрещен", 403
 
+# API для копирования массы и объема из проб C в A/B
+@app.route('/api/copy_mass_volume', methods=['POST'])
+def api_copy_mass_volume():
+    """API endpoint для копирования массы и объема из проб C в пробы A/B"""
+    result = copy_mass_and_volume_from_C_to_AB()
+    return jsonify(result)
+
+# API для отладки и поиска групп проб
+@app.route('/api/debug/probe_groups', methods=['GET'])
+def api_debug_probe_groups():
+    """API endpoint для отладки - поиск групп проб"""
+    result = find_probe_groups_by_name_pattern()
+    return jsonify(result)
+
+# Добавьте также в главную функцию index() вызов этой функции:
 @app.route('/')
 def index():
     """
@@ -417,20 +948,34 @@ def index():
         # 2. Заполняем у проб недостающие поля
         normalize_result = normalize_probe_structure(
             data_file=str(DATA_FILE),
-            default_value=False
+            default_value=0
         )
 
         stats = normalize_result.get('stats',{})
         if stats.get('fields_added_total',0) > 0:
             app.logger.info(f"Normalized structure: added {stats['fields_added_total']} fields")
 
-        # 3. Пересчитываем зависимые поля
+        # 3. Копирование массы и объема из проб C в A/B (НОВАЯ ФУНКЦИЯ)
+        mass_volume_result = copy_mass_and_volume_from_C_to_AB(str(DATA_FILE))
+        
+        if mass_volume_result.get('success') and mass_volume_result.get('data_modified', False):
+            app.logger.info(f"Copied mass/volume: {mass_volume_result.get('message')}")
+
+        # 4. Пересчет массы металлов
+        metal_mass_result = recalculate_metal_mass(str(DATA_FILE))
+        
+        if metal_mass_result.get('success'):
+            metal_stats = metal_mass_result
+            if metal_stats.get('liquid_probes', 0) > 0 or metal_stats.get('solid_probes', 0) > 0:
+                app.logger.info(f"Recalculated metal mass: {metal_mass_result.get('message')}")
+
+        # 5. Пересчитываем зависимые поля
         recalculation_result = check_and_recalculate_dependent_fields(str(DATA_FILE))
         
         if recalculation_result.get('success'):
             app.logger.info(f"Recalculated dependent fields: {recalculation_result.get('message')}")
 
-        # 4. Форматируем числовые значения
+        # 6. Форматируем числовые значения
         formatting_result = check_and_format_numeric_values(str(DATA_FILE))
         
         if formatting_result.get('success') and not formatting_result.get('skipped', False):
@@ -438,7 +983,7 @@ def index():
             if formatting_result.get('errors'):
                 app.logger.warning(f"Formatting errors: {formatting_result.get('errors')}")
 
-        # 5. Загружаем данные для отображения
+        # 7. Загружаем данные для отображения
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
@@ -450,6 +995,17 @@ def index():
                                 'success': success,
                                 'message': message,
                                 'changes': changes
+                            },
+                            
+                            mass_volume_info={
+                                'success': mass_volume_result.get('success', False),
+                                'message': mass_volume_result.get('message', ''),
+                                'stats': mass_volume_result
+                            },
+                            metal_mass_info={
+                                'success': metal_mass_result.get('success', False),
+                                'message': metal_mass_result.get('message', ''),
+                                'stats': metal_mass_result
                             },
                             recalculation_info={
                                 'success': recalculation_result.get('success', False),
@@ -2158,258 +2714,112 @@ def parse_probe_name():
 @app.route('/mass')
 def render_mass():
     return render_template('mass.html')
+def get_probe_value(probe_map, name, element):
+    """Безопасное получение значения элемента из пробы по имени."""
+    probe = probe_map.get(name)
+    if probe:
+        return probe.get(element, 0.0)
+    return 0.0
 
-# Масс баланс, Функция для парсинга имени пробы
-def parse_probe_name_mass(name):
-    # Ищем нулевую пробу вида T2-{m}C{n}
-    base_match = re.match(r'T2-(\d+)C(\d+)$', name)
-    if base_match:
-        return {
-            'type': 'base',
-            'method': int(base_match.group(1)),
-            'repeat': int(base_match.group(2)),
-            'stage': 'C',
-            'full_method': base_match.group(1)
-        }
+@app.route('/api/calculate_balance')
+def calculate_balance():
+    probes = load_data().get("probes",[])
+    # Создаем словарь для быстрого поиска: "NAME": {probe_data}
+    probe_map = {p['name']: p for p in probes}
     
-    # Ищем пробы типа A и B
-    simple_match = re.match(r'T2-(\d+)([AB])(\d+)$', name)
-    if simple_match:
-        return {
-            'type': 'simple',
-            'method': int(simple_match.group(1)),
-            'stage': simple_match.group(2),
-            'repeat': int(simple_match.group(3)),
-            'full_method': simple_match.group(1)
-        }
+    series_list = []
     
-    # Ищем пробы с L
-    l_match = re.match(r'T2-L(\d+)([ABCP])(\d+)$', name)
-    if l_match:
-        return {
-            'type': 'L_simple',
-            'method': int(l_match.group(1)),
-            'stage': l_match.group(2),
-            'repeat': int(l_match.group(3)),
-            'full_method': l_match.group(1)
-        }
-    
-    # Ищем пробы с LPF
-    lpf_match = re.match(r'T2-L(\d+)P\1F\1([D])(\d+)$', name)
-    if lpf_match:
-        return {
-            'type': 'final1',
-            'method': int(lpf_match.group(1)),
-            'stage': lpf_match.group(2),
-            'repeat': int(lpf_match.group(3)),
-            'full_method': lpf_match.group(1)
-        }
-    
-    # Ищем пробы с LPFN
-    lpfne_match = re.match(r'T2-L(\d+)P\1F\1N\1([E])(\d+)$', name)
-    if lpfne_match:
-        return {
-            'type': 'final2',
-            'method': int(lpfne_match.group(1)),
-            'stage': lpfne_match.group(2),
-            'repeat': int(lpfne_match.group(3)),
-            'full_method': lpfne_match.group(1)
-        }
-    
-    # Ищем другие пробы с более сложными названиями
-    complex_match = re.match(r'T2-L(\d+)P\1F\1([ABC])(\d+)$', name)
-    if complex_match:
-        return {
-            'type': 'complex',
-            'method': int(complex_match.group(1)),
-            'stage': complex_match.group(2),
-            'repeat': int(complex_match.group(3)),
-            'full_method': complex_match.group(1)
-        }
-    
-    complex_match2 = re.match(r'T2-L(\d+)P(\d+)F(\d+)([ABC])(\d+)$', name)
-    if complex_match2:
-        return {
-            'type': 'complex',
-            'method': int(complex_match2.group(1)),
-            'stage': complex_match2.group(4),
-            'repeat': int(complex_match2.group(5)),
-            'full_method': f"{complex_match2.group(1)}-{complex_match2.group(2)}-{complex_match2.group(3)}"
-        }
-    
-    return None
+    # Регулярное выражение для поиска "нулевых" образцов вида T2-{m}C{n}
+    # Пример: T2-4C1 -> m=4, n=1
+    root_pattern = re.compile(r"^T2-(\d+)C(\d+)$")
 
-# Поиск серий
-@app.route('/api/series', methods=['GET'])
-def get_series():
-    data = load_data()
-    probes = data.get('probes', [])
-    
-    # Группируем пробы по методике и повторности
-    series_dict = defaultdict(list)
-    
     for probe in probes:
-        parsed = parse_probe_name_mass(probe['name'])
-        if parsed:
-            key = (parsed['method'], parsed['repeat'])
-            probe['parsed'] = parsed
-            series_dict[key].append(probe)
-    
-    # Фильтруем только полные серии (есть нулевая проба C)
-    complete_series = []
-    for (method_num, repeat_num), probes_list in series_dict.items():
-        # Проверяем наличие нулевой пробы T2-{m}C{n}
-        has_base = any(p['parsed']['type'] == 'base' for p in probes_list)
-        
-        if has_base:
-            # Сортируем пробы по типам для удобства
-            series_probes = {
-                'method': method_num,
-                'repeat': repeat_num,
-                'probes': probes_list,
-                'base': next(p for p in probes_list if p['parsed']['type'] == 'base'),
-                'source_A': next((p for p in probes_list if 'A' in p['parsed']['stage'] and p['parsed']['type'] in ['simple', 'complex']), None),
-                'source_B': next((p for p in probes_list if 'B' in p['parsed']['stage'] and p['parsed']['type'] in ['simple', 'complex']), None),
-                'final_D': next((p for p in probes_list if p['parsed']['stage'] == 'D'), None),
-                'final_E': next((p for p in probes_list if p['parsed']['stage'] == 'E'), None)
+        match = root_pattern.match(probe['name'])
+        if match:
+            m = match.group(1) # Номер методики
+            n = match.group(2) # Номер повторности
+            
+            # Определяем имена проб для данной серии
+            # Используем f-строки для динамической генерации имен
+            names = {
+                # Исходные (Input)
+                "start_A": f"T2-{m}A{n}",
+                "start_B": f"T2-{m}B{n}",
+                
+                # Стадия 2
+                "st2_A": f"T2-L{m}A{n}",
+                "st2_B": f"T2-L{m}B{n}",
+                
+                # Стадия 3
+                "st3_A": f"T2-L{m}P{m}A{n}",
+                "st3_B": f"T2-L{m}P{m}B{n}",
+                
+                # Стадия 4
+                "st4_A": f"T2-L{m}P{m}F{m}A{n}",
+                "st4_B": f"T2-L{m}P{m}F{m}B{n}",
+                "st4_D": f"T2-L{m}P{m}F{m}D{n}", # Камерный продукт
+                
+                # Стадия 5
+                "st5_A": f"T2-L{m}P{m}F{m}N{m}A{n}", # Оборотная жидкость
+                "st5_B": f"T2-L{m}P{m}F{m}N{m}B{n}",
+                
+                # Стадия 6 (ЖКК)
+                "st6_E": f"T2-L{m}P{m}F{m}N{m}E{n}"
             }
-            complete_series.append(series_probes)
-    
-    return jsonify({'series': complete_series})
 
-# Расчет масс-баланса
-@app.route('/api/mass-balance/<int:method>/<int:repeat>', methods=['GET'])
-def calculate_mass_balance(method, repeat):
-    data = load_data()
-    probes = data.get('probes', [])
-    
-    # Находим нужные пробы
-    series_probes = []
-    for probe in probes:
-        parsed = parse_probe_name_mass(probe['name'])
-        if parsed and parsed['method'] == method and parsed['repeat'] == repeat:
-            probe['parsed'] = parsed
-            series_probes.append(probe)
-    
-    if not series_probes:
-        return jsonify({'error': 'Series not found'}), 404
-    
-    # Извлекаем конкретные пробы
-    source_A = next((p for p in series_probes if 'A' in p['parsed']['stage'] and p['parsed']['type'] in ['simple', 'complex']), None)
-    source_B = next((p for p in series_probes if 'B' in p['parsed']['stage'] and p['parsed']['type'] in ['simple', 'complex']), None)
-    final_D = next((p for p in series_probes if p['parsed']['stage'] == 'D'), None)
-    final_E = next((p for p in series_probes if p['parsed']['stage'] == 'E'), None)
-    
-    if not all([source_A, source_B]):
-        return jsonify({'error': 'Source probes not found'}), 400
-    
-    metals = ['Fe', 'Cu', 'Ni']
-    results = {}
-    
-    for metal in metals:
-        # Сумма исходных проб
-        source_total = source_A.get(metal, 0) + source_B.get(metal, 0) # type: ignore
-        
-        # Сумма конечных продуктов (если есть)
-        final_total = 0
-        if final_D:
-            final_total += final_D.get(metal, 0)
-        if final_E:
-            final_total += final_E.get(metal, 0)
-        
-        if source_total > 0:
-            percentage_remaining = (final_total / source_total) * 100 if final_total > 0 else 0
-            percentage_lost = 100 - percentage_remaining
-        else:
-            percentage_remaining = 0
-            percentage_lost = 0
-        
-        results[metal] = {
-            'source_total': round(source_total, 2),
-            'final_total': round(final_total, 2),
-            'percentage_remaining': round(percentage_remaining, 2),
-            'percentage_lost': round(percentage_lost, 2),
-            'source_A': round(source_A.get(metal, 0), 2), # type: ignore
-            'source_B': round(source_B.get(metal, 0), 2), # type: ignore
-            'final_D': round(final_D.get(metal, 0), 2) if final_D else 0,
-            'final_E': round(final_E.get(metal, 0), 2) if final_E else 0
-        }
-    
-    return jsonify({
-        'method': method,
-        'repeat': repeat,
-        'results': results,
-        'probes_found': {
-            'source_A': source_A['name'] if source_A else 'Not found',
-            'source_B': source_B['name'] if source_B else 'Not found',
-            'final_D': final_D['name'] if final_D else 'Not found',
-            'final_E': final_E['name'] if final_E else 'Not found'
-        }
-    })
+            elements = ['mFe', 'mCu', 'mNi','mPd','mPt','mRh','mAu','mAg','mOs','mRu','mIr']
+            series_data = {
+                "id": f"Series-{m}-{n}",
+                "method": m,
+                "repeat": n,
+                "elements": {}
+            }
 
-# Данные для barplot
-@app.route('/api/metal-content/<int:method>/<int:repeat>', methods=['GET'])
-def get_metal_content(method, repeat):
-    data = load_data()
-    probes = data.get('probes', [])
-    
-    series_probes = []
-    for probe in probes:
-        parsed = parse_probe_name_mass(probe['name'])
-        if parsed and parsed['method'] == method and parsed['repeat'] == repeat:
-            probe['parsed'] = parsed
-            series_probes.append(probe)
-    
-    if not series_probes:
-        return jsonify({'error': 'Series not found'}), 404
-    
-    # Группируем пробы по стадиям (буквам)
-    stages = defaultdict(list)
-    for probe in series_probes:
-        stage = probe['parsed']['stage']
-        stages[stage].append(probe)
-    
-    # Подготавливаем данные для графика
-    metals = ['Fe', 'Cu', 'Ni']
-    chart_data = {}
-    
-    for metal in metals:
-        stage_data = []
-        for stage, probes_list in sorted(stages.items()):
-            if stage in ['A', 'B', 'C', 'D', 'E']:  # Только интересующие нас стадии
-                values = [p.get(metal, 0) for p in probes_list]
-                if values:
-                    avg_value = sum(values) / len(values)
-                    stage_data.append({
-                        'stage': stage,
-                        'value': round(avg_value, 2),
-                        'individual_values': [round(v, 2) for v in values],
-                        'probe_names': [p['name'] for p in probes_list]
-                    })
-        
-        chart_data[metal] = stage_data
-    
-    return jsonify({
-        'method': method,
-        'repeat': repeat,
-        'chart_data': chart_data,
-        'stages_found': list(stages.keys())
-    })
+            for el in elements:
+                # 1. Расчет входной массы (Input)
+                input_val = get_probe_value(probe_map, names["start_A"], el) + \
+                            get_probe_value(probe_map, names["start_B"], el)
+                
+                # 2. Расчет выходных продуктов для баланса
+                out_D = get_probe_value(probe_map, names["st4_D"], el) # Камерный
+                out_E = get_probe_value(probe_map, names["st5_B"], el) # ЖКК
+                out_Recycle = get_probe_value(probe_map, names["st5_A"], el) # Оборот
+                out_Recycle = 0
+                
+                total_out = out_D + out_E + out_Recycle
+                loss = input_val - total_out
+                
+                # Предотвращение деления на ноль
+                calc_base = input_val if input_val != 0 else 1 
 
-# Обновление базы данных
-@app.route('/api/update-database', methods=['POST'])
-def update_database():
-    try:
-        data = request.get_json()
-        save_data(data)
-        return jsonify({'status': 'success', 'message': 'Database updated'})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+                # 3. Расчет стадий (Bar Plot Data)
+                stages = [
+                    get_probe_value(probe_map, names["start_A"], el) + get_probe_value(probe_map, names["start_B"], el),
+                    get_probe_value(probe_map, names["st2_A"], el) + get_probe_value(probe_map, names["st2_B"], el),
+                    get_probe_value(probe_map, names["st3_A"], el) + get_probe_value(probe_map, names["st3_B"], el),
+                    get_probe_value(probe_map, names["st4_A"], el) + get_probe_value(probe_map, names["st4_B"], el) + get_probe_value(probe_map, names["st4_D"], el),
+                    get_probe_value(probe_map, names["st5_A"], el) + get_probe_value(probe_map, names["st5_B"], el),
+                    get_probe_value(probe_map, names["st6_E"], el)
+                ]
 
-# Получение всей базы данных
-@app.route('/api/database', methods=['GET'])
-def get_database():
-    return jsonify(load_data())
+                series_data["elements"][el] = {
+                    "balance": {
+                        "input": round(input_val,9),
+                        "D": round(out_D,9),
+                        "E": round(out_E,9),
+                        "Recycle": round(out_Recycle,9),
+                        "Loss": round(loss,9),
+                        "D_pct": round((out_D / calc_base) * 100,9),
+                        "E_pct": round((out_E / calc_base) * 100,9),
+                        "Recycle_pct": round((out_Recycle / calc_base) * 100,9),
+                        "Loss_pct": round((loss / calc_base) * 100,9)
+                    },
+                    "stages": [round(x,9) for x in stages]
+                }
+            
+            series_list.append(series_data)
+
+    return jsonify(series_list)
 
 def format_numeric_values(data_file: str = str(DATA_FILE), decimal_places: int = 4) -> Dict[str, Any]:
     """

@@ -7,6 +7,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Set, Tuple, Optional
 import re
 
+black_list_column = ['Разбавление','sample_mass','Масса навески (g)']
+
 def load_json_data(json_path: Path) -> Dict:
     """Загрузка данных из JSON файла"""
     if not json_path.exists():
@@ -435,6 +437,70 @@ def process_solid_probe(probe: Dict, name: str, stats: Dict) -> None:
         'date': pd.Timestamp.now().isoformat()
     })
 
+def expand_sample_code(sample_name):
+    """Восстанавливает полный шифр пробы из короткого"""
+    if pd.isna(sample_name):
+        return sample_name
+    
+    sample_str = str(sample_name)
+    
+    # Извлекаем компоненты из короткого имени
+    # Формат: T2-4C1 или T2-P4A1
+    pattern = r'(T\d+)-([LPFN]?)(\d+)([A-Z])(\d+)'
+    match = re.match(pattern, sample_str)
+    
+    if not match:
+        # Если не соответствует паттерну, возвращаем как есть
+        return sample_str
+    
+    prefix = match.group(1)  # T2
+    stage = match.group(2)   # стадия (может быть пусто)
+    method_num = match.group(3)  # номер методики (5)
+    product_type = match.group(4)  # тип продукта (A)
+    repeat_num = match.group(5)  # номер повторности (2)
+    
+    # Если стадия не указана или это L - возвращаем как есть
+    if not stage or stage == 'L':
+        return sample_str
+    
+    # Определяем порядок стадий и какие нужно добавить
+    stages_order = ['L', 'P', 'F', 'N']
+    
+    # Находим индекс указанной стадии
+    target_index = stages_order.index(stage)
+    
+    # Берем все стадии от L до указанной включительно
+    needed_stages = stages_order[:target_index + 1]
+    
+    # Формируем строку стадий с номером методики
+    stages_str = ''.join([f"{s}{method_num}" for s in needed_stages])
+    
+    # Собираем полное имя
+    full_code = f"{prefix}-{stages_str}{product_type}{repeat_num}"
+    
+    return full_code
+
+def merge_similar_samples(group_df):
+    """Объединяет похожие пробы, усредняя значения"""
+    if len(group_df) == 1:
+        return group_df.iloc[0]
+    
+    # Усредняем все числовые столбцы
+    avg_row = group_df.mean(numeric_only=True)
+    avg_row['name'] = group_df['name'].iloc[0][:-1]  # Убираем последнюю цифру
+    return avg_row
+
+def get_base_name(sample_name):
+    """Извлекает базовое имя пробы (без последней цифры)"""
+    if pd.isna(sample_name):
+        return sample_name
+    
+    sample_str = str(sample_name)
+    # Проверяем, заканчивается ли на две цифры
+    if re.search(r'\d\d$', sample_str):
+        return sample_str[:-1]  # Убираем последнюю цифру
+    return sample_str
+    
 def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Обрабатывает данные ИСП АЭС и интегрирует с базой данных
@@ -492,6 +558,10 @@ def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -
         except:
             return 0
     
+    black_dict = {}
+    
+
+    
     # Применяем очистку ко всем столбцам, кроме 'Проб' и 'name'
     for col in df.columns:
         if col not in ['Проб', 'name']:
@@ -499,6 +569,27 @@ def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -
     
     # Удаляем строки, где все значения NaN (после удаления 'некал')
     df = df.dropna(how='all', subset=[col for col in df.columns if col not in ['Проб', 'name']])
+    # Применяем группировку и объединение
+    df['BaseName'] = df['name'].apply(get_base_name)
+    
+    # Группируем по базовым именам и объединяем
+    merged_rows = []
+    for base_name, group in df.groupby('BaseName'):
+        if len(group) > 1 and re.search(r'\d\d$', str(group['name'].iloc[0])):
+            merged_row = merge_similar_samples(group)
+            merged_rows.append(merged_row)
+        else:
+            merged_rows.extend(group.to_dict('records'))
+    
+    df = pd.DataFrame(merged_rows)
+    df = df.drop(columns=['BaseName'], errors='ignore')
+ 
+    df['name'] = df['name'].apply(expand_sample_code)
+
+    for col in df.columns:
+        if col in black_list_column:
+            black_dict[col] = df[col].to_list()
+            df.drop(columns=col,inplace=True)
     
     # Определяем металлы и их длины волн
     metal_wavelengths = {}
@@ -578,7 +669,7 @@ def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -
     result_df = df[selected_columns].copy()
     
     final_df = pd.DataFrame()
-    final_df['Название пробы'] = result_df['name']
+    final_df['name'] = result_df['name']
     
     metal_mean_data = {}
     metal_std_data = {}
@@ -601,7 +692,7 @@ def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -
     for metal in metal_std_data.keys():
         final_df[f'd{metal}'] = metal_std_data[metal]
     
-    sorted_columns = ['Название пробы']
+    sorted_columns = ['name']
     metals_sorted = sorted(metal_mean_data.keys())
 
     for metal in metals_sorted:
@@ -658,6 +749,10 @@ def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -
             import traceback
             traceback.print_exc()
     
+    for column_name, value_list in black_dict.items():
+        final_df[column_name] = value_list
+    
+    print(final_df)
     return final_df, wavelengths_df
 
 def convert_df_to_database_format(df: pd.DataFrame, json_data_path: str) -> List[Dict]:
@@ -735,13 +830,13 @@ def convert_df_to_database_format(df: pd.DataFrame, json_data_path: str) -> List
 # Пример использования функции
 if __name__ == "__main__":
     # Сохраните ваш CSV файл и укажите путь к нему
-    file_path = "металлы-01-12-2025 (2).csv"
+    file_path = r"C:\Users\Kirill\Desktop\all-Norilsk_isp.csv"
     
     # Укажите путь к базе данных
     json_data_path = str(Path(__file__).parent.parent / 'data' / 'data.json')  # Измените на актуальный путь
     
     try:
-        processed_data, wavelengths_info = process_icp_aes_data(file_path, json_data_path)
+        processed_data, wavelengths_info = process_icp_aes_data(file_path)
         
         print("\nОбработанные данные (первые 5 строк):")
         print(processed_data.head())
@@ -758,7 +853,7 @@ if __name__ == "__main__":
         output_data_path = "Обработанные_данные_ИСП_АЭС_с_погрешностями.csv"
         output_wl_path = "Информация_о_длинах_волн.csv"
         
-        processed_data.to_csv(output_data_path, index=False, encoding='utf-8-sig')
+        processed_data.to_csv(output_data_path, index=False, encoding='utf-8-sig',sep=';')
         wavelengths_info.to_csv(output_wl_path, index=False, encoding='utf-8-sig')
         
         print(f"\nОсновные данные сохранены в файл: {output_data_path}")

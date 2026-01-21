@@ -1,0 +1,1739 @@
+[
+  {
+    "name": "T2_L1P1F1N1B3",
+    "V (ml)": 81.7694,
+    "sample_mass": 81.987,
+    "Масса навески (g)": 0.1057,
+    "id": 1,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-5A1",
+    "V (ml)": 149.52,
+    "sample_mass": 180.85,
+    "Масса навески (g)": 0.0,
+    "id": 2,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-5B1",
+    "V (ml)": 149.52,
+    "sample_mass": 180.85,
+    "Масса навески (g)": 0.0,
+    "id": 3,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5C1",
+    "V (ml)": 149.52,
+    "sample_mass": 180.85,
+    "Масса навески (g)": 47.1,
+    "id": 4,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5A1",
+    "V (ml)": 149.52,
+    "sample_mass": 180.85,
+    "Масса навески (g)": 0.0,
+    "id": 5,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5B1",
+    "V (ml)": 149.52,
+    "sample_mass": 180.85,
+    "Масса навески (g)": 0.1127,
+    "id": 6,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5P5C1",
+    "V (ml)": 442.0,
+    "sample_mass": 528.12,
+    "Масса навески (g)": 0.0,
+    "id": 7,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5P5A1",
+    "V (ml)": 149.52,
+    "sample_mass": 180.85,
+    "Масса навески (g)": 0.0,
+    "id": 8,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5P5B1",
+    "V (ml)": 149.52,
+    "sample_mass": 180.85,
+    "Масса навески (g)": 0.1031,
+    "id": 9,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5P5F5C1",
+    "V (ml)": 149.52,
+    "sample_mass": 180.85,
+    "Масса навески (g)": 0.0,
+    "id": 10,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5P5F5A1",
+    "V (ml)": 149.52,
+    "sample_mass": 180.85,
+    "Масса навески (g)": 0.0,
+    "id": 11,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5P5F5B1",
+    "V (ml)": 442.0,
+    "sample_mass": 528.12,
+    "Масса навески (g)": 0.0,
+    "id": 12,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5P5F5D1",
+    "V (ml)": 149.52,
+    "sample_mass": 180.85,
+    "Масса навески (g)": 0.1023,
+    "id": 13,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5P5F5N5C1",
+    "V (ml)": 500.0,
+    "sample_mass": 544.68,
+    "Масса навески (g)": 0.0,
+    "id": 14,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5P5F5N5A1",
+    "V (ml)": 149.52,
+    "sample_mass": 180.85,
+    "Масса навески (g)": 0.0,
+    "id": 15,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5P5F5N5B1",
+    "V (ml)": 149.52,
+    "sample_mass": 180.85,
+    "Масса навески (g)": 0.1131,
+    "id": 16,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5P5F5N5E1",
+    "V (ml)": 149.52,
+    "sample_mass": 180.85,
+    "Масса навески (g)": 0.0,
+    "id": 17,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5C2",
+    "V (ml)": 149.54,
+    "sample_mass": 179.11,
+    "Масса навески (g)": 44.9,
+    "id": 18,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5P5C2",
+    "V (ml)": 149.54,
+    "sample_mass": 44.9,
+    "Масса навески (g)": 0.0,
+    "id": 19,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L5P5A2",
+    "V (ml)": 149.54,
+    "sample_mass": 44.9,
+    "Масса навески (g)": 0.0,
+    "id": 20,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-1C1",
+    "V (ml)": 99.7,
+    "sample_mass": 117.8,
+    "Масса навески (g)": 0.0,
+    "id": 21,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-1C2",
+    "V (ml)": 99.87,
+    "sample_mass": 121.84,
+    "Масса навески (g)": 0.0,
+    "id": 22,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L1C1",
+    "V (ml)": 127.7,
+    "sample_mass": 169.17,
+    "Масса навески (g)": 0.0,
+    "id": 23,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L1C2",
+    "V (ml)": 133.87,
+    "sample_mass": 184.4,
+    "Масса навески (g)": 0.0,
+    "id": 24,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L1P1C1",
+    "V (ml)": 247.7,
+    "sample_mass": 309.86,
+    "Масса навески (g)": 0.0,
+    "id": 25,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L1P1C2",
+    "V (ml)": 255.58,
+    "sample_mass": 331.1,
+    "Масса навески (g)": 0.0,
+    "id": 26,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-1C3",
+    "V (ml)": 99.72,
+    "sample_mass": 111.69,
+    "Масса навески (g)": 0.0,
+    "id": 27,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-1C4",
+    "V (ml)": 99.81,
+    "sample_mass": 111.79,
+    "Масса навески (g)": 0.0,
+    "id": 28,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L1C3",
+    "V (ml)": 117.89,
+    "sample_mass": 145.12,
+    "Масса навески (g)": 0.0,
+    "id": 29,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L1C4",
+    "V (ml)": 117.09,
+    "sample_mass": 143.58,
+    "Масса навески (g)": 0.0,
+    "id": 30,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L1P1C3",
+    "V (ml)": 172.89,
+    "sample_mass": 210.85,
+    "Масса навески (g)": 0.0,
+    "id": 31,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L1P1C4",
+    "V (ml)": 172.09,
+    "sample_mass": 208.32,
+    "Масса навески (g)": 0.0,
+    "id": 32,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-2C1",
+    "V (ml)": 149.7,
+    "sample_mass": 166.32,
+    "Масса навески (g)": 0.0,
+    "id": 33,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-2C2",
+    "V (ml)": 149.5,
+    "sample_mass": 167.44,
+    "Масса навески (g)": 0.0,
+    "id": 34,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L2C1",
+    "V (ml)": 174.59,
+    "sample_mass": 211.96,
+    "Масса навески (g)": 0.0,
+    "id": 35,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L2C2",
+    "V (ml)": 176.9,
+    "sample_mass": 217.86,
+    "Масса навески (g)": 0.0,
+    "id": 36,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L2P2C1",
+    "V (ml)": 299.59,
+    "sample_mass": 356.27,
+    "Масса навески (g)": 0.0,
+    "id": 37,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L2P2C2",
+    "V (ml)": 301.9,
+    "sample_mass": 362.16,
+    "Масса навески (g)": 0.0,
+    "id": 38,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 192,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 40,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 41,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 42,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 43,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 44,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 45,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 46,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 47,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 48,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 49,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 50,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 51,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 52,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 53,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 54,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 55,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 56,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 57,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 58,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 59,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 60,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 61,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 62,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 63,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 64,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 65,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 66,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 67,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 68,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 69,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 70,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 71,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 72,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 73,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 74,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 75,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 76,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 77,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 78,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 79,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 80,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 81,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 82,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 83,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 84,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 85,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 86,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 87,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 88,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 89,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 90,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 91,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 92,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 93,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 94,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 95,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 96,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 97,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 98,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 99,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 100,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 101,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 102,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 103,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 104,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 105,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 106,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 107,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 108,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 109,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 110,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 111,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 112,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 113,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 114,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 115,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 116,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 117,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 118,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 119,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 120,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 121,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 122,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 123,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 124,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 125,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 126,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 127,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 128,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 129,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 130,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 131,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 132,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 133,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 134,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 135,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 136,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 137,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 138,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 139,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 140,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 141,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 142,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 143,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 144,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 145,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 146,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 147,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 148,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 149,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 150,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 151,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 152,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 153,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 154,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 155,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 156,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 157,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 158,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 159,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 160,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 161,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 162,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 163,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 164,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 165,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 166,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 167,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 168,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 169,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 170,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 171,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-3C1",
+    "V (ml)": 149.53,
+    "sample_mass": 189.9,
+    "Масса навески (g)": 0.0,
+    "id": 172,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-3C2",
+    "V (ml)": 149.42,
+    "sample_mass": 192.75,
+    "Масса навески (g)": 0.0,
+    "id": 173,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 174,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-4C1",
+    "V (ml)": 149.27,
+    "sample_mass": 189.58,
+    "Масса навески (g)": 0.0,
+    "id": 175,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-4C2",
+    "V (ml)": 149.42,
+    "sample_mass": 186.78,
+    "Масса навески (g)": 0.0,
+    "id": 176,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L3C1",
+    "V (ml)": 210.03,
+    "sample_mass": 301.22,
+    "Масса навески (g)": 0.0,
+    "id": 177,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L3C2",
+    "V (ml)": 214.42,
+    "sample_mass": 312.35,
+    "Масса навески (g)": 0.0,
+    "id": 178,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L4C1",
+    "V (ml)": 210.28,
+    "sample_mass": 301.83,
+    "Масса навески (g)": 0.0,
+    "id": 179,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L4C2",
+    "V (ml)": 205.94,
+    "sample_mass": 290.74,
+    "Масса навески (g)": 0.0,
+    "id": 180,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L3P3C1",
+    "V (ml)": 470.03,
+    "sample_mass": 594.35,
+    "Масса навески (g)": 0.0,
+    "id": 181,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L3P3C2",
+    "V (ml)": 489.42,
+    "sample_mass": 623.31,
+    "Масса навески (g)": 0.0,
+    "id": 182,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L3P3F3C1",
+    "V (ml)": 445.0,
+    "sample_mass": 520.65,
+    "Масса навески (g)": 0.0,
+    "id": 183,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 184,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 185,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 186,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L4P4C1",
+    "V (ml)": 395.0,
+    "sample_mass": 517.28,
+    "Масса навески (g)": 0.0,
+    "id": 187,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-L4P4C2",
+    "V (ml)": 410.0,
+    "sample_mass": 538.19,
+    "Масса навески (g)": 0.0,
+    "id": 188,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 189,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 190,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 191,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "null",
+    "V (ml)": "null",
+    "sample_mass": "null",
+    "Масса навески (g)": "null",
+    "id": 192,
+    "tags": [],
+    "status_id": 3
+  },
+  {
+    "name": "T2-5C2",
+    "V (ml)": 149.54,
+    "sample_mass": 179.45,
+    "Масса навески (g)": 0.0,
+    "id": 193,
+    "tags": [],
+    "status_id": 3
+  }
+]
