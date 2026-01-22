@@ -4,6 +4,7 @@ import json
 import os
 from werkzeug.utils import secure_filename
 from test_ISP_AES import process_icp_aes_data
+from ISP_MS import process_metal_samples_csv
 import pandas as pd
 from version_control import VersionControlSystem
 from io import BytesIO
@@ -1121,7 +1122,7 @@ def add_probe():
     
     return jsonify({"success": True, "probe": new_probe})
 
-@app.route('/api/upload', methods=['POST'])
+@app.route('/api/upload_ISPAES', methods=['POST'])
 def upload_file():
     """
     API endpoint для загрузки файла
@@ -1170,7 +1171,7 @@ def upload_file():
             file_path=file_path
         )
         
-        json_data = convert_df_to_dict(result_data) # type: ignore
+        json_data = convert_df_to_dict(result_data,add_mass=False) # type: ignore
         
         # ЗАГРУЖАЕМ ТЕКУЩИЕ ДАННЫЕ ПЕРЕД ИЗМЕНЕНИЕМ
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
@@ -1262,6 +1263,149 @@ def upload_file():
             'error': str(e),
             'message': 'Error processing file'
         }), 500
+
+@app.route('/api/upload_ISPMS', methods=['POST'])
+def upload_file_MS():
+    """
+    API endpoint для загрузки файла ИСПМС
+    """
+    
+    # Проверяем наличие файла в запросе
+    if 'file' not in request.files:
+        return jsonify({
+            'success': False,
+            'error': 'No file part in the request'
+        }), 400
+    
+    file = request.files['file']
+    
+    # Проверяем что файл выбран
+    if file.filename == '':
+        return jsonify({
+            'success': False,
+            'error': 'No file selected'
+        }), 400
+    
+    # Проверяем расширение файла
+    if not allowed_file(file.filename):
+        return jsonify({
+            'success': False,
+            'error': f'File type not allowed. Allowed types: {", ".join(app.config["ALLOWED_EXTENSIONS"])}'
+        }), 400
+    
+    try:
+        # Безопасное сохранение файла
+        original_filename = secure_filename(file.filename) # type: ignore
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], original_filename)
+        file.save(file_path)
+        
+        # Получаем дополнительные параметры из запроса
+        processing_type = request.form.get('processing_type', 'default')
+        parameters_str = request.form.get('parameters', '{}')
+        
+        try:
+            parameters = json.loads(parameters_str)
+        except json.JSONDecodeError:
+            parameters = {}
+        
+        # Обрабатываем файл с помощью Python-скрипта
+        result_data= process_metal_samples_csv(
+            file_path=file_path
+        )
+        
+        json_data = convert_df_to_dict(result_data,add_mass=False) # type: ignore
+        
+        # ЗАГРУЖАЕМ ТЕКУЩИЕ ДАННЫЕ ПЕРЕД ИЗМЕНЕНИЕМ
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        # 1. СОЗДАЕМ ВЕРСИЮ ТЕКУЩЕГО СОСТОЯНИЯ (до изменений)
+        vcs.create_version(
+            description=f"Импорт файла '{original_filename}' - состояние до импорта",
+            author=request.form.get('author', 'anonymous'),
+            change_type='pre_import'
+        )
+        
+        # Создаем словарь для быстрого поиска проб по имени
+        existing_probes_dict = {}
+        for probe in data['probes']:
+            name = probe.get('name')
+            if name:
+                existing_probes_dict[name] = probe
+        
+        # Статистика для отчета
+        updated_count = 0
+        added_count = 0
+        
+        # 2. ОБРАБАТЫВАЕМ НОВЫЕ ДАННЫЕ - ОБЪЕДИНЯЕМ ИЛИ ДОБАВЛЯЕМ
+        for new_probe in json_data:
+            probe_name = new_probe.get('name')
+            
+            if probe_name and probe_name in existing_probes_dict:
+                # ОБЪЕДИНЕНИЕ: если проба с таким именем уже существует
+                existing_probe = existing_probes_dict[probe_name]
+                
+                # Объединяем данные, новые значения перезаписывают старые
+                for key, value in new_probe.items():
+                    existing_probe[key] = value
+                
+                updated_count += 1
+            else:
+                # ДОБАВЛЕНИЕ: если это новая проба
+                data['probes'].append(new_probe)
+                if probe_name:
+                    existing_probes_dict[probe_name] = new_probe
+                added_count += 1
+        
+        # 3. СОХРАНЯЕМ ОБНОВЛЕННЫЕ ДАННЫЕ
+        with open(DATA_FILE, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        
+        # 4. СОЗДАЕМ ВЕРСИЮ ПОСЛЕ ИМПОРТА
+        version_info = vcs.create_version(
+            description=f"Импорт файла '{original_filename}' - обновлено: {updated_count}, добавлено: {added_count}",
+            author=request.form.get('author', 'anonymous'),
+            change_type='import'
+        )
+        
+        # Сохраняем результат в JSON файл
+        result_filename = generate_result_filename(original_filename)
+        result_path = os.path.join(app.config['RESULTS_FOLDER'], result_filename)
+        
+        with open(result_path, 'w', encoding='utf-8') as f:
+            json.dump(json_data, f, ensure_ascii=False, indent=2)
+        
+        # Формируем URL для скачивания результата
+        download_url = f"/api/download/{result_filename}"
+        
+        return jsonify({
+            'success': True,
+            'message': 'File processed successfully',
+            'original_filename': original_filename,
+            'result_filename': result_filename,
+            'download_url': download_url,
+            'version_created': version_info is not None,
+            'version_id': version_info['id'] if version_info else None,
+            'metadata': {
+                'processing_type': processing_type,
+                'rows_processed': len(json_data),
+                'probes_updated': updated_count,
+                'probes_added': added_count,
+                'total_probes_after': len(data['probes']),
+                'timestamp': datetime.now().isoformat()
+            }
+        })
+        
+    except Exception as e:
+        # Логируем ошибку
+        app.logger.error(f"Error processing file: {str(e)}")
+        
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'message': 'Error processing file'
+        }), 500
+
 
 @app.route('/api/upload_data', methods=['POST'])
 def upload_data():

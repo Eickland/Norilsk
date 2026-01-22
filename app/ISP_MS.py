@@ -26,6 +26,7 @@ def process_metal_samples_csv(file_path, output_path=None):
         
         # Читаем файл снова, пропуская вторую строку с единицами измерения
         df = pd.read_csv(file_path, encoding='utf-8', skiprows=[1], sep=';')
+        df.rename(columns={f'{df.columns[0]}':'Sample'},inplace=True)
         # Запоминаем оригинальные названия столбцов
         original_columns = df.columns.tolist()
         

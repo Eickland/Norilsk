@@ -202,10 +202,13 @@ class ProbeLab {
         this.setupExportModal();
         this.setupImportModal('importModal', 'importTable', 'cancelImportBtn', 'fileInput', 
                             'dropArea', 'fileInfo', 'fileName', 'fileSize', 'removeFileBtn', 
-                            'uploadSubmit', '/api/upload');
+                            'uploadSubmit', '/api/upload_ISPAES');
         this.setupImportModal('importDataModal', 'importData', 'cancelDataImportBtn', 'fileDataInput',
                             'dropDataArea', 'DatafileInfo', 'DatafileName', 'DatafileSize', 
                             'removeDataFileBtn', 'uploadDataSubmit', '/api/upload_data');
+        this.setupImportModal('importMSModal', 'importMS', 'cancelMSImportBtn', 'fileMSInput',
+                            'dropMSArea', 'fileMSInfo', 'MSfileName', 'MSfileSize', 
+                            'removeMSFileBtn', 'uploadMSSubmit', '/api/upload_ISPMS');
         this.setupEditModal();
         this.setupModalCloseListeners();
         this.setupSeriesModal();
@@ -274,22 +277,38 @@ class ProbeLab {
         const removeBtn = document.getElementById(removeBtnId);
         const submitBtn = document.getElementById(submitBtnId);
 
-        if (!modal || !fileInput || !dropArea) return;
+        if (!modal || !fileInput || !dropArea || !submitBtn) {
+            console.error(`Не найдены элементы для модального окна ${modalId}`);
+            return;
+        }
 
         // Открытие/закрытие модального окна
         if (openBtn) openBtn.addEventListener('click', () => {
             modal.style.display = 'flex';
-            this.resetFileInput(fileInput, fileInfo, fileName, fileSize);
+            // Сбрасываем файл и кнопку при открытии
+            fileInput.value = '';
+            if (fileInfo) fileInfo.style.display = 'none';
+            if (fileName) fileName.textContent = '';
+            if (fileSize) fileSize.textContent = '';
+            submitBtn.disabled = true; // Кнопка неактивна до выбора файла
         });
+        
         if (cancelBtn) cancelBtn.addEventListener('click', () => {
             modal.style.display = 'none';
-            this.resetFileInput(fileInput, fileInfo, fileName, fileSize);
+            fileInput.value = '';
+            if (fileInfo) fileInfo.style.display = 'none';
+            if (fileName) fileName.textContent = '';
+            if (fileSize) fileSize.textContent = '';
+            submitBtn.disabled = true;
         });
 
         // Обработка файлов
         dropArea.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', (e) => this.handleFile(e, fileInfo, fileName, fileSize));
-        
+        fileInput.addEventListener('change', (e) => {
+            this.handleFile(e, fileInfo, fileName, fileSize);
+            // Активируем кнопку отправки при выборе файла
+            submitBtn.disabled = !fileInput.files.length;
+        });
         // Drag & Drop
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropArea.addEventListener(eventName, this.preventDefaults, false);
@@ -307,15 +326,17 @@ class ProbeLab {
 
         // Удаление файла
         if (removeBtn) removeBtn.addEventListener('click', () => {
-            this.resetFileInput(fileInput, fileInfo, fileName, fileSize);
+            fileInput.value = '';
+            if (fileInfo) fileInfo.style.display = 'none';
+            if (fileName) fileName.textContent = '';
+            if (fileSize) fileSize.textContent = '';
+            submitBtn.disabled = true;
         });
 
         // Отправка файла
-        if (submitBtn) {
-            submitBtn.addEventListener('click', async () => {
-                await this.uploadFile(fileInput, submitBtn, endpoint, modal);
-            });
-        }
+        submitBtn.addEventListener('click', async () => {
+            await this.uploadFile(fileInput, submitBtn, endpoint, modal);
+        });
     }
 
     setupEditModal() {
@@ -394,57 +415,79 @@ class ProbeLab {
     }
 
     async uploadFile(fileInput, submitBtn, endpoint, modal) {
-        const files = fileInput.files;
-        
-        if (!files.length) {
-            alert('Пожалуйста, выберите файл для загрузки!');
-            return;
-        }
-        
-        const file = files[0];
-        
-        if (!this.validateFile(file)) {
-            alert('Недопустимый тип файла или слишком большой размер');
-            return;
-        }
-        
-        const formData = new FormData();
-        formData.append('file', file);
-        
-        try {
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
-            submitBtn.disabled = true;
-            
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                body: formData
-            });
-            
-            const result = await response.json();
-            
-            if (response.ok) {
-                alert('Файл успешно загружен!');
-                modal.style.display = 'none';
-                this.resetFileInput(fileInput, 
-                    document.getElementById(`${fileInput.id}Info`),
-                    document.getElementById(`${fileInput.id}Name`),
-                    document.getElementById(`${fileInput.id}Size`));
-                
-                // Обновляем данные
-                await this.loadData();
-                this.renderTable();
-                this.renderStats();
-            } else {
-                throw new Error(result.message || 'Ошибка загрузки файла');
-            }
-        } catch (error) {
-            console.error('Ошибка:', error);
-            alert('Ошибка при загрузке файла: ' + error.message);
-        } finally {
-            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить';
-            submitBtn.disabled = false;
-        }
+    const files = fileInput.files;
+    
+    if (!files.length) {
+        alert('Пожалуйста, выберите файл для загрузки!');
+        return;
     }
+    
+    const file = files[0];
+    
+    if (!this.validateFile(file)) {
+        alert('Недопустимый тип файла или слишком большой размер');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    try {
+        // Сохраняем исходное состояние кнопки
+        const originalHtml = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
+        submitBtn.disabled = true;
+        
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            alert('Файл успешно загружен!');
+            modal.style.display = 'none';
+            
+            // Используем правильные ID для сброса
+            const fileInputId = fileInput.id;
+            let fileInfo, fileName, fileSize;
+            
+            // Определяем, какое модальное окно используется
+            if (fileInputId === 'fileInput') {
+                fileInfo = document.getElementById('fileInfo');
+                fileName = document.getElementById('fileName');
+                fileSize = document.getElementById('fileSize');
+            } else if (fileInputId === 'fileDataInput') {
+                fileInfo = document.getElementById('DatafileInfo');
+                fileName = document.getElementById('DatafileName');
+                fileSize = document.getElementById('DatafileSize');
+            } else if (fileInputId === 'fileMSInput') {
+                fileInfo = document.getElementById('fileMSInfo');
+                fileName = document.getElementById('MSfileName');
+                fileSize = document.getElementById('MSfileSize');
+            }
+            
+            if (fileInfo && fileName && fileSize) {
+                this.resetFileInput(fileInput, fileInfo, fileName, fileSize);
+            }
+            
+            // Обновляем данные
+            await this.loadData();
+            this.renderTable();
+            this.renderStats();
+        } else {
+            throw new Error(result.message || 'Ошибка загрузки файла');
+        }
+    } catch (error) {
+        console.error('Ошибка:', error);
+        alert('Ошибка при загрузке файла: ' + error.message);
+    } finally {
+        // Всегда восстанавливаем кнопку
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Загрузить файл';
+        submitBtn.disabled = false;
+    }
+}
 
     // Валидация файла
     validateFile(file) {
