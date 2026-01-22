@@ -19,12 +19,9 @@ class Probe:
     dFe: float
     Ni: float
     dNi: float
-    Описание: str
-    is_solid: bool
     id: int
     tags: List[str]
     status_id: int
-    is_solution: bool
     last_normalized: str
     # Дополнительные поля
     group_id: Optional[int] = None
@@ -131,13 +128,6 @@ class ProbeManager:
             probe.tags = [tag for tag in probe.tags 
                          if tag not in ['твердая', 'жидкая', 'solid', 'liquid']]
             
-            # Добавляем новые теги
-            if probe.is_solid:
-                probe.tags.append('твердая')
-                probe.tags.append('solid')
-            if probe.is_solution:
-                probe.tags.append('жидкая')
-                probe.tags.append('liquid')
     
     def add_tag_to_probes(self, tag: str, probe_ids: List[int]):
         """
@@ -255,13 +245,6 @@ class ProbeManager:
                     condition.get('max')
                 )
             
-            elif condition['type'] == 'state':
-                if condition.get('state') == 'solid':
-                    probe_ids = [p.id for p in self.probes if p.is_solid]
-                elif condition.get('state') == 'solution':
-                    probe_ids = [p.id for p in self.probes if p.is_solution]
-                else:
-                    continue
             
             else:
                 continue
@@ -292,8 +275,6 @@ class ProbeManager:
         """Возвращает статистику по пробам"""
         stats = {
             'total_probes': len(self.probes),
-            'solid_probes': sum(1 for p in self.probes if p.is_solid),
-            'solution_probes': sum(1 for p in self.probes if p.is_solution),
             'tags_count': {},
             'average_concentrations': {},
             'elements': {}

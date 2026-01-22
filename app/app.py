@@ -2490,7 +2490,7 @@ def check_and_recalculate_dependent_fields(data_file: str = str(DATA_FILE)) -> D
         }
 from probe_manager import ProbeManager
 
-'''
+
 probe_manager = ProbeManager(str(DATA_FILE)) # type: ignore
 
 @app.route('/probe_manager')
@@ -2710,7 +2710,7 @@ def parse_probe_name():
         })
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
-'''
+
 @app.route('/mass')
 def render_mass():
     return render_template('mass.html')
