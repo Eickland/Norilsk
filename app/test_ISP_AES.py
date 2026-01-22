@@ -751,6 +751,10 @@ def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -
     
     for column_name, value_list in black_dict.items():
         final_df[column_name] = value_list
+        
+    if 'Масса навески (g)' in final_df.columns:
+        if final_df['Масса навески (g)'].mean() > 90:
+            final_df['Масса навески (g)'] = final_df['Масса навески (g)']/1000
     
     print(final_df)
     return final_df, wavelengths_df
