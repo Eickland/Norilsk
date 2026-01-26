@@ -321,13 +321,17 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
 def copy_mass_and_volume_from_C_to_AB(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
     """
     Находит пробы, отличающиеся только предпоследним символом (A, B, C),
-    и копирует поля 'Масса образца (g)' и 'V (ml)' из пробы C в пробы A и B.
+    и копирует поля из пробы C в пробы A и B.
     
     Правила:
     1. Ищем группы проб с одинаковыми именами, кроме предпоследнего символа
     2. Предпоследний символ должен быть A, B или C
     3. Из пробы C копируем поля в пробы A и B той же группы
-    4. Если поля в A/B уже существуют, они перезаписываются значениями из C
+    4. Для пробы A: копируем 'Масса образца (g)' и 'V (ml)'
+    5. Для пробы B: копируем 'Масса образца (g)' и 'V (ml)' только если название пробы B
+       содержит не более 11 символов (считая предпоследний символ A/B/C).
+       При этом проба B получает значение в поле 'Масса твердого (g)' из 'Масса образца (g)' пробы C
+    6. Если поля в A/B уже существуют, они перезаписываются значениями из C
     
     Args:
         data_file: Путь к JSON файлу с данными
@@ -377,7 +381,7 @@ def copy_mass_and_volume_from_C_to_AB(data_file: str = str(DATA_FILE)) -> Dict[s
             second_last_char = name[-2] if len(name) >= 2 else ''
             
             # Проверяем, что предпоследний символ - A, B или C
-            if second_last_char in ['A', 'C']:
+            if second_last_char in ['A', 'B', 'C']:
                 # Создаем базовое имя (без предпоследнего символа)
                 base_name = name[:-2] + name[-1]  # Удаляем предпоследний символ
                 
@@ -391,6 +395,7 @@ def copy_mass_and_volume_from_C_to_AB(data_file: str = str(DATA_FILE)) -> Dict[s
             'updated_probes': 0,      # Пробы A/B, в которые скопированы данные
             'copied_fields': 0,       # Всего скопированных полей
             'missing_fields': 0,      # Поля, которых нет в пробе C
+            'skipped_B_length': 0,    # Пробы B, пропущенные из-за длины имени > 11
             'errors': []              # Ошибки при обработке
         }
         
@@ -404,9 +409,8 @@ def copy_mass_and_volume_from_C_to_AB(data_file: str = str(DATA_FILE)) -> Dict[s
                 continue  # Пропускаем группы без пробы C
             
             # Проверяем наличие полей в пробе C
-            mass_C = probe_C.get('Масса образца (g)')  # Пробуем оба варианта написания
-            if mass_C is None:
-                mass_C = probe_C.get('sample_mass')
+            mass_C = probe_C.get('sample_mass')
+            mass_solid_C = probe_C.get('Масса твердого (g)')
                 
             volume_C = probe_C.get('V (ml)')
             
@@ -415,52 +419,83 @@ def copy_mass_and_volume_from_C_to_AB(data_file: str = str(DATA_FILE)) -> Dict[s
                 stats['missing_fields'] += 1
                 continue
             
-            # Копируем поля в пробы A и B
-            for probe_type in ['A', 'B']:
-                probe_target = group.get(probe_type)
-                if probe_target:
-                    fields_copied = 0
+            # Функция для копирования полей в целевую пробу
+            def copy_fields_to_probe(probe_target, probe_type, mass_to_copy, volume_to_copy, solid_mass):
+                """Копирует поля из пробы C в целевую пробу"""
+                fields_copied = 0
+                try:
+                    # Для пробы B: также копируем массу в поле 'Масса твердого (g)'
+                    if probe_type == 'B' and mass_to_copy is not None:
+                        # Копируем массу образца в поле 'Масса твердого (g)' для пробы B
+                        probe_target['sample_mass'] = solid_mass
+                        fields_copied += 1
+                        # Добавляем мета-информацию о копировании
+                        probe_target['mass_source_for_solid'] = 'Масса образца (g) из пробы C'
                     
-                    try:
-                        # Копируем массу образца
-                        if mass_C is not None:
-                            # Пробуем оба варианта поля
-                            if 'Масса образца (g)' in probe_target:
-                                probe_target['Масса образца (g)'] = mass_C
-                                fields_copied += 1
-                            elif 'sample_mass' in probe_target:
-                                probe_target['sample_mass'] = mass_C
-                                fields_copied += 1
-                            else:
-                                # Если ни одного поля нет, создаем 'sample_mass'
-                                probe_target['sample_mass'] = mass_C
-                                fields_copied += 1
+                    # Копируем массу образца
+                    if probe_type == 'A' and mass_to_copy is not None:
+                        if 'sample_mass' in probe_target:
+                            probe_target['sample_mass'] = mass_to_copy
+                            fields_copied += 1
+                        else:
+                            # Если ни одного поля нет, создаем 'sample_mass'
+                            probe_target['sample_mass'] = mass_to_copy
+                            fields_copied += 1
+                    
+                    # Копируем объем
+                    if volume_to_copy is not None:
+                        if 'V (ml)' in probe_target:
+                            probe_target['V (ml)'] = volume_to_copy
+                            fields_copied += 1
+                        else:
+                            # Создаем поле, если его нет
+                            probe_target['V (ml)'] = volume_to_copy
+                            fields_copied += 1
+                    
+                    if fields_copied > 0:
+                        stats['updated_probes'] += 1
+                        stats['copied_fields'] += fields_copied
                         
-                        # Копируем объем
-                        if volume_C is not None:
-                            if 'V (ml)' in probe_target:
-                                probe_target['V (ml)'] = volume_C
-                                fields_copied += 1
-                            else:
-                                # Создаем поле, если его нет
-                                probe_target['V (ml)'] = volume_C
-                                fields_copied += 1
-                        
-                        if fields_copied > 0:
-                            stats['updated_probes'] += 1
-                            stats['copied_fields'] += fields_copied
-                            
-                            # Добавляем метку времени обновления
-                            probe_target['last_mass_volume_update'] = datetime.now().isoformat()
-                            probe_target['mass_volume_source'] = probe_C.get('name', 'Unknown')
-                            
-                    except Exception as e:
-                        stats['errors'].append({
-                            'group': base_name,
-                            'probe': probe_target.get('name', 'Unknown'),
-                            'error': str(e)
-                        })
+                        # Добавляем метку времени обновления
+                        probe_target['last_mass_volume_update'] = datetime.now().isoformat()
+                        probe_target['mass_volume_source'] = probe_C.get('name', 'Unknown') # type: ignore
+                        if probe_type == 'B':
+                            probe_target['mass_solid_copied_from_C'] = True
+                    
+                    return fields_copied
+                    
+                except Exception as e:
+                    stats['errors'].append({
+                        'group': base_name,
+                        'probe': probe_target.get('name', 'Unknown'),
+                        'error': str(e)
+                    })
+                    return 0
             
+            # Обрабатываем пробу A (прежняя логика)
+            probe_A = group.get('A')
+            if probe_A:
+                copy_fields_to_probe(probe_A, 'A', mass_C, volume_C,mass_solid_C)
+            
+            # Обрабатываем пробу B (новая логика с проверкой длины имени)
+            probe_B = group.get('B')
+            if probe_B:
+                probe_B_name = probe_B.get('name', '')
+                
+                # Проверяем длину имени пробы B
+                if len(probe_B_name) <= 11:
+                    # Имя не превышает 11 символов - копируем данные
+                    copy_fields_to_probe(probe_B, 'B', mass_C, volume_C,mass_solid_C)
+                else:
+                    # Имя превышает 11 символов - пропускаем
+                    stats['skipped_B_length'] += 1
+                    # Добавляем метку о пропуске
+                    probe_B['mass_volume_copy_skipped'] = True
+                    probe_B['skip_reason'] = f'Длина имени ({len(probe_B_name)}) > 11 символов'
+                    probe_B['last_copy_check'] = datetime.now().isoformat()
+            
+            # Увеличиваем счетчик валидных групп, если хотя бы одна проба была обновлена
+            # для этой группы (учитываем обновленные после обработки A и B)
             if stats['updated_probes'] > 0:
                 stats['valid_groups'] += 1
         
@@ -481,19 +516,25 @@ def copy_mass_and_volume_from_C_to_AB(data_file: str = str(DATA_FILE)) -> Dict[s
             
             # Создаем финальную версию
             vcs.create_version(
-                description=f"Копирование массы/объема завершено: обновлено {stats['updated_probes']} проб в {stats['valid_groups']} группах",
+                description=f"Копирование массы/объема завершено: "
+                           f"обновлено {stats['updated_probes']} проб в {stats['valid_groups']} группах, "
+                           f"пропущено {stats['skipped_B_length']} проб B из-за длины имени",
                 author="system",
                 change_type="mass_volume_copy_complete"
             )
         
         # Формируем сообщение о результатах
         if stats['updated_probes'] > 0:
-            message = f"Обновлено {stats['updated_probes']} проб (A/B) в {stats['valid_groups']} группах. Скопировано {stats['copied_fields']} полей из проб C."
+            message = (f"Обновлено {stats['updated_probes']} проб (A/B) в {stats['valid_groups']} группах. "
+                      f"Скопировано {stats['copied_fields']} полей из проб C.")
         else:
             message = "Нет подходящих групп для копирования или поля уже совпадают"
         
         if stats['missing_fields'] > 0:
             message += f" Пропущено {stats['missing_fields']} групп без полей в пробе C."
+        
+        if stats['skipped_B_length'] > 0:
+            message += f" Пропущено {stats['skipped_B_length']} проб B из-за длины имени > 11 символов."
         
         return {
             'success': True,
@@ -512,9 +553,9 @@ def copy_mass_and_volume_from_C_to_AB(data_file: str = str(DATA_FILE)) -> Dict[s
             'valid_groups': 0,
             'updated_probes': 0,
             'copied_fields': 0,
+            'skipped_B_length': 0,
             'errors': [{'error': str(e)}]
         }
-
 
 def find_probe_groups_by_name_pattern(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
     """
@@ -2858,16 +2899,11 @@ def parse_probe_name():
 @app.route('/mass')
 def render_mass():
     return render_template('mass.html')
-def get_probe_value(probe_map, name, element):
-    """Безопасное получение значения элемента из пробы по имени."""
-    probe = probe_map.get(name)
-    if probe:
-        return probe.get(element, 0.0)
-    return 0.0
+
 
 @app.route('/api/calculate_balance')
 def calculate_balance():
-    probes = load_data().get("probes",[])
+    probes = load_data().get("probes", [])
     # Создаем словарь для быстрого поиска: "NAME": {probe_data}
     probe_map = {p['name']: p for p in probes}
     
@@ -2880,11 +2916,10 @@ def calculate_balance():
     for probe in probes:
         match = root_pattern.match(probe['name'])
         if match:
-            m = match.group(1) # Номер методики
-            n = match.group(2) # Номер повторности
+            m = match.group(1)  # Номер методики
+            n = match.group(2)  # Номер повторности
             
             # Определяем имена проб для данной серии
-            # Используем f-строки для динамической генерации имен
             names = {
                 # Исходные (Input)
                 "start_A": f"T2-{m}A{n}",
@@ -2901,22 +2936,66 @@ def calculate_balance():
                 # Стадия 4
                 "st4_A": f"T2-L{m}P{m}F{m}A{n}",
                 "st4_B": f"T2-L{m}P{m}F{m}B{n}",
-                "st4_D": f"T2-L{m}P{m}F{m}D{n}", # Камерный продукт
+                "st4_D": f"T2-L{m}P{m}F{m}D{n}",  # Камерный продукт
                 
                 # Стадия 5
-                "st5_A": f"T2-L{m}P{m}F{m}N{m}A{n}", # Оборотная жидкость
+                "st5_A": f"T2-L{m}P{m}F{m}N{m}A{n}",  # Оборотная жидкость
                 "st5_B": f"T2-L{m}P{m}F{m}N{m}B{n}",
                 
                 # Стадия 6 (ЖКК)
-                "st6_E": f"T2-L{m}P{m}F{m}N{m}E{n}"
+                "st6_E": f"T2-L{m}P{m}F{m}N{m}E{n}",
+                "st6_G": f"T2-L{m}P{m}F{m}N{m}G{n}"  # Новая оборотная жидкость
             }
 
-            elements = ['mFe', 'mCu', 'mNi','mPd','mPt','mRh','mAu','mAg','mOs','mRu','mIr']
+            # Вспомогательная функция для получения значения пробы с учетом правил связи стадий
+            def get_probe_value_with_fallback(probe_name, element, fallback_rules=None):
+                """
+                Получает значение элемента из пробы.
+                Если проба не найдена и заданы правила fallback, ищет альтернативную пробу.
+                """
+                # Пытаемся получить значение из целевой пробы
+                value = get_probe_value(probe_map, probe_name, element)
+                
+                # Если значение найдено (не ноль) или правила fallback не заданы - возвращаем
+                if value != 0 or not fallback_rules:
+                    return value
+                
+                # Применяем правила fallback
+                for fallback_name in fallback_rules:
+                    fallback_value = get_probe_value(probe_map, fallback_name, element)
+                    if fallback_value != 0:
+                        # Записываем информацию о том, откуда взято значение
+                        if probe_name in probe_map:
+                            probe_map[probe_name].setdefault('fallback_info', {})[element] = {
+                                'source': fallback_name,
+                                'value': fallback_value
+                            }
+                        return fallback_value
+                
+                return 0
+
+            # Правила связи между стадиями 5 и 6:
+            # Если пробы из 6 стадии нет, берем из 5 стадии:
+            # - Продукт B 5 стадии → предпродукт E 6 стадии
+            # - Продукт A 5 стадии → продукт G 6 стадии
+            fallback_rules_st6 = {
+                "st6_E": [names["st5_B"]],  # E из 6 стадии можно взять из B 5 стадии
+                "st6_G": [names["st5_A"]]   # G из 6 стадии можно взять из A 5 стадии
+            }
+
+            elements = ['mFe', 'mCu', 'mNi', 'mPd', 'mPt', 'mRh', 'mAu', 'mAg', 'mOs', 'mRu', 'mIr']
             series_data = {
                 "id": f"Series-{m}-{n}",
                 "method": m,
                 "repeat": n,
-                "elements": {}
+                "elements": {},
+                "probe_availability": {  # Добавляем информацию о доступности проб
+                    "st5_A": names["st5_A"] in probe_map,
+                    "st5_B": names["st5_B"] in probe_map,
+                    "st6_E": names["st6_E"] in probe_map,
+                    "st6_G": names["st6_G"] in probe_map,
+                    "used_fallback": False
+                }
             }
 
             for el in elements:
@@ -2924,47 +3003,142 @@ def calculate_balance():
                 input_val = get_probe_value(probe_map, names["start_A"], el) + \
                             get_probe_value(probe_map, names["start_B"], el)
                 
-                # 2. Расчет выходных продуктов для баланса
-                out_D = get_probe_value(probe_map, names["st4_D"], el) # Камерный
-                out_E = get_probe_value(probe_map, names["st5_B"], el) # ЖКК
-                out_Recycle = get_probe_value(probe_map, names["st5_A"], el) # Оборот
-                out_Recycle = 0
+                # 2. Расчет выходных продуктов для баланса с учетом fallback правил
+                out_D = get_probe_value(probe_map, names["st4_D"], el)  # Камерный
+                
+                # Используем значения с fallback для стадии 6
+                out_E = get_probe_value_with_fallback(
+                    names["st6_E"], 
+                    el, 
+                    fallback_rules_st6["st6_E"]
+                )
+                
+                out_G = get_probe_value_with_fallback(
+                    names["st6_G"], 
+                    el, 
+                    fallback_rules_st6["st6_G"]
+                )
+                
+                # Оборотная жидкость - теперь это st6_G или st5_A если st6_G нет
+                out_Recycle = out_G  # st6_G - новая оборотная жидкость
                 
                 total_out = out_D + out_E + out_Recycle
                 loss = input_val - total_out
                 
                 # Предотвращение деления на ноль
-                calc_base = input_val if input_val != 0 else 1 
+                calc_base = input_val if input_val != 0 else 1
 
-                # 3. Расчет стадий (Bar Plot Data)
+                # 3. Расчет стадий (Bar Plot Data) с учетом новых правил
                 stages = [
-                    get_probe_value(probe_map, names["start_A"], el) + get_probe_value(probe_map, names["start_B"], el),
-                    get_probe_value(probe_map, names["st2_A"], el) + get_probe_value(probe_map, names["st2_B"], el),
-                    get_probe_value(probe_map, names["st3_A"], el) + get_probe_value(probe_map, names["st3_B"], el),
-                    get_probe_value(probe_map, names["st4_A"], el) + get_probe_value(probe_map, names["st4_B"], el) + get_probe_value(probe_map, names["st4_D"], el),
-                    get_probe_value(probe_map, names["st5_A"], el) + get_probe_value(probe_map, names["st5_B"], el),
-                    get_probe_value(probe_map, names["st6_E"], el)
+                    # Стадия 1 (Input)
+                    get_probe_value(probe_map, names["start_A"], el) + 
+                    get_probe_value(probe_map, names["start_B"], el),
+                    
+                    # Стадия 2
+                    get_probe_value(probe_map, names["st2_A"], el) + 
+                    get_probe_value(probe_map, names["st2_B"], el),
+                    
+                    # Стадия 3
+                    get_probe_value(probe_map, names["st3_A"], el) + 
+                    get_probe_value(probe_map, names["st3_B"], el),
+                    
+                    # Стадия 4
+                    get_probe_value(probe_map, names["st4_A"], el) + 
+                    get_probe_value(probe_map, names["st4_B"], el) + 
+                    get_probe_value(probe_map, names["st4_D"], el),
+                    
+                    # Стадия 5 (теперь это промежуточная стадия)
+                    get_probe_value(probe_map, names["st5_A"], el) + 
+                    get_probe_value(probe_map, names["st5_B"], el),
+                    
+                    # Стадия 6 (финальная стадия с учетом fallback)
+                    out_E + out_G  # E и G из 6 стадии
                 ]
+
+                # Определяем, использовались ли fallback значения
+                used_fallback_E = (out_E != 0 and get_probe_value(probe_map, names["st6_E"], el) == 0 
+                                  and out_E == get_probe_value(probe_map, names["st5_B"], el))
+                used_fallback_G = (out_G != 0 and get_probe_value(probe_map, names["st6_G"], el) == 0 
+                                  and out_G == get_probe_value(probe_map, names["st5_A"], el))
+                
+                if used_fallback_E or used_fallback_G:
+                    series_data["probe_availability"]["used_fallback"] = True
 
                 series_data["elements"][el] = {
                     "balance": {
-                        "input": round(input_val,9),
-                        "D": round(out_D,9),
-                        "E": round(out_E,9),
-                        "Recycle": round(out_Recycle,9),
-                        "Loss": round(loss,9),
-                        "D_pct": round((out_D / calc_base) * 100,9),
-                        "E_pct": round((out_E / calc_base) * 100,9),
-                        "Recycle_pct": round((out_Recycle / calc_base) * 100,9),
-                        "Loss_pct": round((loss / calc_base) * 100,9)
+                        "input": round(input_val, 9),
+                        "D": round(out_D, 9),         # Камерный продукт
+                        "E": round(out_E, 9),         # Продукт E (из st6_E или st5_B)
+                        "G": round(out_G, 9),         # Оборотная жидкость G (из st6_G или st5_A)
+                        "Recycle": round(out_Recycle, 9),  # Алиас для G для обратной совместимости
+                        "Loss": round(loss, 9),
+                        "D_pct": round((out_D / calc_base) * 100, 9),
+                        "E_pct": round((out_E / calc_base) * 100, 9),
+                        "G_pct": round((out_G / calc_base) * 100, 9),
+                        "Recycle_pct": round((out_Recycle / calc_base) * 100, 9),  # Для обратной совместимости
+                        "Loss_pct": round((loss / calc_base) * 100, 9),
+                        "fallback_used": {
+                            "E": used_fallback_E,
+                            "G": used_fallback_G
+                        }
                     },
-                    "stages": [round(x,9) for x in stages]
+                    "stages": [round(x, 9) for x in stages],
+                    "probe_details": {
+                        "st5_A": get_probe_value(probe_map, names["st5_A"], el),
+                        "st5_B": get_probe_value(probe_map, names["st5_B"], el),
+                        "st6_E": get_probe_value(probe_map, names["st6_E"], el),
+                        "st6_G": get_probe_value(probe_map, names["st6_G"], el),
+                        "st6_E_actual": get_probe_value(probe_map, names["st6_E"], el),
+                        "st6_G_actual": get_probe_value(probe_map, names["st6_G"], el),
+                        "st6_E_used": out_E,
+                        "st6_G_used": out_G
+                    }
                 }
             
             series_list.append(series_data)
 
+    # Добавляем общую статистику по использованию fallback
+    if series_list:
+        total_series = len(series_list)
+        series_with_fallback = sum(1 for s in series_list if s["probe_availability"]["used_fallback"])
+        
+        for series in series_list:
+            series["stats"] = {
+                "total_series": total_series,
+                "series_with_fallback": series_with_fallback,
+                "fallback_percentage": round((series_with_fallback / total_series * 100), 2) if total_series > 0 else 0
+            }
+
     return jsonify(series_list)
 
+
+# Вспомогательная функция для получения значений из проб
+def get_probe_value(probe_map, probe_name, element_key):
+    """
+    Получает значение элемента из пробы по имени.
+    Возвращает 0, если проба или элемент не найдены.
+    """
+    if probe_name not in probe_map:
+        return 0
+    
+    probe = probe_map[probe_name]
+    
+    # Пробуем найти элемент в различных возможных форматах
+    if element_key in probe:
+        value = probe[element_key]
+    elif element_key.lower() in probe:
+        value = probe[element_key.lower()]
+    elif element_key.upper() in probe:
+        value = probe[element_key.upper()]
+    else:
+        return 0
+    
+    # Преобразуем в число, если это возможно
+    try:
+        return float(value) if value not in [None, ""] else 0
+    except (ValueError, TypeError):
+        return 0
+    
 def format_numeric_values(data_file: str = str(DATA_FILE), decimal_places: int = 4) -> Dict[str, Any]:
     """
     Форматирует все числовые значения в базе данных до указанного количества знаков после запятой.
