@@ -3317,5 +3317,124 @@ def check_and_format_numeric_values(data_file: str = str(DATA_FILE), force: bool
             'message': f"Ошибка проверки необходимости форматирования: {str(e)}"
         }
 
+from werkzeug.utils import secure_filename
+import logging
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+def is_valid_json(file_path):
+    """Проверяем, что файл содержит валидный JSON"""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            json.load(f)
+        return True
+    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+        logger.error(f"Invalid JSON file: {e}")
+        return False
+
+@app.route('/upload_replace', methods=['GET'])
+def upload_form():
+    """Страница с формой для загрузки файла"""
+    return render_template('replace.html')
+
+@app.route('/api/database/replace', methods=['POST'])
+def replace_database():
+    """
+    Эндпоинт для замены базы данных новым JSON файлом
+    
+    Ожидается multipart/form-data с файлом под ключом 'file'
+    """
+    # Проверяем, есть ли файл в запросе
+    if 'file' not in request.files:
+        return jsonify({
+            'success': False,
+            'message': 'No file part in the request'
+        }), 400
+    
+    file = request.files['file']
+    
+    # Проверяем, что файл был выбран
+    if file.filename == '':
+        return jsonify({
+            'success': False,
+            'message': 'No file selected'
+        }), 400
+    
+    # Проверяем расширение файла
+    if not allowed_file(file.filename):
+        return jsonify({
+            'success': False,
+            'message': 'File type not allowed. Only JSON files are accepted.'
+        }), 400
+    
+    try:
+        # Сохраняем файл во временную папку
+        filename = secure_filename(file.filename) # type: ignore
+        temp_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(temp_file_path)
+        
+        # Проверяем, что файл содержит валидный JSON
+        if not is_valid_json(temp_file_path):
+            # Удаляем временный файл
+            os.remove(temp_file_path)
+            return jsonify({
+                'success': False,
+                'message': 'Invalid JSON format in uploaded file'
+            }), 400
+        
+        # Создаем резервную копию текущей базы данных
+        backup_file = None
+        if os.path.exists(DATA_FILE):
+            backup_file = f"{DATA_FILE}.backup"
+            with open(DATA_FILE, 'r', encoding='utf-8') as src, \
+                 open(backup_file, 'w', encoding='utf-8') as dst:
+                dst.write(src.read())
+        
+        # Заменяем текущую базу данных новым файлом
+        with open(temp_file_path, 'r', encoding='utf-8') as src, \
+             open(DATA_FILE, 'w', encoding='utf-8') as dst:
+            dst.write(src.read())
+        
+        # Удаляем временный файл
+        os.remove(temp_file_path)
+        
+        # Логируем успешную операцию
+        logger.info(f"Database successfully replaced from file: {filename}")
+        
+        return jsonify({
+            'success': True,
+            'message': 'Database successfully replaced',
+            'backup_created': backup_file is not None,
+            'backup_file': backup_file
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error replacing database: {e}")
+        
+        # В случае ошибки восстанавливаем из резервной копии, если она была создана
+        if 'backup_file' in locals() and backup_file and os.path.exists(backup_file): # type: ignore
+            try:
+                with open(backup_file, 'r', encoding='utf-8') as src, \
+                     open(DATA_FILE, 'w', encoding='utf-8') as dst:
+                    dst.write(src.read())
+                logger.info("Database restored from backup after error")
+            except Exception as restore_error:
+                logger.error(f"Failed to restore from backup: {restore_error}")
+        
+        # Удаляем временный файл, если он существует
+        if 'temp_file_path' in locals() and os.path.exists(temp_file_path): # type: ignore
+            try:
+                os.remove(temp_file_path) # type: ignore
+            except:
+                pass
+        
+        return jsonify({
+            'success': False,
+            'message': f'Internal server error: {str(e)}'
+        }), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)
