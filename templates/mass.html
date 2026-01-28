@@ -4,298 +4,991 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mass Balance Analytics // T-Series</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;500&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mass.css') }}">
     <style>
         :root {
-            --bg-color: #0b0c15;
-            --card-bg: rgba(20, 25, 40, 0.7);
-            --accent-cyan: #00f0ff;
-            --accent-purple: #bc13fe;
-            --text-main: #e0e6ed;
-            --text-muted: #8b9bb4;
-            --border-glow: 0 0 10px rgba(0, 240, 255, 0.2);
+            --sidebar-width: 240px;
+            --sidebar-bg: #f8f9fa;
+            --sidebar-border: #e9ecef;
+            --primary-color: #0d6efd;
         }
-
+        
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Roboto Mono', monospace;
-            margin: 0;
-            padding: 20px;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(188, 19, 254, 0.05) 0%, transparent 20%);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+            padding-top: 56px;
+            overflow-x: hidden;
         }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
-            padding-bottom: 20px;
+        
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            top: 56px;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            padding: 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            transition: all 0.3s ease;
         }
-
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--accent-cyan);
+        
+        .sidebar-sticky {
+            height: calc(100vh - 56px);
+            overflow-y: auto;
+            padding: 15px 0;
+        }
+        
+        .sidebar-heading {
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+            letter-spacing: 1px;
+            padding-left: 15px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            color: #6c757d;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
+        
+        .nav-link {
+            font-weight: 500;
+            padding: 8px 20px;
+            color: #495057;
+            border-left: 3px solid transparent;
+            margin: 2px 0;
+            transition: all 0.2s;
         }
-
-        .series-card {
-            background: var(--card-bg);
-            border: 1px solid rgba(0, 240, 255, 0.2);
+        
+        .nav-link:hover, .nav-link:focus {
+            color: var(--primary-color);
+            background-color: rgba(13, 110, 253, 0.08);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(13, 110, 253, 0.12);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        /* Main content adjustments */
+        main {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                overflow: hidden;
+                box-shadow: none;
+            }
+            
+            main {
+                margin-left: 0;
+            }
+            
+            .sidebar-visible .sidebar {
+                width: var(--sidebar-width);
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .sidebar-visible main {
+                margin-left: var(--sidebar-width);
+            }
+        }
+        
+        /* Navbar enhancements */
+        .navbar-dark {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+        
+        /* Chart container */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            background: white;
             border-radius: 8px;
-            margin-bottom: 40px;
-            padding: 20px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
-            transition: transform 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        /* Series card styling */
+        .series-card {
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #eaeaea;
         }
         
         .series-card:hover {
-            border-color: var(--accent-cyan);
-            box-shadow: var(--border-glow);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.12);
         }
-
+        
         .series-header {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
+            background: linear-gradient(120deg, #0d6efd 0%, #0a58ca 100%);
             color: white;
-            border-left: 4px solid var(--accent-purple);
-            padding-left: 15px;
-            margin-bottom: 20px;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 1.25rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
-        .element-section {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 20px;
-            margin-bottom: 30px;
-            border-top: 1px dashed rgba(255,255,255,0.1);
-            padding-top: 20px;
-        }
-
-        .element-title {
-            grid-column: 1 / -1;
-            font-size: 1.2rem;
-            color: var(--accent-cyan);
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            font-size: 0.9rem;
-        }
-
-        .metric-box {
-            background: rgba(0,0,0,0.3);
-            padding: 10px;
+        
+        .series-header select {
+            max-width: 250px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 3px 10px;
             border-radius: 4px;
         }
-
-        .metric-label {
-            color: var(--text-muted);
-            font-size: 0.8rem;
+        
+        .series-header select option {
+            color: #333;
         }
         
-        .metric-value {
-            color: #fff;
-            font-size: 1.1rem;
+        /* Metal selector in series header */
+        .metal-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-
-        /* Loading animation */
-        #loader {
-            text-align: center;
-            font-size: 1.5rem;
-            color: var(--accent-cyan);
-            animation: blink 1.5s infinite;
+        
+        .metal-selector label {
+            margin: 0;
+            font-weight: 500;
         }
-
-        @keyframes blink {
-            0% { opacity: 0.2; }
-            50% { opacity: 1; }
-            100% { opacity: 0.2; }
+        
+        /* Comparison modal styling */
+        #seriesCheckboxes {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #f9f9f9;
         }
-
-        @media (max-width: 1000px) {
-            .element-section { grid-template-columns: 1fr; }
+        
+        .form-check {
+            padding: 5px 0;
+            margin: 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-check:last-child {
+            border-bottom: none;
+        }
+        
+        .comparison-chart-card {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        
+        .comparison-chart-card:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Loading indicator */
+        #loadingIndicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            transition: opacity 0.4s ease;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(13, 110, 253, 0.2);
+            border-top: 5px solid #0d6efd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 1.25rem;
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        /* Fallback indicator */
+        .fallback-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ffc107;
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        
+        /* Toggle sidebar button for mobile */
+        #toggleSidebar {
+            display: none;
+            margin-right: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            #toggleSidebar {
+                display: block;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+        }
+        
+        /* Accessibility improvements */
+        .btn-primary:focus, .btn-primary:hover {
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.5);
+        }
+        
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
         }
     </style>
 </head>
 <body>
-
-    <header>
-        <h1>Chemical Probe Analytics_V1</h1>
-        <p>Mass Balance & Stage Progression Interface</p>
-    </header>
-
-    <div class="container" id="app">
-        <div id="loader">INITIALIZING DATA STREAM...</div>
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator">
+        <div class="spinner"></div>
+        <div class="loading-text">Загрузка данных анализа...</div>
+        <div class="text-muted mt-2">Подготовка диаграмм и информации о пробах</div>
     </div>
 
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+        <button class="navbar-toggler" type="button" id="toggleSidebar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand mr-auto" href="#">
+            <i data-feather="bar-chart-2" class="mr-2"></i>
+            Mass Balance Analytics // T-Series
+        </a>
+        <button class="btn btn-primary" id="compareBtn">
+            <i data-feather="git-compare" class="mr-1"></i> Сравнить серии
+        </button>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <nav id="sidebar" class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <h6 class="sidebar-heading">Быстрый переход</h6>
+                    <ul class="nav flex-column" id="series-nav-list">
+                        <li class="nav-item">
+                            <span class="nav-link text-muted">Загрузка списка серий...</span>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="sidebar-heading mt-4">Информация</h6>
+                    <div class="px-3 py-2">
+                        <div class="small text-muted">
+                            <p class="mb-1"><strong>Всего серий:</strong> <span id="totalSeries">-</span></p>
+                            <p class="mb-1"><strong>С fallback:</strong> <span id="fallbackSeries">-</span></p>
+                            <p class="mb-0"><strong>Процент:</strong> <span id="fallbackPercentage">-</span></p>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Анализ массового баланса и стадий обогащения</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group mr-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="refreshData">
+                                <i data-feather="refresh-cw" class="mr-1"></i> Обновить данные
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info" id="dataInfoAlert" style="display:none;">
+                    <i data-feather="info" class="mr-2" width="18" height="18"></i>
+                    <span id="dataInfoMessage"></span>
+                </div>
+
+                <div id="series-container">
+                    <!-- Series cards will be dynamically inserted here -->
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Загрузка...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Подготовка данных для визуализации</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Comparison Modal -->
+    <div class="modal fade" id="compareModal" tabindex="-1" aria-labelledby="compareModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="compareModalLabel">
+                        <i data-feather="git-compare" class="mr-2"></i> Сравнение серий проб
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="compareMetal"><strong>Выберите металл для сравнения:</strong></label>
+                        <select class="form-control" id="compareMetal">
+                            <option value="">-- Выберите металл --</option>
+                        </select>
+                        <small class="form-text text-muted">Выбранный металл будет отображен на всех диаграммах сравнения</small>
+                    </div>
+                    
+                    <div class="form-group mt-4">
+                        <label><strong>Выберите серии для сравнения (минимум 2):</strong></label>
+                        <div id="seriesCheckboxes" class="mt-2">
+                            <div class="text-center py-3">
+                                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                    <span class="sr-only">Загрузка...</span>
+                                </div>
+                                <p class="mt-2 text-muted small">Загрузка списка серий...</p>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted mt-2">Отметьте серии, которые хотите сравнить. Можно выбрать более двух серий.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i data-feather="x" class="mr-1"></i> Отмена
+                    </button>
+                    <button type="button" class="btn btn-primary" id="buildComparison">
+                        <i data-feather="bar-chart-2" class="mr-1"></i> Построить сравнение
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Results Modal -->
+    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultModalLabel">
+                        <i data-feather="bar-chart-2" class="mr-2"></i> Результаты сравнения серий
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning d-none" id="fallbackWarning">
+                        <i data-feather="alert-triangle" class="mr-2" width="18" height="18"></i>
+                        <strong>Внимание:</strong> Для некоторых серий использованы данные с замещением (fallback) из предыдущих стадий, так как пробы стадии 6 отсутствовали.
+                    </div>
+                    <div id="comparisonCharts" class="row">
+                        <!-- Comparison charts will be inserted here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i data-feather="x" class="mr-1"></i> Закрыть
+                    </button>
+                    <button type="button" class="btn btn-success" id="exportComparison">
+                        <i data-feather="download" class="mr-1"></i> Экспортировать результаты
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    
     <script>
-        async function fetchData() {
-            try {
-                const response = await fetch('/api/calculate_balance');
-                const data = await response.json();
-                renderDashboard(data);
-            } catch (error) {
-                document.getElementById('loader').innerText = "ERROR: CONNECTION FAILED";
-                console.error(error);
-            }
+        // Constants and configuration
+        const METALS = [
+            { id: 'mFe', name: 'Железо (Fe)' },
+            { id: 'mCu', name: 'Медь (Cu)' },
+            { id: 'mNi', name: 'Никель (Ni)' },
+            { id: 'mPd', name: 'Палладий (Pd)' },
+            { id: 'mPt', name: 'Платина (Pt)' },
+            { id: 'mRh', name: 'Родий (Rh)' },
+            { id: 'mAu', name: 'Золото (Au)' },
+            { id: 'mAg', name: 'Серебро (Ag)' },
+            { id: 'mOs', name: 'Осмий (Os)' },
+            { id: 'mRu', name: 'Рутений (Ru)' },
+            { id: 'mIr', name: 'Иридий (Ir)' }
+        ];
+        
+        const PRODUCTS = ['A', 'B', 'D', 'E', 'G'];
+        const PRODUCT_LABELS = {
+            'A': 'Жидкое',
+            'B': 'Твердое',
+            'D': 'Камерный (D)',
+            'E': 'ЖКК',
+            'G': 'Оборот'
+        };
+        const PRODUCT_COLORS = {
+            'A': 'rgba(255, 99, 132, 0.8)',
+            'B': 'rgba(54, 162, 235, 0.8)',
+            'D': 'rgba(255, 206, 86, 0.8)',
+            'E': 'rgba(75, 192, 192, 0.8)',
+            'G': 'rgba(153, 102, 255, 0.8)'
+        };
+        const PRODUCT_BORDERS = {
+            'A': 'rgba(255, 99, 132, 1)',
+            'B': 'rgba(54, 162, 235, 1)',
+            'D': 'rgba(255, 206, 86, 1)',
+            'E': 'rgba(75, 192, 192, 1)',
+            'G': 'rgba(153, 102, 255, 1)'
+        };
+        
+        const STAGE_LABELS = [
+            'Пульпа ССФ',
+            'САВ',
+            'Сульфидизация/Нейтрализация',
+            'Флотация/Нейтрализация',
+            'До выделения ЖКК',
+            '6 ЖКК'
+        ];
+        
+        let seriesData = [];
+        let chartInstances = []; // To store chart references for cleanup
+        
+        // Initialize the application
+        $(document).ready(function() {
+            // Initialize Feather icons
+            feather.replace();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Load data
+            loadData();
+            
+            // Setup sidebar toggle for mobile
+            $('#toggleSidebar').on('click', function() {
+                $('body').toggleClass('sidebar-visible');
+            });
+        });
+        
+        function setupEventListeners() {
+            // Compare button
+            $('#compareBtn').on('click', function() {
+                populateCompareModal();
+                $('#compareModal').modal('show');
+            });
+            
+            // Build comparison button
+            $('#buildComparison').on('click', buildComparison);
+            
+            // Refresh data button
+            $('#refreshData').on('click', function() {
+                $('#loadingIndicator').fadeIn();
+                loadData();
+            });
+            
+            // Export comparison button
+            $('#exportComparison').on('click', function() {
+                alert('Экспорт результатов будет реализован в следующей версии');
+            });
         }
-
-        function renderDashboard(data) {
-            const container = document.getElementById('app');
-            container.innerHTML = ''; // Clear loader
-
-            if(data.length === 0) {
-                container.innerHTML = '<div style="text-align:center">NO SERIES FOUND MATCHING CRITERIA</div>';
+        
+        function loadData() {
+            $.getJSON('/api/calculate_balance', function(data) {
+                seriesData = data;
+                renderPageContent();
+                $('#loadingIndicator').fadeOut();
+            }).fail(function() {
+                $('#loadingIndicator').html(`
+                    <div class="text-danger mb-3">
+                        <i data-feather="alert-octagon" width="60" height="60"></i>
+                    </div>
+                    <div class="loading-text">Ошибка загрузки данных</div>
+                    <div class="text-muted mt-2">Не удалось получить данные с сервера</div>
+                    <button class="btn btn-primary mt-4" id="retryLoad">
+                        <i data-feather="refresh-cw" class="mr-1"></i> Повторить попытку
+                    </button>
+                `);
+                feather.replace();
+                $('#retryLoad').on('click', loadData);
+            });
+        }
+        
+        function renderPageContent() {
+            // Update sidebar navigation
+            buildSidebarNavigation();
+            
+            // Update statistics
+            updateStatistics();
+            
+            // Render series cards
+            renderSeriesCards();
+            
+            // Show data info alert if needed
+            showDataInfo();
+        }
+        
+        function buildSidebarNavigation() {
+            const navList = $('#series-nav-list');
+            navList.empty();
+            
+            if (seriesData.length === 0) {
+                navList.append(`
+                    <li class="nav-item">
+                        <span class="nav-link text-muted">Серии не найдены</span>
+                    </li>
+                `);
                 return;
             }
-
-            data.forEach((series, index) => {
-                const card = document.createElement('div');
-                card.className = 'series-card';
-                
-                // Header
-                card.innerHTML = `
-                    <div class="series-header">
-                        <span>SERIES T2-${series.method}C${series.repeat}</span>
-                        <span style="font-size: 0.8rem; opacity: 0.7">METHOD: ${series.method} | REP: ${series.repeat}</span>
-                    </div>
-                `;
-
-                // Elements Loop (Fe, Cu, Ni)
-                ['mFe', 'mCu', 'mNi','mPd','mPt','mRh','mAu','mAg','mOs','mRu','mIr'].forEach(el => {
-                    const elData = series.elements[el];
-                    const section = document.createElement('div');
-                    section.className = 'element-section';
-                    
-                    // HTML Structure for charts
-                    section.innerHTML = `
-                        <div class="element-title">Target Element: ${el}</div>
-                        
-                        <div>
-                            <div style="text-align:center; margin-bottom:10px; color:var(--text-muted)">DISTRIBUTION</div>
-                            <div class="chart-container">
-                                <canvas id="pie-${index}-${el}"></canvas>
-                            </div>
-                            <div class="metrics-grid" style="margin-top:10px;">
-                                <div class="metric-box"><span class="metric-label">INPUT MASS</span><br>${elData.balance.input}</div>
-                                <div class="metric-box"><span class="metric-label">TOTAL LOSS</span><br>${elData.balance.Loss} (${elData.balance.Loss_pct}%)</div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div style="text-align:center; margin-bottom:10px; color:var(--text-muted)">STAGES PROGRESSION</div>
-                            <div class="chart-container">
-                                <canvas id="bar-${index}-${el}"></canvas>
-                            </div>
-                        </div>
-                    `;
-                    card.appendChild(section);
-                });
-
-                container.appendChild(card);
-
-                // Render Charts after DOM insertion
-                requestAnimationFrame(() => {
-                    ['mFe', 'mCu', 'mNi','mPd','mPt','mRh','mAu','mAg','mOs','mRu','mIr'].forEach(el => {
-                        renderCharts(index, el, series.elements[el]);
-                    });
-                });
+            
+            seriesData.forEach(series => {
+                const seriesId = `series-${series.id}`;
+                const label = `Серия ${series.method}-${series.repeat}`;
+                navList.append(`
+                    <li class="nav-item">
+                        <a class="nav-link" href="#${seriesId}" data-series-id="${series.id}">
+                            ${label}
+                            ${series.probe_availability.used_fallback ? 
+                                '<span class="badge badge-warning ml-2" title="Использованы данные с замещением">!</span>' : 
+                                ''}
+                        </a>
+                    </li>
+                `);
             });
-        }
-
-        function renderCharts(index, el, data) {
-            // PIE CHART
-            const ctxPie = document.getElementById(`pie-${index}-${el}`).getContext('2d');
-            new Chart(ctxPie, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Product D', 'Product E', 'Recycle G', 'Losses'],
-                    datasets: [{
-                        data: [
-                            data.balance.D, 
-                            data.balance.E, 
-                            data.balance.Recycle, 
-                            data.balance.Loss < 0 ? 0 : data.balance.Loss // Handle negative loss visually
-                        ],
-                        backgroundColor: [
-                            '#00f0ff', // Cyan
-                            '#bc13fe', // Purple
-                            '#39ff14', // Neon Green
-                            '#ff0055'  // Neon Red (Loss)
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right', labels: { color: '#8b9bb4', font: {family: 'Roboto Mono'} } }
-                    }
+            
+            // Setup smooth scrolling for navigation links
+            $('.nav-link[data-series-id]').on('click', function(e) {
+                e.preventDefault();
+                const targetId = $(this).attr('href');
+                if ($(targetId).length) {
+                    $('html, body').animate({
+                        scrollTop: $(targetId).offset().top - 20
+                    }, 500);
+                    
+                    // Update active state
+                    $('.nav-link').removeClass('active');
+                    $(this).addClass('active');
                 }
             });
-
-            // BAR CHART
-            const ctxBar = document.getElementById(`bar-${index}-${el}`).getContext('2d');
-            new Chart(ctxBar, {
+        }
+        
+        function updateStatistics() {
+            if (seriesData.length > 0 && seriesData[0].stats) {
+                const stats = seriesData[0].stats;
+                $('#totalSeries').text(stats.total_series);
+                $('#fallbackSeries').text(stats.series_with_fallback);
+                $('#fallbackPercentage').text(`${stats.fallback_percentage}%`);
+            } else {
+                $('#totalSeries').text(seriesData.length);
+                $('#fallbackSeries').text('0');
+                $('#fallbackPercentage').text('0%');
+            }
+        }
+        
+        function renderSeriesCards() {
+            const container = $('#series-container');
+            container.empty();
+            
+            if (seriesData.length === 0) {
+                container.html(`
+                    <div class="alert alert-warning">
+                        <i data-feather="alert-triangle" class="mr-2"></i>
+                        Не найдено ни одной серии проб для отображения. Проверьте данные или параметры фильтрации.
+                    </div>
+                `);
+                feather.replace();
+                return;
+            }
+            
+            seriesData.forEach(series => {
+                const seriesId = `series-${series.id}`;
+                const firstMetal = METALS[0].id;
+                
+                // Create series card
+                const card = $(`
+                    <div class="card series-card" id="${seriesId}">
+                        <div class="card-header series-header">
+                            <span>Серия ${series.method}-${series.repeat} (Метод ${series.method}, Повторность ${series.repeat})</span>
+                            <div class="metal-selector">
+                                <label class="mb-0 text-white">Металл:</label>
+                                <select class="form-control form-control-sm metal-selector-dropdown" data-series-id="${series.id}">
+                                    ${METALS.map(m => 
+                                        `<option value="${m.id}" ${m.id === firstMetal ? 'selected' : ''}>${m.name}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            ${series.probe_availability.used_fallback ? `
+                                <div class="alert alert-warning alert-sm mb-3">
+                                    <i data-feather="alert-triangle" class="mr-1" width="16" height="16"></i>
+                                    Для этой серии использованы данные с замещением (fallback) из стадии 5, так как пробы стадии 6 отсутствовали.
+                                </div>
+                            ` : ''}
+                            <div class="chart-container">
+                                <canvas id="chart-${series.id}-${firstMetal}"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                
+                container.append(card);
+                
+                // Render chart for the first metal
+                renderStackedChart(series, firstMetal, `chart-${series.id}-${firstMetal}`);
+                
+                // Setup metal selector change event
+                card.find('.metal-selector-dropdown').on('change', function() {
+                    const selectedMetal = $(this).val();
+                    const chartId = `chart-${series.id}-${selectedMetal}`;
+                    
+                    // Remove old chart container and create new one
+                    const chartContainer = card.find('.chart-container');
+                    chartContainer.html(`<canvas id="${chartId}"></canvas>`);
+                    
+                    // Render new chart
+                    renderStackedChart(series, selectedMetal, chartId);
+                });
+            });
+            
+            // Initialize sidebar active state based on scroll position
+            $(window).on('scroll', updateSidebarActiveState);
+            updateSidebarActiveState();
+        }
+        
+        function renderStackedChart(series, metal, canvasId) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            const stages = series.elements[metal].stages; // Array of 6 objects with A,B,D,E,G
+            
+            // Prepare datasets for each product
+            const datasets = PRODUCTS.map(product => {
+                return {
+                    label: PRODUCT_LABELS[product],
+                    data: stages.map(stage => stage[product] || 0),
+                    backgroundColor: PRODUCT_COLORS[product],
+                    borderColor: PRODUCT_BORDERS[product],
+                    borderWidth: 1,
+                    barPercentage: 0.8
+                };
+            });
+            
+            // Create chart
+            const chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Stage 1', 'Stage 2', 'Stage 3', 'Stage 4', 'Stage 5', 'Stage 6'],
-                    datasets: [{
-                        label: `${el} Content`,
-                        data: data.stages,
-                        backgroundColor: 'rgba(0, 240, 255, 0.3)',
-                        borderColor: '#00f0ff',
-                        borderWidth: 1
-                    }]
+                    labels: STAGE_LABELS,
+                    datasets: datasets
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: '#8b9bb4', font: {family: 'Roboto Mono'} }
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Распределение ${METALS.find(m => m.id === metal)?.name || metal} по стадиям обогащения`,
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 20
+                            }
                         },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#8b9bb4', font: {family: 'Roboto Mono'} }
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed.y;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                    return `${context.dataset.label}: ${value.toFixed(6)} (${percentage}%)`;
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 12
+                                }
+                            }
                         }
                     },
-                    plugins: {
-                        legend: { display: false }
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Стадии технологического процесса',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 0,
+                                minRotation: 0,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Масса, мг',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            },
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 6
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutQuart'
                     }
                 }
             });
+            
+            // Store chart instance for cleanup if needed
+            chartInstances.push(chart);
+            
+            // Add fallback badge if needed
+            if (series.probe_availability.used_fallback) {
+                $(`#${canvasId}`).parent().append(`
+                    <div class="fallback-badge" title="Использованы данные с замещением из предыдущих стадий">
+                        <i data-feather="alert-triangle" width="12" height="12" class="mr-1"></i> Fallback
+                    </div>
+                `);
+                feather.replace();
+            }
         }
-
-        // Start
-        fetchData();
+        
+        function populateCompareModal() {
+            // Populate metal dropdown
+            const metalSelect = $('#compareMetal');
+            metalSelect.empty();
+            metalSelect.append('<option value="">-- Выберите металл --</option>');
+            METALS.forEach(metal => {
+                metalSelect.append(`<option value="${metal.id}">${metal.name}</option>`);
+            });
+            
+            // Populate series checkboxes
+            const checkboxesContainer = $('#seriesCheckboxes');
+            checkboxesContainer.html('<div class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary" role="status"><span class="sr-only">Загрузка...</span></div><p class="mt-2 text-muted small">Загрузка списка серий...</p></div>');
+            
+            setTimeout(() => {
+                checkboxesContainer.empty();
+                if (seriesData.length === 0) {
+                    checkboxesContainer.html('<div class="alert alert-warning">Серии не найдены</div>');
+                    return;
+                }
+                
+                seriesData.forEach(series => {
+                    const label = `Серия ${series.method}-${series.repeat} (Метод ${series.method})`;
+                    const isFallback = series.probe_availability.used_fallback ? ' (с замещением)' : '';
+                    checkboxesContainer.append(`
+                        <div class="form-check">
+                            <input class="form-check-input series-check" type="checkbox" 
+                                value="${series.id}" id="check-${series.id.replace(/[^a-z0-9]/gi, '-')}" 
+                                data-has-fallback="${series.probe_availability.used_fallback}">
+                            <label class="form-check-label" for="check-${series.id.replace(/[^a-z0-9]/gi, '-')}">
+                                ${label}${isFallback}
+                                ${series.probe_availability.used_fallback ? 
+                                    '<span class="badge badge-warning ml-2" title="Использованы данные с замещением">!</span>' : 
+                                    ''}
+                            </label>
+                        </div>
+                    `);
+                });
+            }, 300);
+        }
+        
+        function buildComparison() {
+            const selectedMetal = $('#compareMetal').val();
+            const selectedChecks = $('.series-check:checked');
+            const selectedSeriesIds = selectedChecks.map((_, el) => $(el).val()).get();
+            const hasFallback = selectedChecks.filter('[data-has-fallback="true"]').length > 0;
+            
+            // Validation
+            if (!selectedMetal) {
+                alert('Пожалуйста, выберите металл для сравнения');
+                return;
+            }
+            
+            if (selectedSeriesIds.length < 2) {
+                alert('Пожалуйста, выберите минимум 2 серии для сравнения');
+                return;
+            }
+            
+            // Clear previous charts
+            $('#comparisonCharts').empty();
+            chartInstances = chartInstances.filter(c => {
+                if (c.canvas.parentNode.closest('#comparisonCharts')) {
+                    c.destroy();
+                    return false;
+                }
+                return true;
+            });
+            
+            // Show fallback warning if needed
+            if (hasFallback) {
+                $('#fallbackWarning').removeClass('d-none');
+            } else {
+                $('#fallbackWarning').addClass('d-none');
+            }
+            
+            // Build charts for each selected series
+            selectedSeriesIds.forEach(seriesId => {
+                const series = seriesData.find(s => s.id === seriesId);
+                if (!series || !series.elements[selectedMetal]) return;
+                
+                const chartId = `comp-chart-${seriesId}-${selectedMetal}`.replace(/[^a-z0-9]/gi, '-');
+                const metalName = METALS.find(m => m.id === selectedMetal)?.name || selectedMetal;
+                
+                // ИЗМЕНЕНИЯ: заменяем сетку на вертикальное расположение (col-12 вместо col-lg-6 col-xl-4)
+                // Увеличиваем высоту диаграммы для лучшей читаемости в вертикальном режиме
+                const card = $(`
+                    <div class="col-12 mb-4"> <!-- БЫЛО: col-lg-6 col-xl-4 -->
+                        <div class="card comparison-chart-card">
+                            <div class="card-header bg-light font-weight-bold">
+                                Серия ${series.method}-${series.repeat}
+                                ${series.probe_availability.used_fallback ? 
+                                    '<span class="badge badge-warning float-right" title="Использованы данные с замещением">Fallback</span>' : 
+                                    ''}
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container" style="height: 400px;"> <!-- Увеличена высота с 280px до 400px -->
+                                    <canvas id="${chartId}"></canvas>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-light small">
+                                Метод ${series.method} | Повторность ${series.repeat}
+                                ${series.probe_availability.used_fallback ? 
+                                    '<br><span class="text-warning"><i data-feather="alert-triangle" width="14" height="14"></i> Использованы данные с замещением</span>' : 
+                                    ''}
+                            </div>
+                        </div>
+                    </div>
+                `);
+                
+                $('#comparisonCharts').append(card);
+                renderStackedChart(series, selectedMetal, chartId);
+            });
+            
+            // Initialize Feather icons in the new content
+            feather.replace();
+            
+            // Hide selection modal and show results
+            $('#compareModal').modal('hide');
+            $('#resultModal').modal('show');
+        }
+        
+        function showDataInfo() {
+            const infoAlert = $('#dataInfoAlert');
+            const infoMessage = $('#dataInfoMessage');
+            
+            if (seriesData.length > 0) {
+                const total = seriesData.length;
+                const withFallback = seriesData.filter(s => s.probe_availability.used_fallback).length;
+                const percentage = total > 0 ? Math.round((withFallback / total) * 100) : 0;
+                
+                if (withFallback > 0) {
+                    infoMessage.html(`
+                        <strong>Внимание:</strong> В ${withFallback} из ${total} серий (${percentage}%) 
+                        использованы данные с замещением (fallback) из стадии 5, так как пробы стадии 6 отсутствовали. 
+                        Это может повлиять на точность баланса для стадии 6.
+                    `);
+                    infoAlert.removeClass('alert-info').addClass('alert-warning').show();
+                } else {
+                    infoMessage.html(`
+                        Загружено ${total} серий проб. Все данные полные, без замещения пропущенных проб.
+                    `);
+                    infoAlert.removeClass('alert-warning').addClass('alert-info').show();
+                }
+            } else {
+                infoAlert.hide();
+            }
+        }
+        
+        function updateSidebarActiveState() {
+            const scrollPosition = $(window).scrollTop() + 100; // Offset for header
+            
+            $('.nav-link[data-series-id]').removeClass('active');
+            
+            // Find the series card that is currently in view
+            let activeSeriesId = null;
+            $('.series-card').each(function() {
+                const cardTop = $(this).offset().top;
+                const cardBottom = cardTop + $(this).outerHeight();
+                
+                if (scrollPosition >= cardTop && scrollPosition < cardBottom) {
+                    activeSeriesId = $(this).attr('id').replace('series-', '');
+                    return false; // Break the loop
+                }
+            });
+            
+            // Activate the corresponding nav link
+            if (activeSeriesId) {
+                $(`.nav-link[data-series-id="${activeSeriesId}"]`).addClass('active');
+            }
+        }
+        
+        // Cleanup on page unload
+        $(window).on('beforeunload', function() {
+            // Destroy all chart instances to prevent memory leaks
+            chartInstances.forEach(chart => chart.destroy());
+        });
     </script>
 </body>
 </html>

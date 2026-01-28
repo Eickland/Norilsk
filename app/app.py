@@ -3030,31 +3030,52 @@ def calculate_balance():
                 calc_base = input_val if input_val != 0 else 1
 
                 # 3. Расчет стадий (Bar Plot Data) с учетом новых правил
-                stages = [
-                    # Стадия 1 (Input)
-                    get_probe_value(probe_map, names["start_A"], el) + 
-                    get_probe_value(probe_map, names["start_B"], el),
-                    
-                    # Стадия 2
-                    get_probe_value(probe_map, names["st2_A"], el) + 
-                    get_probe_value(probe_map, names["st2_B"], el),
-                    
-                    # Стадия 3
-                    get_probe_value(probe_map, names["st3_A"], el) + 
-                    get_probe_value(probe_map, names["st3_B"], el),
-                    
-                    # Стадия 4
-                    get_probe_value(probe_map, names["st4_A"], el) + 
-                    get_probe_value(probe_map, names["st4_B"], el) + 
-                    get_probe_value(probe_map, names["st4_D"], el),
-                    
-                    # Стадия 5 (теперь это промежуточная стадия)
-                    get_probe_value(probe_map, names["st5_A"], el) + 
-                    get_probe_value(probe_map, names["st5_B"], el),
-                    
-                    # Стадия 6 (финальная стадия с учетом fallback)
-                    out_E + out_G  # E и G из 6 стадии
-                ]
+                # Внутри цикла for el in elements:
+                stages = []
+                # Стадия 1
+                stages.append({
+                    'A': get_probe_value(probe_map, names["start_A"], el),
+                    'B': get_probe_value(probe_map, names["start_B"], el),
+                    'D': 0.0, 'E': 0.0, 'G': 0.0
+                })
+                # Стадия 2
+                stages.append({
+                    'A': get_probe_value(probe_map, names["st2_A"], el),
+                    'B': get_probe_value(probe_map, names["st2_B"], el),
+                    'D': 0.0, 'E': 0.0, 'G': 0.0
+                })
+                # Стадия 3
+                stages.append({
+                    'A': get_probe_value(probe_map, names["st3_A"], el),
+                    'B': get_probe_value(probe_map, names["st3_B"], el),
+                    'D': 0.0, 'E': 0.0, 'G': 0.0
+                })
+                # Стадия 4
+                stages.append({
+                    'A': get_probe_value(probe_map, names["st4_A"], el),
+                    'B': get_probe_value(probe_map, names["st4_B"], el),
+                    'D': get_probe_value(probe_map, names["st4_D"], el),
+                    'E': 0.0, 'G': 0.0
+                })
+                # Стадия 5
+                stages.append({
+                    'A': get_probe_value(probe_map, names["st5_A"], el),
+                    'B': get_probe_value(probe_map, names["st5_B"], el),
+                    'D': 0.0, 'E': 0.0, 'G': 0.0
+                })
+                # Стадия 6 (с учётом fallback)
+                stages.append({
+                    'A': 0.0, 'B': 0.0, 'D': 0.0,
+                    'E': out_E,
+                    'G': out_G
+                })
+
+                # Округление значений
+                for stage in stages:
+                    for k in stage:
+                        stage[k] = round(stage[k], 9)
+
+
 
                 # Определяем, использовались ли fallback значения
                 used_fallback_E = (out_E != 0 and get_probe_value(probe_map, names["st6_E"], el) == 0 
@@ -3083,7 +3104,7 @@ def calculate_balance():
                             "G": used_fallback_G
                         }
                     },
-                    "stages": [round(x, 9) for x in stages],
+                    "stages": stages,
                     "probe_details": {
                         "st5_A": get_probe_value(probe_map, names["st5_A"], el),
                         "st5_B": get_probe_value(probe_map, names["st5_B"], el),
