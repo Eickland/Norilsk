@@ -335,7 +335,7 @@
             <!-- Main Content -->
             <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-md-4 py-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Анализ массового баланса и стадий обогащения</h1>
+                    <h1 class="h2">Анализ массового баланса</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group mr-2">
                             <button type="button" class="btn btn-sm btn-outline-secondary" id="refreshData">
@@ -472,9 +472,9 @@
             'G': 'Оборот'
         };
         const PRODUCT_COLORS = {
-            'A': 'rgba(255, 99, 132, 0.8)',
-            'B': 'rgba(54, 162, 235, 0.8)',
-            'D': 'rgba(255, 206, 86, 0.8)',
+            'A': 'rgba(2, 55, 244, 1)',
+            'B': 'rgba(253, 84, 5, 1)',
+            'D': 'rgba(184, 184, 173, 1)',
             'E': 'rgba(75, 192, 192, 0.8)',
             'G': 'rgba(153, 102, 255, 0.8)'
         };
@@ -729,7 +729,7 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: `Распределение ${METALS.find(m => m.id === metal)?.name || metal} по стадиям обогащения`,
+                            text: `Распределение ${METALS.find(m => m.id === metal)?.name || metal} по стадиям`,
                             font: {
                                 size: 16,
                                 weight: 'bold'

@@ -236,5 +236,16 @@ def conditional_update_example():
     print(f"Обновлено {count} твердых проб")
 
 if __name__ == "__main__":
-    # Запуск примеров
-    example_usage()
+    with open("data/data.json", 'r', encoding='utf-8') as f:
+        data = json.load(f).get('probes', [])
+    
+    for probe in data:
+        # Создаем список ключей для удаления
+        keys_to_delete = [field for field in probe if 'Unnamed' in field]
+        
+        # Удаляем ключи после завершения итерации
+        for key in keys_to_delete:
+            del probe[key]
+    
+    with open("data/data.json", 'w', encoding='utf-8') as f:
+        json.dump({'probes': data}, f, ensure_ascii=False, indent=2)    
