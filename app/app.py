@@ -796,6 +796,7 @@ def normalize_probe_structure(
             if field not in probe:
                 probe[field] = default_value
                 fields_added += 1
+            probe["V_aliq (l)"] = 0.05
         if fields_added > 0:
             normalization_stats['fields_added_total'] += fields_added
             normalization_stats['probes_modified'] += 1
