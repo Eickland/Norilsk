@@ -172,7 +172,8 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
                                         
                                         # Расчет массы металла
                                         mass = concentration * dilution_float * ((volume_float - probe.get('Масса твердого (g)')/3) / 1000.0)
-                                        
+                                        if probe.get('name')[-1] == "G":
+                                             mass = concentration * dilution_float * volume_float
                                         # Сохраняем результат
                                         mass_field = f'm{element}'
                                         probe[mass_field] = float(mass)
