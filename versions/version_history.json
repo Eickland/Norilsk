@@ -1,83 +1,6 @@
 [
   {
     "id": 1,
-    "timestamp": "2026-01-29T03:30:52.904512",
-    "description": "Пересчет зависимых полей завершен: масса - 760, плотность - 288",
-    "author": "system",
-    "change_type": "recalculation_complete",
-    "hash": "99f3660b0b5d948019debac9042992d2",
-    "filename": "v51_data.json",
-    "data_size": 2062119,
-    "probes_count": 764
-  },
-  {
-    "id": 2,
-    "timestamp": "2026-01-29T11:25:36.381122",
-    "description": "Копирование массы/объема завершено: обновлено 177 проб в 113 группах, пропущено 16 проб B из-за длины имени",
-    "author": "system",
-    "change_type": "mass_volume_copy_complete",
-    "hash": "fc50acb18f690e180a6583352ca24dbc",
-    "filename": "v51_data.json",
-    "data_size": 2062119,
-    "probes_count": 764
-  },
-  {
-    "id": 3,
-    "timestamp": "2026-01-29T11:25:36.991897",
-    "description": "Перерасчет массы металлов: жидких - 94, твердых - 133, полей mX - 6129, ошибок - 0",
-    "author": "system",
-    "change_type": "metal_mass_recalculation_complete",
-    "hash": "b632fbd615a8cc303d4bdac024dc16e1",
-    "filename": "v51_data.json",
-    "data_size": 2062119,
-    "probes_count": 764
-  },
-  {
-    "id": 4,
-    "timestamp": "2026-01-29T11:25:37.640715",
-    "description": "Пересчет зависимых полей завершен: масса - 760, плотность - 288",
-    "author": "system",
-    "change_type": "recalculation_complete",
-    "hash": "e4c181e045be2ee7dff06e969b7453b6",
-    "filename": "v51_data.json",
-    "data_size": 2062119,
-    "probes_count": 764
-  },
-  {
-    "id": 5,
-    "timestamp": "2026-01-29T11:25:45.756177",
-    "description": "Импорт файла '280126_.csv' - обновлено: 55, добавлено: 54",
-    "author": "anonymous",
-    "change_type": "import",
-    "hash": "e61daeb7ffafd4a81f79faf3b6df5bf1",
-    "filename": "v51_data.json",
-    "data_size": 2087846,
-    "probes_count": 818
-  },
-  {
-    "id": 6,
-    "timestamp": "2026-01-29T11:25:48.182324",
-    "description": "Нормализация завершена: обновлено 109 ID",
-    "author": "system",
-    "change_type": "normalization_complete",
-    "hash": "765e8e111340f4e4ffbb0602c6fe20cf",
-    "filename": "v51_data.json",
-    "data_size": 2091535,
-    "probes_count": 818
-  },
-  {
-    "id": 7,
-    "timestamp": "2026-01-29T11:25:48.565985",
-    "description": "Копирование массы и объема из проб C в пробы A/B",
-    "author": "system",
-    "change_type": "mass_volume_copy",
-    "hash": "171357bb1b96b25d394f93d921755e31",
-    "filename": "v51_data.json",
-    "data_size": 2193496,
-    "probes_count": 818
-  },
-  {
-    "id": 8,
     "timestamp": "2026-01-29T11:25:48.895157",
     "description": "Копирование массы/объема завершено: обновлено 177 проб в 113 группах, пропущено 16 проб B из-за длины имени",
     "author": "system",
@@ -88,7 +11,7 @@
     "probes_count": 818
   },
   {
-    "id": 9,
+    "id": 2,
     "timestamp": "2026-01-29T11:25:49.314288",
     "description": "Перерасчет массы металлов: жидких - 94, твердых - 133, полей mX - 6356, ошибок - 0",
     "author": "system",
@@ -99,7 +22,7 @@
     "probes_count": 818
   },
   {
-    "id": 10,
+    "id": 3,
     "timestamp": "2026-01-29T11:25:49.745897",
     "description": "Пересчет зависимых полей завершен: масса - 814, плотность - 288",
     "author": "system",
@@ -110,7 +33,7 @@
     "probes_count": 818
   },
   {
-    "id": 11,
+    "id": 4,
     "timestamp": "2026-01-29T11:29:57.468782",
     "description": "Копирование массы и объема из проб C в пробы A/B",
     "author": "system",
@@ -121,7 +44,7 @@
     "probes_count": 764
   },
   {
-    "id": 12,
+    "id": 5,
     "timestamp": "2026-01-29T11:29:57.856443",
     "description": "Копирование массы/объема завершено: обновлено 177 проб в 113 группах, пропущено 16 проб B из-за длины имени",
     "author": "system",
@@ -132,7 +55,7 @@
     "probes_count": 764
   },
   {
-    "id": 13,
+    "id": 6,
     "timestamp": "2026-01-29T11:29:58.402166",
     "description": "Перерасчет массы металлов: жидких - 94, твердых - 133, полей mX - 6356, ошибок - 0",
     "author": "system",
@@ -143,7 +66,7 @@
     "probes_count": 764
   },
   {
-    "id": 14,
+    "id": 7,
     "timestamp": "2026-01-29T11:29:59.027316",
     "description": "Пересчет зависимых полей завершен: масса - 760, плотность - 288",
     "author": "system",
@@ -154,7 +77,7 @@
     "probes_count": 764
   },
   {
-    "id": 15,
+    "id": 8,
     "timestamp": "2026-01-29T11:31:40.836987",
     "description": "Импорт файла '280126_.csv' - обновлено: 108, добавлено: 1",
     "author": "anonymous",
@@ -165,7 +88,7 @@
     "probes_count": 765
   },
   {
-    "id": 16,
+    "id": 9,
     "timestamp": "2026-01-29T11:31:43.625579",
     "description": "Нормализация завершена: обновлено 109 ID",
     "author": "system",
@@ -176,7 +99,7 @@
     "probes_count": 765
   },
   {
-    "id": 17,
+    "id": 10,
     "timestamp": "2026-01-29T11:31:44.167949",
     "description": "Копирование массы и объема из проб C в пробы A/B",
     "author": "system",
@@ -187,7 +110,7 @@
     "probes_count": 765
   },
   {
-    "id": 18,
+    "id": 11,
     "timestamp": "2026-01-29T11:31:44.517407",
     "description": "Копирование массы/объема завершено: обновлено 177 проб в 113 группах, пропущено 16 проб B из-за длины имени",
     "author": "system",
@@ -198,7 +121,7 @@
     "probes_count": 765
   },
   {
-    "id": 19,
+    "id": 12,
     "timestamp": "2026-01-29T11:31:45.024288",
     "description": "Перерасчет массы металлов: жидких - 94, твердых - 133, полей mX - 6356, ошибок - 0",
     "author": "system",
@@ -209,7 +132,7 @@
     "probes_count": 765
   },
   {
-    "id": 20,
+    "id": 13,
     "timestamp": "2026-01-29T11:31:45.597899",
     "description": "Пересчет зависимых полей завершен: масса - 761, плотность - 288",
     "author": "system",
@@ -220,7 +143,7 @@
     "probes_count": 765
   },
   {
-    "id": 21,
+    "id": 14,
     "timestamp": "2026-01-29T11:31:58.737167",
     "description": "Копирование массы/объема завершено: обновлено 177 проб в 113 группах, пропущено 16 проб B из-за длины имени",
     "author": "system",
@@ -231,7 +154,7 @@
     "probes_count": 765
   },
   {
-    "id": 22,
+    "id": 15,
     "timestamp": "2026-01-29T11:31:59.239919",
     "description": "Перерасчет массы металлов: жидких - 94, твердых - 133, полей mX - 6356, ошибок - 0",
     "author": "system",
@@ -242,7 +165,7 @@
     "probes_count": 765
   },
   {
-    "id": 23,
+    "id": 16,
     "timestamp": "2026-01-29T11:31:59.747382",
     "description": "Пересчет зависимых полей завершен: масса - 761, плотность - 288",
     "author": "system",
@@ -253,7 +176,7 @@
     "probes_count": 765
   },
   {
-    "id": 24,
+    "id": 17,
     "timestamp": "2026-01-29T11:32:05.335354",
     "description": "Копирование массы/объема завершено: обновлено 177 проб в 113 группах, пропущено 16 проб B из-за длины имени",
     "author": "system",
@@ -264,7 +187,7 @@
     "probes_count": 765
   },
   {
-    "id": 25,
+    "id": 18,
     "timestamp": "2026-01-29T11:32:05.871836",
     "description": "Перерасчет массы металлов: жидких - 94, твердых - 133, полей mX - 6356, ошибок - 0",
     "author": "system",
@@ -275,7 +198,7 @@
     "probes_count": 765
   },
   {
-    "id": 26,
+    "id": 19,
     "timestamp": "2026-01-29T11:32:06.377383",
     "description": "Пересчет зависимых полей завершен: масса - 761, плотность - 288",
     "author": "system",
@@ -286,7 +209,7 @@
     "probes_count": 765
   },
   {
-    "id": 27,
+    "id": 20,
     "timestamp": "2026-01-29T12:14:09.825327",
     "description": "Копирование массы/объема завершено: обновлено 177 проб в 113 группах, пропущено 16 проб B из-за длины имени",
     "author": "system",
@@ -297,7 +220,7 @@
     "probes_count": 765
   },
   {
-    "id": 28,
+    "id": 21,
     "timestamp": "2026-01-29T12:14:11.217295",
     "description": "Перерасчет массы металлов: жидких - 94, твердых - 133, полей mX - 6356, ошибок - 0",
     "author": "system",
@@ -308,7 +231,7 @@
     "probes_count": 765
   },
   {
-    "id": 29,
+    "id": 22,
     "timestamp": "2026-01-29T12:14:12.670587",
     "description": "Пересчет зависимых полей завершен: масса - 761, плотность - 288",
     "author": "system",
@@ -319,7 +242,7 @@
     "probes_count": 765
   },
   {
-    "id": 30,
+    "id": 23,
     "timestamp": "2026-01-29T12:27:55.316839",
     "description": "Копирование массы и объема из проб C в пробы A/B",
     "author": "system",
@@ -330,7 +253,7 @@
     "probes_count": 765
   },
   {
-    "id": 31,
+    "id": 24,
     "timestamp": "2026-01-29T12:27:56.345933",
     "description": "Копирование массы/объема завершено: обновлено 177 проб в 113 группах, пропущено 16 проб B из-за длины имени",
     "author": "system",
@@ -341,7 +264,7 @@
     "probes_count": 765
   },
   {
-    "id": 32,
+    "id": 25,
     "timestamp": "2026-01-29T12:27:57.698825",
     "description": "Перерасчет массы металлов: жидких - 94, твердых - 134, полей mX - 6384, ошибок - 0",
     "author": "system",
@@ -352,7 +275,7 @@
     "probes_count": 765
   },
   {
-    "id": 33,
+    "id": 26,
     "timestamp": "2026-01-29T12:27:59.096099",
     "description": "Пересчет зависимых полей завершен: масса - 761, плотность - 288",
     "author": "system",
@@ -363,7 +286,7 @@
     "probes_count": 765
   },
   {
-    "id": 34,
+    "id": 27,
     "timestamp": "2026-01-29T12:30:01.179435",
     "description": "Редактирование пробы #612",
     "author": "anonymous",
@@ -374,7 +297,7 @@
     "probes_count": 765
   },
   {
-    "id": 35,
+    "id": 28,
     "timestamp": "2026-01-29T12:30:05.666334",
     "description": "Копирование массы и объема из проб C в пробы A/B",
     "author": "system",
@@ -385,7 +308,7 @@
     "probes_count": 765
   },
   {
-    "id": 36,
+    "id": 29,
     "timestamp": "2026-01-29T12:30:06.785025",
     "description": "Копирование массы/объема завершено: обновлено 177 проб в 113 группах, пропущено 16 проб B из-за длины имени",
     "author": "system",
@@ -396,7 +319,7 @@
     "probes_count": 765
   },
   {
-    "id": 37,
+    "id": 30,
     "timestamp": "2026-01-29T12:30:08.101435",
     "description": "Перерасчет массы металлов: жидких - 94, твердых - 134, полей mX - 6384, ошибок - 0",
     "author": "system",
@@ -407,7 +330,7 @@
     "probes_count": 765
   },
   {
-    "id": 38,
+    "id": 31,
     "timestamp": "2026-01-29T12:30:09.345866",
     "description": "Пересчет зависимых полей завершен: масса - 761, плотность - 288",
     "author": "system",
@@ -418,7 +341,7 @@
     "probes_count": 765
   },
   {
-    "id": 39,
+    "id": 32,
     "timestamp": "2026-01-29T12:31:41.236709",
     "description": "Подтверждение удаления пробы #577",
     "author": "system",
@@ -429,7 +352,7 @@
     "probes_count": 764
   },
   {
-    "id": 40,
+    "id": 33,
     "timestamp": "2026-01-29T12:31:44.146810",
     "description": "Подтверждение удаления пробы #578",
     "author": "system",
@@ -440,7 +363,7 @@
     "probes_count": 763
   },
   {
-    "id": 41,
+    "id": 34,
     "timestamp": "2026-01-29T12:32:04.220485",
     "description": "Редактирование пробы #611",
     "author": "anonymous",
@@ -451,7 +374,7 @@
     "probes_count": 763
   },
   {
-    "id": 42,
+    "id": 35,
     "timestamp": "2026-01-29T12:32:08.357611",
     "description": "Автоматическая нормализация ID проб",
     "author": "system",
@@ -462,7 +385,7 @@
     "probes_count": 763
   },
   {
-    "id": 43,
+    "id": 36,
     "timestamp": "2026-01-29T12:32:09.309002",
     "description": "Нормализация завершена: обновлено 187 ID",
     "author": "system",
@@ -473,7 +396,7 @@
     "probes_count": 763
   },
   {
-    "id": 44,
+    "id": 37,
     "timestamp": "2026-01-29T12:32:10.582190",
     "description": "Копирование массы и объема из проб C в пробы A/B",
     "author": "system",
@@ -484,7 +407,7 @@
     "probes_count": 763
   },
   {
-    "id": 45,
+    "id": 38,
     "timestamp": "2026-01-29T12:32:11.637646",
     "description": "Копирование массы/объема завершено: обновлено 177 проб в 113 группах, пропущено 16 проб B из-за длины имени",
     "author": "system",
@@ -495,7 +418,7 @@
     "probes_count": 763
   },
   {
-    "id": 46,
+    "id": 39,
     "timestamp": "2026-01-29T12:32:12.861832",
     "description": "Перерасчет массы металлов: жидких - 96, твердых - 134, полей mX - 6440, ошибок - 0",
     "author": "system",
@@ -506,7 +429,7 @@
     "probes_count": 763
   },
   {
-    "id": 47,
+    "id": 40,
     "timestamp": "2026-01-29T12:32:14.111077",
     "description": "Пересчет зависимых полей завершен: масса - 759, плотность - 288",
     "author": "system",
@@ -517,7 +440,7 @@
     "probes_count": 763
   },
   {
-    "id": 48,
+    "id": 41,
     "timestamp": "2026-01-29T12:41:53.409851",
     "description": "Копирование массы/объема завершено: обновлено 177 проб в 113 группах, пропущено 16 проб B из-за длины имени",
     "author": "system",
@@ -528,7 +451,7 @@
     "probes_count": 763
   },
   {
-    "id": 49,
+    "id": 42,
     "timestamp": "2026-01-29T12:41:54.635336",
     "description": "Перерасчет массы металлов: жидких - 96, твердых - 134, полей mX - 6440, ошибок - 0",
     "author": "system",
@@ -539,7 +462,7 @@
     "probes_count": 763
   },
   {
-    "id": 50,
+    "id": 43,
     "timestamp": "2026-01-29T12:41:55.862692",
     "description": "Пересчет зависимых полей завершен: масса - 759, плотность - 288",
     "author": "system",
@@ -547,6 +470,83 @@
     "hash": "e31359be55732cd6814ab667667843bc",
     "filename": "v51_data.json",
     "data_size": 2097615,
+    "probes_count": 763
+  },
+  {
+    "id": 44,
+    "timestamp": "2026-01-29T13:20:33.740444",
+    "description": "Копирование массы и объема из проб C в пробы A/B",
+    "author": "system",
+    "change_type": "mass_volume_copy",
+    "hash": "17e87e96e55c6a927ed53be8d83d7719",
+    "filename": "v51_data.json",
+    "data_size": 2097617,
+    "probes_count": 763
+  },
+  {
+    "id": 45,
+    "timestamp": "2026-01-29T13:20:34.823374",
+    "description": "Копирование массы/объема завершено: обновлено 177 проб в 113 группах, пропущено 16 проб B из-за длины имени",
+    "author": "system",
+    "change_type": "mass_volume_copy_complete",
+    "hash": "dcad3e30d726365e6955c9bcc387d422",
+    "filename": "v51_data.json",
+    "data_size": 2097617,
+    "probes_count": 763
+  },
+  {
+    "id": 46,
+    "timestamp": "2026-01-29T13:20:36.199200",
+    "description": "Перерасчет массы металлов: жидких - 96, твердых - 134, полей mX - 6440, ошибок - 0",
+    "author": "system",
+    "change_type": "metal_mass_recalculation_complete",
+    "hash": "a42bce95093576651e2c431832564ed3",
+    "filename": "v51_data.json",
+    "data_size": 2097552,
+    "probes_count": 763
+  },
+  {
+    "id": 47,
+    "timestamp": "2026-01-29T13:20:37.587587",
+    "description": "Пересчет зависимых полей завершен: масса - 759, плотность - 288",
+    "author": "system",
+    "change_type": "recalculation_complete",
+    "hash": "da297de6b3aa851d4c4c6cf358cd12f2",
+    "filename": "v51_data.json",
+    "data_size": 2097552,
+    "probes_count": 763
+  },
+  {
+    "id": 48,
+    "timestamp": "2026-01-29T14:53:49.894113",
+    "description": "Копирование массы/объема завершено: обновлено 177 проб в 113 группах, пропущено 16 проб B из-за длины имени",
+    "author": "system",
+    "change_type": "mass_volume_copy_complete",
+    "hash": "ba8bab2c5d9d8948c1afdf2075d4e47d",
+    "filename": "v51_data.json",
+    "data_size": 2097552,
+    "probes_count": 763
+  },
+  {
+    "id": 49,
+    "timestamp": "2026-01-29T14:53:50.445655",
+    "description": "Перерасчет массы металлов: жидких - 96, твердых - 134, полей mX - 6440, ошибок - 0",
+    "author": "system",
+    "change_type": "metal_mass_recalculation_complete",
+    "hash": "41ba694424aae524159bc480850c9c52",
+    "filename": "v51_data.json",
+    "data_size": 2097552,
+    "probes_count": 763
+  },
+  {
+    "id": 50,
+    "timestamp": "2026-01-29T14:53:51.003997",
+    "description": "Пересчет зависимых полей завершен: масса - 759, плотность - 288",
+    "author": "system",
+    "change_type": "recalculation_complete",
+    "hash": "9e12fd79eb9b34eab649f2c742b40c40",
+    "filename": "v51_data.json",
+    "data_size": 2097552,
     "probes_count": 763
   }
 ]
