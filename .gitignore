@@ -6,3 +6,4 @@ __pycache__
 app/__pycache__/test_ISP_AES.cpython-312.pyc
 app/__pycache__/version_control.cpython-312.pyc
 .gitignore
+data/data.json
