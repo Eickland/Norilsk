@@ -319,20 +319,23 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
             'probes_modified': 0
         }
 
-def copy_mass_and_volume_from_C_to_AB(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
+def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
     """
-    Находит пробы, отличающиеся только предпоследним символом (A, B, C),
-    и копирует поля из пробы C в пробы A и B.
+    Рассчитывает поля для проб в сериях согласно новой логике.
     
     Правила:
-    1. Ищем группы проб с одинаковыми именами, кроме предпоследнего символа
-    2. Предпоследний символ должен быть A, B или C
-    3. Из пробы C копируем поля в пробы A и B той же группы
-    4. Для пробы A: копируем 'Масса образца (g)' и 'V (ml)'
-    5. Для пробы B: копируем 'Масса образца (g)' и 'V (ml)' только если название пробы B
-       содержит не более 11 символов (считая предпоследний символ A/B/C).
-       При этом проба B получает значение в поле 'Масса твердого (g)' из 'Масса образца (g)' пробы C
-    6. Если поля в A/B уже существуют, они перезаписываются значениями из C
+    1) Для исходных проб T2-{m}A{n} и T2-{m}B{n} выполняется старая логика
+    2) Для 2 стадии:
+       - T2-L{m}B{n}: "sample_mass" = 1/2 от "sample_mass" предыдущей T2-{m}B{n}
+       - T2-L{m}A{n}: "V (ml)" = "V (ml)" от T2-{m}A{n} + "Объем р-ра H2SO4 (ml)" от текущей пробы
+    3) Для 3 стадии:
+       - T2-L{m}P{m}A{n}: "V (ml)" = "V (ml)" T2-L{m}P{m}C{n} - ("sample_mass" T2-L{m}P{m}B{n})/3
+       - T2-L{m}P{m}B{n}: "sample_mass" = "sample_mass" T2-L{m}B{n} + 
+                         2.32*"Масса Ca(OH)2 (g)" + "Масса железных окатышей (g)" от T2-L{m}P{m}C{n}
+    4) Стадия 4:
+       - T2-L{m}P{m}F{m}A{n}: "V (ml)" = "V (ml)" T2-L{m}P{m}A{n}
+       - T2-L{m}P{m}F{m}B{n}: "sample_mass" = "sample_mass" T2-L{m}P{m}B{n} - 
+                             "sample_mass" T2-L{m}P{m}F{m}D{n}
     
     Args:
         data_file: Путь к JSON файлу с данными
@@ -351,164 +354,259 @@ def copy_mass_and_volume_from_C_to_AB(data_file: str = str(DATA_FILE)) -> Dict[s
             return {
                 'success': True,
                 'message': 'Нет проб для обработки',
-                'total_groups': 0,
+                'total_series': 0,
                 'updated_probes': 0,
-                'copied_fields': 0
+                'calculated_fields': 0
             }
+        
+        # Создаем словарь для быстрого поиска проб по имени
+        probe_map = {p.get('name', ''): p for p in probes if p.get('name')}
         
         # Создаем версию перед изменениями
         version_info = vcs.create_version(
-            description="Копирование массы и объема из проб C в пробы A/B",
+            description="Расчет полей для проб в сериях",
             author="system",
-            change_type="mass_volume_copy"
+            change_type="fields_calculation"
         )
         
-        # Создаем словарь для группировки проб по базовому имени
-        # Ключ: базовое имя (без предпоследнего символа)
-        # Значение: словарь с пробами A, B, C
-        probe_groups = defaultdict(lambda: {'A': None, 'B': None, 'C': None})
-        
-        # Собираем пробы по группам
-        for probe in probes:
-            name = probe.get('name', '')
-            if not name:
-                continue
-                
-            # Проверяем длину имени (должно быть хотя бы 2 символа для предпоследнего)
-            if len(name) < 2:
-                continue
-                
-            # Получаем предпоследний символ
-            second_last_char = name[-2] if len(name) >= 2 else ''
-            
-            # Проверяем, что предпоследний символ - A, B или C
-            if second_last_char in ['A', 'B', 'C']:
-                # Создаем базовое имя (без предпоследнего символа)
-                base_name = name[:-2] + name[-1]  # Удаляем предпоследний символ
-                
-                # Сохраняем пробу в соответствующую группу
-                probe_groups[base_name][second_last_char] = probe
+        # Регулярные выражения для определения проб в сериях
+        patterns = {
+            'start_A': re.compile(r"^T2-(\d+)A(\d+)$"),
+            'start_B': re.compile(r"^T2-(\d+)B(\d+)$"),
+            'st2_A': re.compile(r"^T2-L(\d+)A(\d+)$"),
+            'st2_B': re.compile(r"^T2-L(\d+)B(\d+)$"),
+            'st3_A': re.compile(r"^T2-L(\d+)P\1A(\d+)$"),  # \1 проверяет что номер методики одинаков
+            'st3_B': re.compile(r"^T2-L(\d+)P\1B(\d+)$"),
+            'st3_C': re.compile(r"^T2-L(\d+)P\1C(\d+)$"),
+            'st4_A': re.compile(r"^T2-L(\d+)P\1F\1A(\d+)$"),
+            'st4_B': re.compile(r"^T2-L(\d+)P\1F\1B(\d+)$"),
+            'st4_D': re.compile(r"^T2-L(\d+)P\1F\1D(\d+)$")
+        }
         
         # Статистика
         stats = {
-            'total_groups': 0,
-            'valid_groups': 0,        # Группы, где есть проба C и хотя бы одна из A/B
-            'updated_probes': 0,      # Пробы A/B, в которые скопированы данные
-            'copied_fields': 0,       # Всего скопированных полей
-            'missing_fields': 0,      # Поля, которых нет в пробе C
-            'skipped_B_length': 0,    # Пробы B, пропущенные из-за длины имени > 11
-            'errors': []              # Ошибки при обработке
+            'total_series': 0,
+            'updated_probes': 0,
+            'calculated_fields': 0,
+            'missing_probes': [],
+            'errors': []
         }
         
-        # Обрабатываем каждую группу
-        for base_name, group in probe_groups.items():
-            stats['total_groups'] += 1
-            
-            # Проверяем, есть ли проба C в группе
-            probe_C = group.get('C')
-            if not probe_C:
-                continue  # Пропускаем группы без пробы C
-            
-            # Проверяем наличие полей в пробе C
-            mass_C = probe_C.get('sample_mass')
-            mass_solid_C = probe_C.get('Масса твердого (g)')
+        # Находим все серии, начиная с корневых проб T2-{m}C{n}
+        root_pattern = re.compile(r"^T2-(\d+)C(\d+)$")
+        
+        for probe in probes:
+            match = root_pattern.match(probe.get('name', ''))
+            if match:
+                m = match.group(1)  # Номер методики
+                n = match.group(2)  # Номер повторности
                 
-            volume_C = probe_C.get('V (ml)')
-            
-            # Если нет ни одного поля, пропускаем группу
-            if mass_C is None and volume_C is None:
-                stats['missing_fields'] += 1
-                continue
-            
-            # Функция для копирования полей в целевую пробу
-            def copy_fields_to_probe(probe_target, probe_type, mass_to_copy, volume_to_copy, solid_mass):
-                """Копирует поля из пробы C в целевую пробу"""
-                fields_copied = 0
-                try:
-                    # Для пробы B: также копируем массу в поле 'Масса твердого (g)'
-                    if probe_type == 'B' and mass_to_copy is not None:
-                        # Копируем массу образца в поле 'Масса твердого (g)' для пробы B
-                        probe_target['sample_mass'] = solid_mass
-                        fields_copied += 1
-                        # Добавляем мета-информацию о копировании
-                        probe_target['mass_source_for_solid'] = 'Масса образца (g) из пробы C'
-                    
-                    # Копируем массу образца
-                    if probe_type == 'A' and mass_to_copy is not None:
-                        if 'sample_mass' in probe_target:
-                            probe_target['sample_mass'] = mass_to_copy
-                            fields_copied += 1
-                        else:
-                            # Если ни одного поля нет, создаем 'sample_mass'
-                            probe_target['sample_mass'] = mass_to_copy
-                            fields_copied += 1
-                    
-                    # Копируем объем
-                    if volume_to_copy is not None:
-                        if 'V (ml)' in probe_target:
-                            probe_target['V (ml)'] = volume_to_copy
-                            fields_copied += 1
-                        else:
-                            # Создаем поле, если его нет
-                            probe_target['V (ml)'] = volume_to_copy
-                            fields_copied += 1
-                    
-                    if fields_copied > 0:
-                        stats['updated_probes'] += 1
-                        stats['copied_fields'] += fields_copied
+                stats['total_series'] += 1
+                series_updated = False
+                
+                # 1) Обрабатываем исходные пробы (старая логика)
+                start_A_name = f"T2-{m}A{n}"
+                start_B_name = f"T2-{m}B{n}"
+                
+                if start_A_name in probe_map:
+                    # Копируем поля из пробы C (старая логика)
+                    probe_C_name = f"T2-{m}C{n}"
+                    if probe_C_name in probe_map:
+                        probe_C = probe_map[probe_C_name]
+                        probe_A = probe_map[start_A_name]
                         
-                        # Добавляем метку времени обновления
-                        probe_target['last_mass_volume_update'] = datetime.now().isoformat()
-                        probe_target['mass_volume_source'] = probe_C.get('name', 'Unknown') # type: ignore
-                        if probe_type == 'B':
-                            probe_target['mass_solid_copied_from_C'] = True
-                    
-                    return fields_copied
-                    
-                except Exception as e:
-                    stats['errors'].append({
-                        'group': base_name,
-                        'probe': probe_target.get('name', 'Unknown'),
-                        'error': str(e)
-                    })
-                    return 0
-            
-            # Обрабатываем пробу A (прежняя логика)
-            probe_A = group.get('A')
-            if probe_A:
-                copy_fields_to_probe(probe_A, 'A', mass_C, volume_C,mass_solid_C)
-            
-            # Обрабатываем пробу B (новая логика с проверкой длины имени)
-            probe_B = group.get('B')
-            if probe_B:
-                probe_B_name = probe_B.get('name', '')
+                        # Копируем массу образца
+                        if 'sample_mass' in probe_C and probe_C['sample_mass'] is not None:
+                            probe_A['sample_mass'] = probe_C['sample_mass']
+                            stats['calculated_fields'] += 1
+                            series_updated = True
+                        
+                        # Копируем объем
+                        if 'V (ml)' in probe_C and probe_C['V (ml)'] is not None:
+                            probe_A['V (ml)'] = probe_C['V (ml)']
+                            stats['calculated_fields'] += 1
+                            series_updated = True
                 
-                # Проверяем длину имени пробы B
-                if len(probe_B_name) <= 11:
-                    # Имя не превышает 11 символов - копируем данные
-                    copy_fields_to_probe(probe_B, 'B', mass_C, volume_C,mass_solid_C)
-                else:
-                    # Имя превышает 11 символов - пропускаем
-                    stats['skipped_B_length'] += 1
-                    # Добавляем метку о пропуске
-                    probe_B['mass_volume_copy_skipped'] = True
-                    probe_B['skip_reason'] = f'Длина имени ({len(probe_B_name)}) > 11 символов'
-                    probe_B['last_copy_check'] = datetime.now().isoformat()
-            
-            # Увеличиваем счетчик валидных групп, если хотя бы одна проба была обновлена
-            # для этой группы (учитываем обновленные после обработки A и B)
-            if stats['updated_probes'] > 0:
-                stats['valid_groups'] += 1
+                if start_B_name in probe_map:
+                    # Для пробы B используем старую логику с проверкой длины
+                    probe_B = probe_map[start_B_name]
+                    if len(start_B_name) <= 11:
+                        probe_C_name = f"T2-{m}C{n}"
+                        if probe_C_name in probe_map:
+                            probe_C = probe_map[probe_C_name]
+                            
+                            # Копируем массу образца в поле 'Масса твердого (g)' для пробы B
+                            if 'Масса твердого (g)' in probe_C and probe_C['Масса твердого (g)'] is not None:
+                                probe_B['sample_mass'] = probe_C['Масса твердого (g)']
+                                stats['calculated_fields'] += 1
+                                series_updated = True
+                            
+                            # Копируем объем
+                            if 'V (ml)' in probe_C and probe_C['V (ml)'] is not None:
+                                probe_B['V (ml)'] = probe_C['V (ml)']
+                                stats['calculated_fields'] += 1
+                                series_updated = True
+                
+                # 2) Обрабатываем 2 стадию
+                st2_A_name = f"T2-L{m}A{n}"
+                st2_B_name = f"T2-L{m}B{n}"
+                
+                # Для T2-L{m}B{n}
+                if st2_B_name in probe_map:
+                    probe_st2_B = probe_map[st2_B_name]
+                    
+                    # Ищем предыдущую пробу T2-{m}B{n}
+                    if start_B_name in probe_map:
+                        probe_start_B = probe_map[start_B_name]
+                        
+                        if ('sample_mass' in probe_start_B and 
+                            probe_start_B['sample_mass'] is not None):
+                            # sample_mass = 1/2 от sample_mass предыдущей пробы
+                            new_mass = probe_start_B['sample_mass'] / 2
+                            probe_st2_B['sample_mass'] = new_mass
+                            probe_st2_B['mass_calculation_note'] = f"1/2 от {start_B_name}"
+                            stats['calculated_fields'] += 1
+                            series_updated = True
+                
+                # Для T2-L{m}A{n}
+                if st2_A_name in probe_map:
+                    probe_st2_A = probe_map[st2_A_name]
+                    
+                    # Ищем исходную пробу T2-{m}A{n}
+                    if start_A_name in probe_map:
+                        probe_start_A = probe_map[start_A_name]
+                        
+                        # Получаем объем из исходной пробы
+                        start_volume = probe_start_A.get('V (ml)')
+                        # Получаем объем H2SO4 из текущей пробы
+                        h2so4_volume = probe_st2_A.get('Объем р-ра H2SO4 (ml)')
+                        
+                        if start_volume is not None and h2so4_volume is not None:
+                            # V (ml) = V(ml) от T2-{m}A{n} + Объем р-ра H2SO4 (ml)
+                            new_volume = start_volume + h2so4_volume
+                            probe_st2_A['V (ml)'] = new_volume
+                            probe_st2_A['volume_calculation_note'] = (
+                                f"{start_volume} + {h2so4_volume} H2SO4"
+                            )
+                            stats['calculated_fields'] += 1
+                            series_updated = True
+                
+                # 3) Обрабатываем 3 стадию
+                st3_A_name = f"T2-L{m}P{m}A{n}"
+                st3_B_name = f"T2-L{m}P{m}B{n}"
+                st3_C_name = f"T2-L{m}P{m}C{n}"
+                
+                # Для T2-L{m}P{m}B{n}
+                if (st3_B_name in probe_map and 
+                    st2_B_name in probe_map and 
+                    st3_C_name in probe_map):
+                    
+                    probe_st3_B = probe_map[st3_B_name]
+                    probe_st2_B = probe_map[st2_B_name]
+                    probe_st3_C = probe_map[st3_C_name]
+                    
+                    # Получаем необходимые значения
+                    st2_mass = probe_st2_B.get('sample_mass')
+                    caoh2_mass = probe_st3_C.get('Масса Ca(OH)2 (g)')
+                    iron_pellets_mass = probe_st3_C.get('Масса железных окатышей (g)')
+                    
+                    if (st2_mass is not None and 
+                        caoh2_mass is not None and 
+                        iron_pellets_mass is not None):
+                        
+                        # sample_mass = sample_mass(T2-L{m}B{n}) + 
+                        # 2.32 * Масса Ca(OH)2 (g) + Масса железных окатышей (g)
+                        new_mass = (st2_mass + 
+                                   2.32 * caoh2_mass + 
+                                   iron_pellets_mass)
+                        
+                        probe_st3_B['sample_mass'] = new_mass
+                        probe_st3_B['mass_calculation_note'] = (
+                            f"{st2_mass} + 2.32*{caoh2_mass} + {iron_pellets_mass}"
+                        )
+                        stats['calculated_fields'] += 1
+                        series_updated = True
+                
+                # Для T2-L{m}P{m}A{n}
+                if (st3_A_name in probe_map and 
+                    st3_B_name in probe_map and 
+                    st3_C_name in probe_map):
+                    
+                    probe_st3_A = probe_map[st3_A_name]
+                    probe_st3_B = probe_map[st3_B_name]
+                    probe_st3_C = probe_map[st3_C_name]
+                    
+                    # Получаем объем из пробы C
+                    st3_C_volume = probe_st3_C.get('V (ml)')
+                    # Получаем sample_mass из пробы B
+                    st3_B_mass = probe_st3_B.get('sample_mass')
+                    
+                    if st3_C_volume is not None and st3_B_mass is not None:
+                        # V (ml) = V(ml) пробы C - (sample_mass пробы B)/3
+                        new_volume = st3_C_volume - (st3_B_mass / 3)
+                        probe_st3_A['V (ml)'] = new_volume
+                        probe_st3_A['volume_calculation_note'] = (
+                            f"{st3_C_volume} - ({st3_B_mass}/3)"
+                        )
+                        stats['calculated_fields'] += 1
+                        series_updated = True
+                
+                # 4) Обрабатываем 4 стадию
+                st4_A_name = f"T2-L{m}P{m}F{m}A{n}"
+                st4_B_name = f"T2-L{m}P{m}F{m}B{n}"
+                st4_D_name = f"T2-L{m}P{m}F{m}D{n}"
+                
+                # Для T2-L{m}P{m}F{m}A{n}
+                if (st4_A_name in probe_map and 
+                    st3_A_name in probe_map):
+                    
+                    probe_st4_A = probe_map[st4_A_name]
+                    probe_st3_A = probe_map[st3_A_name]
+                    
+                    # Копируем объем из пробы 3 стадии
+                    st3_volume = probe_st3_A.get('V (ml)')
+                    
+                    if st3_volume is not None:
+                        probe_st4_A['V (ml)'] = st3_volume
+                        probe_st4_A['volume_calculation_note'] = f"Скопирован из {st3_A_name}"
+                        stats['calculated_fields'] += 1
+                        series_updated = True
+                
+                # Для T2-L{m}P{m}F{m}B{n}
+                if (st4_B_name in probe_map and 
+                    st3_B_name in probe_map and 
+                    st4_D_name in probe_map):
+                    
+                    probe_st4_B = probe_map[st4_B_name]
+                    probe_st3_B = probe_map[st3_B_name]
+                    probe_st4_D = probe_map[st4_D_name]
+                    
+                    # Получаем sample_mass из проб
+                    st3_B_mass = probe_st3_B.get('sample_mass')
+                    st4_D_mass = probe_st4_D.get('sample_mass')
+                    
+                    if st3_B_mass is not None and st4_D_mass is not None:
+                        # sample_mass = sample_mass(3 стадия B) - sample_mass(4 стадия D)
+                        new_mass = st3_B_mass - st4_D_mass
+                        probe_st4_B['sample_mass'] = new_mass
+                        probe_st4_B['mass_calculation_note'] = (
+                            f"{st3_B_mass} - {st4_D_mass}"
+                        )
+                        stats['calculated_fields'] += 1
+                        series_updated = True
+                
+                if series_updated:
+                    stats['updated_probes'] += 1
         
         # Если были изменения, сохраняем данные
-        if stats['updated_probes'] > 0:
+        if stats['calculated_fields'] > 0:
             # Обновляем метаданные
             if 'metadata' not in data:
                 data['metadata'] = {}
             
             data['metadata'].update({
-                'last_mass_volume_copy': datetime.now().isoformat(),
-                'mass_volume_copy_stats': stats
+                'last_fields_calculation': datetime.now().isoformat(),
+                'fields_calculation_stats': stats
             })
             
             # Сохраняем обновленные данные
@@ -517,25 +615,22 @@ def copy_mass_and_volume_from_C_to_AB(data_file: str = str(DATA_FILE)) -> Dict[s
             
             # Создаем финальную версию
             vcs.create_version(
-                description=f"Копирование массы/объема завершено: "
-                           f"обновлено {stats['updated_probes']} проб в {stats['valid_groups']} группах, "
-                           f"пропущено {stats['skipped_B_length']} проб B из-за длины имени",
+                description=f"Расчет полей завершен: "
+                           f"обновлено {stats['updated_probes']} серий, "
+                           f"рассчитано {stats['calculated_fields']} полей",
                 author="system",
-                change_type="mass_volume_copy_complete"
+                change_type="fields_calculation_complete"
             )
         
         # Формируем сообщение о результатах
-        if stats['updated_probes'] > 0:
-            message = (f"Обновлено {stats['updated_probes']} проб (A/B) в {stats['valid_groups']} группах. "
-                      f"Скопировано {stats['copied_fields']} полей из проб C.")
-        else:
-            message = "Нет подходящих групп для копирования или поля уже совпадают"
+        message = (f"Обработано {stats['total_series']} серий. "
+                   f"Обновлено {stats['updated_probes']} серий, "
+                   f"рассчитано {stats['calculated_fields']} полей.")
         
-        if stats['missing_fields'] > 0:
-            message += f" Пропущено {stats['missing_fields']} групп без полей в пробе C."
-        
-        if stats['skipped_B_length'] > 0:
-            message += f" Пропущено {stats['skipped_B_length']} проб B из-за длины имени > 11 символов."
+        if stats['missing_probes']:
+            message += f" Отсутствуют пробы: {', '.join(stats['missing_probes'][:5])}"
+            if len(stats['missing_probes']) > 5:
+                message += f" и еще {len(stats['missing_probes']) - 5}"
         
         return {
             'success': True,
@@ -543,21 +638,83 @@ def copy_mass_and_volume_from_C_to_AB(data_file: str = str(DATA_FILE)) -> Dict[s
             **stats,
             'version_created': version_info is not None,
             'version_id': version_info['id'] if version_info else None,
-            'data_modified': stats['updated_probes'] > 0
+            'data_modified': stats['calculated_fields'] > 0
         }
         
     except Exception as e:
         return {
             'success': False,
-            'message': f"Ошибка копирования массы и объема: {str(e)}",
-            'total_groups': 0,
-            'valid_groups': 0,
+            'message': f"Ошибка расчета полей: {str(e)}",
+            'total_series': 0,
             'updated_probes': 0,
-            'copied_fields': 0,
-            'skipped_B_length': 0,
+            'calculated_fields': 0,
+            'missing_probes': [],
             'errors': [{'error': str(e)}]
         }
 
+
+def get_series_probes(data_file: str = str(DATA_FILE)) -> List[Dict[str, Any]]:
+    """
+    Возвращает список всех серий с пробами.
+    
+    Args:
+        data_file: Путь к JSON файлу с данными
+    
+    Returns:
+        Список словарей с пробами серии
+    """
+    try:
+        with open(data_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        probes = data.get('probes', [])
+        probe_map = {p['name']: p for p in probes}
+        
+        series_list = []
+        root_pattern = re.compile(r"^T2-(\d+)C(\d+)$")
+        
+        for probe in probes:
+            match = root_pattern.match(probe.get('name', ''))
+            if match:
+                m = match.group(1)
+                n = match.group(2)
+                
+                # Определяем имена проб для данной серии
+                names = {
+                    'start_A': f"T2-{m}A{n}",
+                    'start_B': f"T2-{m}B{n}",
+                    'start_C': f"T2-{m}C{n}",
+                    'st2_A': f"T2-L{m}A{n}",
+                    'st2_B': f"T2-L{m}B{n}",
+                    'st3_A': f"T2-L{m}P{m}A{n}",
+                    'st3_B': f"T2-L{m}P{m}B{n}",
+                    'st3_C': f"T2-L{m}P{m}C{n}",
+                    'st4_A': f"T2-L{m}P{m}F{m}A{n}",
+                    'st4_B': f"T2-L{m}P{m}F{m}B{n}",
+                    'st4_D': f"T2-L{m}P{m}F{m}D{n}",
+                    'st5_A': f"T2-L{m}P{m}F{m}N{m}A{n}",
+                    'st5_B': f"T2-L{m}P{m}F{m}N{m}B{n}"
+                }
+                
+                # Собираем данные проб
+                series_probes = {}
+                for probe_type, probe_name in names.items():
+                    if probe_name in probe_map:
+                        series_probes[probe_type] = probe_map[probe_name]
+                
+                series_list.append({
+                    'series_id': f"M{m}_N{n}",
+                    'methodology': m,
+                    'replicate': n,
+                    'probes': series_probes
+                })
+        
+        return series_list
+        
+    except Exception as e:
+        print(f"Ошибка получения серий: {str(e)}")
+        return []
+    
 def find_probe_groups_by_name_pattern(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
     """
     Вспомогательная функция для поиска и отладки групп проб.
@@ -966,7 +1123,7 @@ def telegram_login():
 @app.route('/api/copy_mass_volume', methods=['POST'])
 def api_copy_mass_volume():
     """API endpoint для копирования массы и объема из проб C в пробы A/B"""
-    result = copy_mass_and_volume_from_C_to_AB()
+    result = calculate_fields_for_series()
     return jsonify(result)
 
 # API для отладки и поиска групп проб
@@ -1000,7 +1157,7 @@ def index():
             app.logger.info(f"Normalized structure: added {stats['fields_added_total']} fields")
 
         # 3. Копирование массы и объема из проб C в A/B (НОВАЯ ФУНКЦИЯ)
-        mass_volume_result = copy_mass_and_volume_from_C_to_AB(str(DATA_FILE))
+        mass_volume_result = calculate_fields_for_series(str(DATA_FILE))
         
         if mass_volume_result.get('success') and mass_volume_result.get('data_modified', False):
             app.logger.info(f"Copied mass/volume: {mass_volume_result.get('message')}")
@@ -2938,7 +3095,7 @@ def calculate_balance():
                 # Стадия 4
                 "st4_A": f"T2-L{m}P{m}F{m}A{n}",
                 "st4_B": f"T2-L{m}P{m}F{m}B{n}",
-                "st4_D": f"T2-L{m}P{m}F{m}D{n}",  # Камерный продукт
+                "st4_D": f"T2-L{m}P{m}F{m}D{n}",
                 
                 # Стадия 5
                 "st5_A": f"T2-L{m}P{m}F{m}N{m}A{n}",  # Оборотная жидкость
