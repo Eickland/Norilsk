@@ -171,9 +171,12 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
                                         concentration = float(probe[element])
                                         
                                         # Расчет массы металла
-                                        mass = concentration * dilution_float * ((volume_float - probe.get('Масса твердого (g)')/3) / 1000.0)
-                                        if probe.get('name')[-1] == "G":
-                                             mass = concentration * dilution_float * volume_float
+                                        if "L" not in probe_name:
+                                            mass = concentration * dilution_float * ((volume_float - probe.get('Масса твердого (g)')/3) / 1000.0)
+                                            
+                                        else:
+                                             mass = concentration * dilution_float * volume_float / 1000.0
+                                        
                                         # Сохраняем результат
                                         mass_field = f'm{element}'
                                         probe[mass_field] = float(mass)
@@ -349,7 +352,7 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
             data = json.load(f)
         
         probes = data.get('probes', [])
-        
+
         if not probes:
             return {
                 'success': True,
@@ -359,20 +362,29 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                 'calculated_fields': 0
             }
         
-        # Создаем словарь для быстрого поиска проб по имени
         probe_map = {p.get('name', ''): p for p in probes if p.get('name')}
-        
+
         # Создаем версию перед изменениями
         version_info = vcs.create_version(
             description="Расчет полей для проб в сериях",
             author="system",
             change_type="fields_calculation"
         )
-        
-        # Регулярные выражения для определения проб в сериях
+
+        # Статистика
+        stats = {
+            'total_series': 0,
+            'updated_probes': 0,
+            'calculated_fields': 0,
+            'missing_probes': [],
+            'errors': []
+        }
+
+        # Регулярные выражения для определения всех типов проб
         patterns = {
             'start_A': re.compile(r"^T2-(\d+)A(\d+)$"),
             'start_B': re.compile(r"^T2-(\d+)B(\d+)$"),
+            'start_C': re.compile(r"^T2-(\d+)C(\d+)$"),
             'st2_A': re.compile(r"^T2-L(\d+)A(\d+)$"),
             'st2_B': re.compile(r"^T2-L(\d+)B(\d+)$"),
             'st3_A': re.compile(r"^T2-L(\d+)P\1A(\d+)$"),  # \1 проверяет что номер методики одинаков
@@ -382,202 +394,206 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
             'st4_B': re.compile(r"^T2-L(\d+)P\1F\1B(\d+)$"),
             'st4_D': re.compile(r"^T2-L(\d+)P\1F\1D(\d+)$")
         }
-        
-        # Статистика
-        stats = {
-            'total_series': 0,
-            'updated_probes': 0,
-            'calculated_fields': 0,
-            'missing_probes': [],
-            'errors': []
-        }
-        
-        # Находим все серии, начиная с корневых проб T2-{m}C{n}
-        root_pattern = re.compile(r"^T2-(\d+)C(\d+)$")
-        
+
+        # Плотность суспензии Ca(OH)2 (г/мл) - предположительное значение
+        CAOH2_SUSPENSION_DENSITY = 1.2
+
+        # Проходим по всем пробам и определяем их тип
         for probe in probes:
-            match = root_pattern.match(probe.get('name', ''))
-            if match:
-                m = match.group(1)  # Номер методики
-                n = match.group(2)  # Номер повторности
-                
-                stats['total_series'] += 1
-                series_updated = False
-                
-                # 1) Обрабатываем исходные пробы (старая логика)
-                start_A_name = f"T2-{m}A{n}"
-                start_B_name = f"T2-{m}B{n}"
-                
-                if start_A_name in probe_map:
-                    # Копируем поля из пробы C (старая логика)
-                    probe_C_name = f"T2-{m}C{n}"
-                    if probe_C_name in probe_map:
-                        probe_C = probe_map[probe_C_name]
-                        probe_A = probe_map[start_A_name]
-                        
-                        # Копируем массу образца
-                        if 'sample_mass' in probe_C and probe_C['sample_mass'] is not None:
-                            probe_A['sample_mass'] = probe_C['sample_mass']
-                            stats['calculated_fields'] += 1
-                            series_updated = True
+            probe_name = probe.get('name', '')
+            if not probe_name:
+                continue
+            
+            m = None
+            n = None
+            probe_type = None
+            
+            # Определяем тип пробы
+            for pattern_name, pattern in patterns.items():
+                match = pattern.match(probe_name)
+                if match:
+                    probe_type = pattern_name
+                    m = match.group(1)  # Номер методики
+                    n = match.group(2)  # Номер повторности
+                    break
+            
+            if not probe_type or not m or not n:
+                continue
+            
+            series_updated = False
+            
+            # Обрабатываем каждый тип пробы
+            if probe_type == 'start_A':
+                probe_C_name = f"T2-{m}C{n}"
+                if probe_C_name in probe_map:
+                    probe_C = probe_map[probe_C_name]
+                    
+                    # Копируем массу образца
+                    if 'sample_mass' in probe_C and probe_C['sample_mass'] is not None:
+                        probe['sample_mass'] = probe_C['sample_mass']
+                        stats['calculated_fields'] += 1
+                        series_updated = True
+                    
+                    # Копируем объем
+                    if 'V (ml)' in probe_C and probe_C['V (ml)'] is not None:
+                        probe['V (ml)'] = probe_C['V (ml)']
+                        stats['calculated_fields'] += 1
+                        series_updated = True
+            
+            elif probe_type == 'start_B':
+                probe_C_name = f"T2-{m}C{n}"
+                if probe_C_name in probe_map:
+                    probe_C = probe_map[probe_C_name]
+                    
+
+                    if 'Масса твердого (g)' in probe_C and probe_C['Масса твердого (g)'] is not None:
+                        probe['sample_mass'] = probe_C['Масса твердого (g)']
+                        stats['calculated_fields'] += 1
+                        series_updated = True
                         
                         # Копируем объем
                         if 'V (ml)' in probe_C and probe_C['V (ml)'] is not None:
-                            probe_A['V (ml)'] = probe_C['V (ml)']
+                            probe['V (ml)'] = probe_C['V (ml)']
                             stats['calculated_fields'] += 1
                             series_updated = True
-                
+            
+            elif probe_type == 'st2_B':
+                start_B_name = f"T2-{m}B{n}"
                 if start_B_name in probe_map:
-                    # Для пробы B используем старую логику с проверкой длины
-                    probe_B = probe_map[start_B_name]
-                    if len(start_B_name) <= 11:
-                        probe_C_name = f"T2-{m}C{n}"
-                        if probe_C_name in probe_map:
-                            probe_C = probe_map[probe_C_name]
-                            
-                            # Копируем массу образца в поле 'Масса твердого (g)' для пробы B
-                            if 'Масса твердого (g)' in probe_C and probe_C['Масса твердого (g)'] is not None:
-                                probe_B['sample_mass'] = probe_C['Масса твердого (g)']
-                                stats['calculated_fields'] += 1
-                                series_updated = True
-                            
-                            # Копируем объем
-                            if 'V (ml)' in probe_C and probe_C['V (ml)'] is not None:
-                                probe_B['V (ml)'] = probe_C['V (ml)']
-                                stats['calculated_fields'] += 1
-                                series_updated = True
-                
-                # 2) Обрабатываем 2 стадию
-                st2_A_name = f"T2-L{m}A{n}"
+                    probe_start_B = probe_map[start_B_name]
+                    
+                    if ('sample_mass' in probe_start_B and 
+                        probe_start_B['sample_mass'] is not None):
+                        # sample_mass = 1/2 от sample_mass предыдущей пробы
+                        new_mass = probe_start_B['sample_mass'] / 2
+                        probe['sample_mass'] = new_mass
+                        probe['mass_calculation_note'] = f"1/2 от {start_B_name}"
+                        stats['calculated_fields'] += 1
+                        series_updated = True
+            
+            elif probe_type == 'st2_A':
+                start_A_name = f"T2-{m}A{n}"
+                st2_C_name = f"T2-L{m}C{n}"
+                if start_A_name in probe_map and st2_C_name in probe_map:
+                    probe_start_A = probe_map[start_A_name]
+                    probe_st2_C = probe_map[st2_C_name]
+                    
+                    # Получаем объем из исходной пробы
+                    start_volume = probe_start_A.get('V (ml)')
+                    # Получаем объем H2SO4 из текущей пробы
+                    h2so4_volume = probe_st2_C.get('Объем р-ра H2SO4 (ml)')
+                    
+                    if start_volume is not None and h2so4_volume is not None:
+                        # V (ml) = V(ml) от T2-{m}A{n} + Объем р-ра H2SO4 (ml)
+                        new_volume = start_volume + h2so4_volume
+                        probe['V (ml)'] = new_volume
+                        probe['volume_calculation_note'] = (
+                            f"{start_volume} + {h2so4_volume} H2SO4"
+                        )
+                        stats['calculated_fields'] += 1
+                        series_updated = True
+            
+            elif probe_type == 'st3_B':
                 st2_B_name = f"T2-L{m}B{n}"
-                
-                # Для T2-L{m}B{n}
-                if st2_B_name in probe_map:
-                    probe_st2_B = probe_map[st2_B_name]
-                    
-                    # Ищем предыдущую пробу T2-{m}B{n}
-                    if start_B_name in probe_map:
-                        probe_start_B = probe_map[start_B_name]
-                        
-                        if ('sample_mass' in probe_start_B and 
-                            probe_start_B['sample_mass'] is not None):
-                            # sample_mass = 1/2 от sample_mass предыдущей пробы
-                            new_mass = probe_start_B['sample_mass'] / 2
-                            probe_st2_B['sample_mass'] = new_mass
-                            probe_st2_B['mass_calculation_note'] = f"1/2 от {start_B_name}"
-                            stats['calculated_fields'] += 1
-                            series_updated = True
-                
-                # Для T2-L{m}A{n}
-                if st2_A_name in probe_map:
-                    probe_st2_A = probe_map[st2_A_name]
-                    
-                    # Ищем исходную пробу T2-{m}A{n}
-                    if start_A_name in probe_map:
-                        probe_start_A = probe_map[start_A_name]
-                        
-                        # Получаем объем из исходной пробы
-                        start_volume = probe_start_A.get('V (ml)')
-                        # Получаем объем H2SO4 из текущей пробы
-                        h2so4_volume = probe_st2_A.get('Объем р-ра H2SO4 (ml)')
-                        
-                        if start_volume is not None and h2so4_volume is not None:
-                            # V (ml) = V(ml) от T2-{m}A{n} + Объем р-ра H2SO4 (ml)
-                            new_volume = start_volume + h2so4_volume
-                            probe_st2_A['V (ml)'] = new_volume
-                            probe_st2_A['volume_calculation_note'] = (
-                                f"{start_volume} + {h2so4_volume} H2SO4"
-                            )
-                            stats['calculated_fields'] += 1
-                            series_updated = True
-                
-                # 3) Обрабатываем 3 стадию
-                st3_A_name = f"T2-L{m}P{m}A{n}"
-                st3_B_name = f"T2-L{m}P{m}B{n}"
                 st3_C_name = f"T2-L{m}P{m}C{n}"
                 
-                # Для T2-L{m}P{m}B{n}
-                if (st3_B_name in probe_map and 
-                    st2_B_name in probe_map and 
-                    st3_C_name in probe_map):
-                    
-                    probe_st3_B = probe_map[st3_B_name]
+                if st2_B_name in probe_map and st3_C_name in probe_map:
                     probe_st2_B = probe_map[st2_B_name]
                     probe_st3_C = probe_map[st3_C_name]
                     
-                    # Получаем необходимые значения
-                    st2_mass = probe_st2_B.get('sample_mass')
-                    caoh2_mass = probe_st3_C.get('Масса Ca(OH)2 (g)')
+                    # Получаем необходимые значения из пробы C
+                    mass_fraction_caoh2 = probe_st3_C.get('Массовая доля Ca(OH)2')  # от 0 до 1
+                    suspension_volume = probe_st3_C.get('Объем суспензии Ca(OH)2')  # мл
                     iron_pellets_mass = probe_st3_C.get('Масса железных окатышей (g)')
                     
+                    # Получаем sample_mass из предыдущей стадии
+                    st2_mass = probe_st2_B.get('sample_mass')
+                    
                     if (st2_mass is not None and 
-                        caoh2_mass is not None and 
+                        mass_fraction_caoh2 is not None and 
+                        suspension_volume is not None and 
                         iron_pellets_mass is not None):
                         
-                        # sample_mass = sample_mass(T2-L{m}B{n}) + 
-                        # 2.32 * Масса Ca(OH)2 (g) + Масса железных окатышей (g)
-                        new_mass = (st2_mass + 
-                                   2.32 * caoh2_mass + 
-                                   iron_pellets_mass)
+                        # Рассчитываем массу суспензии
+                        suspension_mass = suspension_volume * CAOH2_SUSPENSION_DENSITY
                         
-                        probe_st3_B['sample_mass'] = new_mass
-                        probe_st3_B['mass_calculation_note'] = (
-                            f"{st2_mass} + 2.32*{caoh2_mass} + {iron_pellets_mass}"
+                        # Рассчитываем массу твердой фазы Ca(OH)2 в суспензии
+                        caoh2_mass = suspension_mass * mass_fraction_caoh2
+                        
+                        # sample_mass = sample_mass(T2-L{m}B{n}) + 
+                        # 2.32 * масса_твердой_фазы_Ca(OH)2 + Масса железных окатышей (g)
+                        new_mass = (st2_mass + 
+                                2.32 * caoh2_mass + 
+                                iron_pellets_mass)
+                        
+                        probe['sample_mass'] = new_mass
+                        probe['mass_calculation_note'] = (
+                            f"{st2_mass} + 2.32*({suspension_volume}мл*{CAOH2_SUSPENSION_DENSITY}г/мл*{mass_fraction_caoh2}) + {iron_pellets_mass}"
                         )
                         stats['calculated_fields'] += 1
                         series_updated = True
+            
+            elif probe_type == 'st3_A':
+                st2_A_name = f"T2-L{m}A{n}"
+                st3_C_name = f"T2-L{m}P{m}C{n}"
                 
-                # Для T2-L{m}P{m}A{n}
-                if (st3_A_name in probe_map and 
-                    st3_B_name in probe_map and 
-                    st3_C_name in probe_map):
-                    
-                    probe_st3_A = probe_map[st3_A_name]
-                    probe_st3_B = probe_map[st3_B_name]
+                if st2_A_name in probe_map and st3_C_name in probe_map:
+                    probe_st2_A = probe_map[st2_A_name]
                     probe_st3_C = probe_map[st3_C_name]
                     
-                    # Получаем объем из пробы C
-                    st3_C_volume = probe_st3_C.get('V (ml)')
-                    # Получаем sample_mass из пробы B
-                    st3_B_mass = probe_st3_B.get('sample_mass')
+                    # Получаем объем из предыдущей стадии A
+                    st2_A_volume = probe_st2_A.get('V (ml)')
                     
-                    if st3_C_volume is not None and st3_B_mass is not None:
-                        # V (ml) = V(ml) пробы C - (sample_mass пробы B)/3
-                        new_volume = st3_C_volume - (st3_B_mass / 3)
-                        probe_st3_A['V (ml)'] = new_volume
-                        probe_st3_A['volume_calculation_note'] = (
-                            f"{st3_C_volume} - ({st3_B_mass}/3)"
+                    # Получаем данные суспензии из пробы C
+                    mass_fraction_caoh2 = probe_st3_C.get('Массовая доля Ca(OH)2')  # от 0 до 1
+                    suspension_volume = probe_st3_C.get('Объем суспензии Ca(OH)2')  # мл
+                    
+                    if (st2_A_volume is not None and 
+                        mass_fraction_caoh2 is not None and 
+                        suspension_volume is not None):
+                        
+                        # Рассчитываем массу суспензии
+                        suspension_mass = suspension_volume * CAOH2_SUSPENSION_DENSITY
+                        
+                        # Рассчитываем массу твердой фазы Ca(OH)2
+                        caoh2_solid_mass = suspension_mass * mass_fraction_caoh2
+                        
+                        # Рассчитываем массу жидкой фазы суспензии
+                        liquid_phase_mass = suspension_mass - caoh2_solid_mass
+                        
+                        # Упрощенно считаем объем жидкой фазы (предполагаем плотность ~1 г/мл)
+                        liquid_phase_volume = liquid_phase_mass  # ~мл
+                        
+                        # V (ml) = V(ml) прошлой стадии 'st2_A' + объем жидкой фазы суспензии
+                        new_volume = st2_A_volume + liquid_phase_volume
+                        
+                        probe['V (ml)'] = new_volume
+                        probe['volume_calculation_note'] = (
+                            f"{st2_A_volume} + {liquid_phase_volume:.2f} (жидкая фаза суспензии)"
                         )
                         stats['calculated_fields'] += 1
                         series_updated = True
+            
+            elif probe_type == 'st4_A':
+                st3_A_name = f"T2-L{m}P{m}A{n}"
                 
-                # 4) Обрабатываем 4 стадию
-                st4_A_name = f"T2-L{m}P{m}F{m}A{n}"
-                st4_B_name = f"T2-L{m}P{m}F{m}B{n}"
-                st4_D_name = f"T2-L{m}P{m}F{m}D{n}"
-                
-                # Для T2-L{m}P{m}F{m}A{n}
-                if (st4_A_name in probe_map and 
-                    st3_A_name in probe_map):
-                    
-                    probe_st4_A = probe_map[st4_A_name]
+                if st3_A_name in probe_map:
                     probe_st3_A = probe_map[st3_A_name]
                     
                     # Копируем объем из пробы 3 стадии
                     st3_volume = probe_st3_A.get('V (ml)')
                     
                     if st3_volume is not None:
-                        probe_st4_A['V (ml)'] = st3_volume
-                        probe_st4_A['volume_calculation_note'] = f"Скопирован из {st3_A_name}"
+                        probe['V (ml)'] = st3_volume
+                        probe['volume_calculation_note'] = f"Скопирован из {st3_A_name}"
                         stats['calculated_fields'] += 1
                         series_updated = True
+            
+            elif probe_type == 'st4_B':
+                st3_B_name = f"T2-L{m}P{m}B{n}"
+                st4_D_name = f"T2-L{m}P{m}F{m}D{n}"
                 
-                # Для T2-L{m}P{m}F{m}B{n}
-                if (st4_B_name in probe_map and 
-                    st3_B_name in probe_map and 
-                    st4_D_name in probe_map):
-                    
-                    probe_st4_B = probe_map[st4_B_name]
+                if st3_B_name in probe_map and st4_D_name in probe_map:
                     probe_st3_B = probe_map[st3_B_name]
                     probe_st4_D = probe_map[st4_D_name]
                     
@@ -588,16 +604,19 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     if st3_B_mass is not None and st4_D_mass is not None:
                         # sample_mass = sample_mass(3 стадия B) - sample_mass(4 стадия D)
                         new_mass = st3_B_mass - st4_D_mass
-                        probe_st4_B['sample_mass'] = new_mass
-                        probe_st4_B['mass_calculation_note'] = (
+                        probe['sample_mass'] = new_mass
+                        probe['mass_calculation_note'] = (
                             f"{st3_B_mass} - {st4_D_mass}"
                         )
                         stats['calculated_fields'] += 1
                         series_updated = True
-                
-                if series_updated:
-                    stats['updated_probes'] += 1
-        
+            
+            # Также обрабатываем корневые пробы C для подсчета серий
+            if probe_type == 'start_C':
+                stats['total_series'] += 1
+            
+            if series_updated:
+                stats['updated_probes'] += 1
         # Если были изменения, сохраняем данные
         if stats['calculated_fields'] > 0:
             # Обновляем метаданные
