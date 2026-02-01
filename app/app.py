@@ -4,7 +4,7 @@ import json
 import os
 from werkzeug.utils import secure_filename
 from test_ISP_AES import process_icp_aes_data
-from ISP_MS import process_metal_samples_csv
+from ISP_MS import process_metal_samples_csv, expand_sample_code
 import pandas as pd
 from version_control import VersionControlSystem
 from io import BytesIO
@@ -1532,6 +1532,8 @@ def upload_file_MS():
             file_path=file_path
         )
         
+        
+        
         json_data = convert_df_to_dict(result_data,add_mass=False) # type: ignore
         
         # ЗАГРУЖАЕМ ТЕКУЩИЕ ДАННЫЕ ПЕРЕД ИЗМЕНЕНИЕМ
@@ -1671,6 +1673,8 @@ def upload_data():
             parameters = {}
         
         result_data = pd.read_csv(file_path,sep=';')
+        
+        result_data['name'] = result_data['name'].apply(expand_sample_code)
         
         json_data = convert_df_to_dict(result_data,add_mass=False)
         

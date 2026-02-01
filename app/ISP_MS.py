@@ -1,6 +1,50 @@
 import pandas as pd
 import re
 
+def expand_sample_code(sample_name):
+    """Восстанавливает полный шифр пробы из короткого"""
+    if pd.isna(sample_name):
+        return sample_name
+    
+    sample_str = str(sample_name)
+    
+    # Извлекаем компоненты из короткого имени
+    # Формат: T2-4C1 или T2-P4A1
+    pattern = r'(T\d+)-([LPFN]?)(\d+)([A-Z])(\d+)'
+    match = re.match(pattern, sample_str)
+    
+    if not match:
+        # Если не соответствует паттерну, возвращаем как есть
+        return sample_str
+    
+    prefix = match.group(1)  # T2
+    stage = match.group(2)   # стадия (может быть пусто)
+    method_num = match.group(3)  # номер методики (5)
+    product_type = match.group(4)  # тип продукта (A)
+    repeat_num = match.group(5)  # номер повторности (2)
+    
+    # Если стадия не указана или это L - возвращаем как есть
+    if not stage or stage == 'L':
+        return sample_str
+    
+    # Определяем порядок стадий и какие нужно добавить
+    stages_order = ['L', 'P', 'F', 'N']
+    
+    # Находим индекс указанной стадии
+    target_index = stages_order.index(stage)
+    
+    # Берем все стадии от L до указанной включительно
+    needed_stages = stages_order[:target_index + 1]
+    
+    # Формируем строку стадий с номером методики
+    stages_str = ''.join([f"{s}{method_num}" for s in needed_stages])
+    
+    # Собираем полное имя
+    full_code = f"{prefix}-{stages_str}{product_type}{repeat_num}"
+    
+    return full_code
+
+
 def process_metal_samples_csv(file_path, output_path=None):
     """
     Обрабатывает CSV файл с данными проб металлов.
@@ -81,49 +125,7 @@ def process_metal_samples_csv(file_path, output_path=None):
     df = df.drop(columns=['BaseName'], errors='ignore')
     
     # 2) Восстановление полного шифра из короткого
-    def expand_sample_code(sample_name):
-        """Восстанавливает полный шифр пробы из короткого"""
-        if pd.isna(sample_name):
-            return sample_name
-        
-        sample_str = str(sample_name)
-        
-        # Извлекаем компоненты из короткого имени
-        # Формат: T2-4C1 или T2-P4A1
-        pattern = r'(T\d+)-([LPFN]?)(\d+)([A-Z])(\d+)'
-        match = re.match(pattern, sample_str)
-        
-        if not match:
-            # Если не соответствует паттерну, возвращаем как есть
-            return sample_str
-        
-        prefix = match.group(1)  # T2
-        stage = match.group(2)   # стадия (может быть пусто)
-        method_num = match.group(3)  # номер методики (5)
-        product_type = match.group(4)  # тип продукта (A)
-        repeat_num = match.group(5)  # номер повторности (2)
-        
-        # Если стадия не указана или это L - возвращаем как есть
-        if not stage or stage == 'L':
-            return sample_str
-        
-        # Определяем порядок стадий и какие нужно добавить
-        stages_order = ['L', 'P', 'F', 'N']
-        
-        # Находим индекс указанной стадии
-        target_index = stages_order.index(stage)
-        
-        # Берем все стадии от L до указанной включительно
-        needed_stages = stages_order[:target_index + 1]
-        
-        # Формируем строку стадий с номером методики
-        stages_str = ''.join([f"{s}{method_num}" for s in needed_stages])
-        
-        # Собираем полное имя
-        full_code = f"{prefix}-{stages_str}{product_type}{repeat_num}"
-        
-        return full_code
-    
+
     # Применяем восстановление шифра ко всем пробам
     df['Sample'] = df['Sample'].apply(expand_sample_code)
     
