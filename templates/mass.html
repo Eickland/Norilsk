@@ -648,29 +648,35 @@
                 const seriesId = `series-${series.id}`;
                 const firstMetal = METALS[0].id;
                 
-                // Create series card
                 const card = $(`
                     <div class="card series-card" id="${seriesId}">
                         <div class="card-header series-header">
-                            <span>Серия ${series.method}-${series.repeat} (Метод ${series.method}, Повторность ${series.repeat})</span>
+                            <span>Серия ${series.method}-${series.repeat}</span>
                             <div class="metal-selector">
                                 <label class="mb-0 text-white">Металл:</label>
                                 <select class="form-control form-control-sm metal-selector-dropdown" data-series-id="${series.id}">
-                                    ${METALS.map(m => 
-                                        `<option value="${m.id}" ${m.id === firstMetal ? 'selected' : ''}>${m.name}</option>`
-                                    ).join('')}
+                                    ${METALS.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
                                 </select>
                             </div>
                         </div>
                         <div class="card-body">
                             ${series.probe_availability.used_fallback ? `
                                 <div class="alert alert-warning alert-sm mb-3">
-                                    <i data-feather="alert-triangle" class="mr-1" width="16" height="16"></i>
-                                    Для этой серии использованы данные с замещением (fallback) из стадии 5, так как пробы стадии 6 отсутствовали.
+                                    <i data-feather="alert-triangle" width="16" height="16"></i>
+                                    Использован fallback (стадия 5 → 6)
                                 </div>
                             ` : ''}
-                            <div class="chart-container">
-                                <canvas id="chart-${series.id}-${firstMetal}"></canvas>
+                            <div class="row">
+                                <div class="col-lg-8 border-right">
+                                    <div class="chart-container" style="height: 350px; box-shadow: none;">
+                                        <canvas id="chart-main-${series.id}"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="chart-container" style="height: 350px; box-shadow: none;">
+                                        <canvas id="chart-pie-${series.id}"></canvas>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -678,28 +684,41 @@
                 
                 container.append(card);
                 
-                // Render chart for the first metal
-                renderStackedChart(series, firstMetal, `chart-${series.id}-${firstMetal}`);
+                // Рендерим обе диаграммы для первого металла
+                renderStackedChart(series, firstMetal, `chart-main-${series.id}`);
+                renderDoughnutChart(series, firstMetal, `chart-pie-${series.id}`);
                 
                 // Setup metal selector change event
                 card.find('.metal-selector-dropdown').on('change', function() {
                     const selectedMetal = $(this).val();
-                    const chartId = `chart-${series.id}-${selectedMetal}`;
+                    const seriesId = $(this).data('series-id');
+                    const series = seriesData.find(s => s.id === seriesId);
                     
-                    // Remove old chart container and create new one
-                    const chartContainer = card.find('.chart-container');
-                    chartContainer.html(`<canvas id="${chartId}"></canvas>`);
+                    // Удаляем старые диаграммы
+                    const mainCanvas = document.getElementById(`chart-main-${seriesId}`);
+                    const pieCanvas = document.getElementById(`chart-pie-${seriesId}`);
                     
-                    // Render new chart
-                    renderStackedChart(series, selectedMetal, chartId);
+                    if (mainCanvas) {
+                        const chartInstance = Chart.getChart(mainCanvas);
+                        if (chartInstance) chartInstance.destroy();
+                    }
+                    
+                    if (pieCanvas) {
+                        const chartInstance = Chart.getChart(pieCanvas);
+                        if (chartInstance) chartInstance.destroy();
+                    }
+                    
+                    // Создаем новые диаграммы
+                    renderStackedChart(series, selectedMetal, `chart-main-${seriesId}`);
+                    renderDoughnutChart(series, selectedMetal, `chart-pie-${seriesId}`);
                 });
             });
             
-            // Initialize sidebar active state based on scroll position
+            // Initialize sidebar active state
             $(window).on('scroll', updateSidebarActiveState);
             updateSidebarActiveState();
         }
-        
+
         function renderStackedChart(series, metal, canvasId) {
             const ctx = document.getElementById(canvasId).getContext('2d');
             const stages = series.elements[metal].stages; // Array of 6 objects with A,B,D,E,G
@@ -854,6 +873,7 @@
             }, 300);
         }
         
+
         function buildComparison() {
             const selectedMetal = $('#compareMetal').val();
             const selectedChecks = $('.series-check:checked');
@@ -983,12 +1003,66 @@
                 $(`.nav-link[data-series-id="${activeSeriesId}"]`).addClass('active');
             }
         }
-        
+
+            function renderDoughnutChart(series, metal, canvasId) {
+                const ctx = document.getElementById(canvasId).getContext('2d');
+                const balance = series.elements[metal].balance;
+                
+                const dataValues = [
+                    balance.E_pct,
+                    balance.D_pct,
+                    balance.G_pct,
+                    balance.Loss_pct < 0 ? 0 : balance.Loss_pct
+                ];
+
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Продукт E (ЖКК)', 'Продукт D (Кам.)', 'Оборот G', 'Потери/Невязка'],
+                        datasets: [{
+                            data: dataValues,
+                            backgroundColor: [
+                                PRODUCT_COLORS['E'], 
+                                PRODUCT_COLORS['D'], 
+                                PRODUCT_COLORS['G'], 
+                                '#ef4444'
+                            ],
+                            borderWidth: 2,
+                            hoverOffset: 10
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Распределение баланса (%)',
+                                font: { size: 14, weight: 'bold' }
+                            },
+                            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(ctx) {
+                                        let value = ctx.raw || 0;
+                                        return ' ' + ctx.label + ': ' + value.toFixed(2) + '%';
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '65%'
+                    }
+                });
+            }      
+
         // Cleanup on page unload
         $(window).on('beforeunload', function() {
             // Destroy all chart instances to prevent memory leaks
             chartInstances.forEach(chart => chart.destroy());
         });
+        
+
+        
     </script>
 </body>
 </html>
