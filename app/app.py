@@ -3174,7 +3174,7 @@ def calculate_balance():
                 "st6_G": [names["st5_A"]]   # G из 6 стадии можно взять из A 5 стадии
             }
 
-            elements = ['mFe', 'mCu', 'mNi', 'mPd', 'mPt', 'mRh', 'mAu', 'mAg', 'mOs', 'mRu', 'mIr']
+            elements = ['mFe', 'mCu', 'mNi', 'mPd', 'mPt', 'mRh', 'mAu', 'mAg', 'mOs', 'mRu', 'mIr','mK','mAl','mMg','mCo','mZn','mCa','mMn']
             series_data = {
                 "id": f"Series-{m}-{n}",
                 "method": m,
