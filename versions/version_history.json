@@ -1,259 +1,6 @@
 [
   {
     "id": 1,
-    "timestamp": "2026-02-01T17:28:42.025794",
-    "description": "Перерасчет массы металлов: жидких - 156, твердых - 164, полей mX - 8960, ошибок - 0",
-    "author": "system",
-    "change_type": "metal_mass_recalculation_complete",
-    "hash": "7b4debcf9920032fb800e7292dfbfe37",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 2,
-    "timestamp": "2026-02-01T17:28:42.489893",
-    "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 299",
-    "author": "system",
-    "change_type": "recalculation_complete",
-    "hash": "bef05cc826c33623d6710f496a29f3ce",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 3,
-    "timestamp": "2026-02-01T17:35:10.221315",
-    "description": "Перерасчет массы металлов: жидких - 156, твердых - 164, полей mX - 8960, ошибок - 0",
-    "author": "system",
-    "change_type": "metal_mass_recalculation_complete",
-    "hash": "2c390e7b96e905e6c62c59db45e6dc25",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 4,
-    "timestamp": "2026-02-01T17:35:10.673609",
-    "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 299",
-    "author": "system",
-    "change_type": "recalculation_complete",
-    "hash": "4699954d034e8733b3f0b75057b5fc8a",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 5,
-    "timestamp": "2026-02-01T17:37:46.175246",
-    "description": "Перерасчет массы металлов: жидких - 156, твердых - 164, полей mX - 8960, ошибок - 0",
-    "author": "system",
-    "change_type": "metal_mass_recalculation_complete",
-    "hash": "69830c158e726cb04387856bb62af821",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 6,
-    "timestamp": "2026-02-01T17:37:46.666879",
-    "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 299",
-    "author": "system",
-    "change_type": "recalculation_complete",
-    "hash": "4fd49d8b6ec196ccf478eab86d41a97f",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 7,
-    "timestamp": "2026-02-01T17:38:04.786861",
-    "description": "Перерасчет массы металлов: жидких - 156, твердых - 164, полей mX - 8960, ошибок - 0",
-    "author": "system",
-    "change_type": "metal_mass_recalculation_complete",
-    "hash": "5a57b94e99d8867527876f53f3702e63",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 8,
-    "timestamp": "2026-02-01T17:38:05.212103",
-    "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 299",
-    "author": "system",
-    "change_type": "recalculation_complete",
-    "hash": "ac370cbfef0a569ae352f16cf1b1ece8",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 9,
-    "timestamp": "2026-02-01T17:39:39.292024",
-    "description": "Перерасчет массы металлов: жидких - 156, твердых - 164, полей mX - 8960, ошибок - 0",
-    "author": "system",
-    "change_type": "metal_mass_recalculation_complete",
-    "hash": "89391e664ee577f009b7480ad2bd1b85",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 10,
-    "timestamp": "2026-02-01T17:39:39.896434",
-    "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 299",
-    "author": "system",
-    "change_type": "recalculation_complete",
-    "hash": "80201d98490ee9a212531fecf5efc492",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 11,
-    "timestamp": "2026-02-01T17:40:08.608277",
-    "description": "Перерасчет массы металлов: жидких - 156, твердых - 164, полей mX - 8960, ошибок - 0",
-    "author": "system",
-    "change_type": "metal_mass_recalculation_complete",
-    "hash": "3ace5fadec15ba759ccae08074d78c66",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 12,
-    "timestamp": "2026-02-01T17:40:09.186255",
-    "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 299",
-    "author": "system",
-    "change_type": "recalculation_complete",
-    "hash": "ee5ac94eae86da4fd03401cae324610b",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 13,
-    "timestamp": "2026-02-01T17:40:54.130980",
-    "description": "Перерасчет массы металлов: жидких - 156, твердых - 164, полей mX - 8960, ошибок - 0",
-    "author": "system",
-    "change_type": "metal_mass_recalculation_complete",
-    "hash": "6ba9e2345b0d83c0328e02452184277e",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 14,
-    "timestamp": "2026-02-01T17:40:54.685087",
-    "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 299",
-    "author": "system",
-    "change_type": "recalculation_complete",
-    "hash": "cf3decc1117976ce93f1acf82dacedae",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 15,
-    "timestamp": "2026-02-01T17:41:13.785356",
-    "description": "Перерасчет массы металлов: жидких - 156, твердых - 164, полей mX - 8960, ошибок - 0",
-    "author": "system",
-    "change_type": "metal_mass_recalculation_complete",
-    "hash": "e6f39dcd9f5edee6ef8ef29d77306732",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 16,
-    "timestamp": "2026-02-01T17:41:14.344837",
-    "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 299",
-    "author": "system",
-    "change_type": "recalculation_complete",
-    "hash": "8f004c32a157110d50c47e13a5daa45b",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 17,
-    "timestamp": "2026-02-01T17:41:40.301622",
-    "description": "Перерасчет массы металлов: жидких - 156, твердых - 164, полей mX - 8960, ошибок - 0",
-    "author": "system",
-    "change_type": "metal_mass_recalculation_complete",
-    "hash": "aa7aa4e02eb305dfe75f021588bf2ee8",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 18,
-    "timestamp": "2026-02-01T17:41:40.967067",
-    "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 299",
-    "author": "system",
-    "change_type": "recalculation_complete",
-    "hash": "ce041f81929c1049ca86200ddfb45991",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 19,
-    "timestamp": "2026-02-01T17:42:21.323937",
-    "description": "Перерасчет массы металлов: жидких - 156, твердых - 164, полей mX - 8960, ошибок - 0",
-    "author": "system",
-    "change_type": "metal_mass_recalculation_complete",
-    "hash": "1af26acd6faadb360a5fb70f85f7ffa5",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 20,
-    "timestamp": "2026-02-01T17:42:21.905544",
-    "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 299",
-    "author": "system",
-    "change_type": "recalculation_complete",
-    "hash": "ff909168469f3c4d824a8d3f9ced7298",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 21,
-    "timestamp": "2026-02-01T17:43:13.416080",
-    "description": "Перерасчет массы металлов: жидких - 156, твердых - 164, полей mX - 8960, ошибок - 0",
-    "author": "system",
-    "change_type": "metal_mass_recalculation_complete",
-    "hash": "655487ad08f56657d3fea18748daa9ba",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 22,
-    "timestamp": "2026-02-01T17:43:13.985681",
-    "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 299",
-    "author": "system",
-    "change_type": "recalculation_complete",
-    "hash": "c301941e5c415528a4d15ccc6a3f4e4f",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 23,
-    "timestamp": "2026-02-01T17:44:33.474089",
-    "description": "Перерасчет массы металлов: жидких - 156, твердых - 164, полей mX - 8960, ошибок - 0",
-    "author": "system",
-    "change_type": "metal_mass_recalculation_complete",
-    "hash": "0dd10854cb9eef2ae20f3f8733209e61",
-    "filename": "v51_data.json",
-    "data_size": 2313288,
-    "probes_count": 821
-  },
-  {
-    "id": 24,
     "timestamp": "2026-02-01T17:44:34.063366",
     "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 299",
     "author": "system",
@@ -264,7 +11,7 @@
     "probes_count": 821
   },
   {
-    "id": 25,
+    "id": 2,
     "timestamp": "2026-02-01T17:44:55.659933",
     "description": "Перерасчет массы металлов: жидких - 156, твердых - 164, полей mX - 8960, ошибок - 0",
     "author": "system",
@@ -275,7 +22,7 @@
     "probes_count": 821
   },
   {
-    "id": 26,
+    "id": 3,
     "timestamp": "2026-02-01T17:44:56.237350",
     "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 299",
     "author": "system",
@@ -286,7 +33,7 @@
     "probes_count": 821
   },
   {
-    "id": 27,
+    "id": 4,
     "timestamp": "2026-02-01T17:47:02.718611",
     "description": "Расчет полей для проб в сериях",
     "author": "system",
@@ -297,7 +44,7 @@
     "probes_count": 821
   },
   {
-    "id": 28,
+    "id": 5,
     "timestamp": "2026-02-01T17:47:03.176078",
     "description": "Расчет полей завершен: обновлено 189 серий, рассчитано 237 полей",
     "author": "system",
@@ -308,7 +55,7 @@
     "probes_count": 821
   },
   {
-    "id": 29,
+    "id": 6,
     "timestamp": "2026-02-01T17:47:03.743946",
     "description": "Перерасчет массы металлов: жидких - 100, твердых - 166, полей mX - 7448, ошибок - 0",
     "author": "system",
@@ -319,7 +66,7 @@
     "probes_count": 821
   },
   {
-    "id": 30,
+    "id": 7,
     "timestamp": "2026-02-01T17:47:04.369435",
     "description": "Пересчет зависимых полей завершен: масса - 817, плотность - 301",
     "author": "system",
@@ -330,7 +77,7 @@
     "probes_count": 821
   },
   {
-    "id": 31,
+    "id": 8,
     "timestamp": "2026-02-01T17:52:42.934285",
     "description": "Импорт файла 'data_site_6C-13C.csv' - обновлено: 972, добавлено: 29",
     "author": "anonymous",
@@ -341,7 +88,7 @@
     "probes_count": 850
   },
   {
-    "id": 32,
+    "id": 9,
     "timestamp": "2026-02-01T17:52:45.803364",
     "description": "Нормализация завершена: обновлено 105 ID",
     "author": "system",
@@ -352,7 +99,7 @@
     "probes_count": 850
   },
   {
-    "id": 33,
+    "id": 10,
     "timestamp": "2026-02-01T17:52:46.407520",
     "description": "Расчет полей для проб в сериях",
     "author": "system",
@@ -363,7 +110,7 @@
     "probes_count": 850
   },
   {
-    "id": 34,
+    "id": 11,
     "timestamp": "2026-02-01T17:52:46.874933",
     "description": "Расчет полей завершен: обновлено 198 серий, рассчитано 250 полей",
     "author": "system",
@@ -374,7 +121,7 @@
     "probes_count": 850
   },
   {
-    "id": 35,
+    "id": 12,
     "timestamp": "2026-02-01T17:52:47.487068",
     "description": "Перерасчет массы металлов: жидких - 121, твердых - 163, полей mX - 7930, ошибок - 0",
     "author": "system",
@@ -385,7 +132,7 @@
     "probes_count": 850
   },
   {
-    "id": 36,
+    "id": 13,
     "timestamp": "2026-02-01T17:52:48.126368",
     "description": "Пересчет зависимых полей завершен: масса - 805, плотность - 312",
     "author": "system",
@@ -396,7 +143,7 @@
     "probes_count": 850
   },
   {
-    "id": 37,
+    "id": 14,
     "timestamp": "2026-02-01T18:06:39.679038",
     "description": "Расчет полей завершен: обновлено 198 серий, рассчитано 250 полей",
     "author": "system",
@@ -407,7 +154,7 @@
     "probes_count": 850
   },
   {
-    "id": 38,
+    "id": 15,
     "timestamp": "2026-02-01T18:06:40.244020",
     "description": "Перерасчет массы металлов: жидких - 125, твердых - 166, полей mX - 8126, ошибок - 0",
     "author": "system",
@@ -418,7 +165,7 @@
     "probes_count": 850
   },
   {
-    "id": 39,
+    "id": 16,
     "timestamp": "2026-02-01T18:06:40.889799",
     "description": "Пересчет зависимых полей завершен: масса - 805, плотность - 316",
     "author": "system",
@@ -429,7 +176,7 @@
     "probes_count": 850
   },
   {
-    "id": 40,
+    "id": 17,
     "timestamp": "2026-02-01T18:12:32.272561",
     "description": "Расчет полей завершен: обновлено 198 серий, рассчитано 250 полей",
     "author": "system",
@@ -440,7 +187,7 @@
     "probes_count": 850
   },
   {
-    "id": 41,
+    "id": 18,
     "timestamp": "2026-02-01T18:12:32.910666",
     "description": "Перерасчет массы металлов: жидких - 126, твердых - 166, полей mX - 8154, ошибок - 0",
     "author": "system",
@@ -451,7 +198,7 @@
     "probes_count": 850
   },
   {
-    "id": 42,
+    "id": 19,
     "timestamp": "2026-02-01T18:12:33.532528",
     "description": "Пересчет зависимых полей завершен: масса - 805, плотность - 317",
     "author": "system",
@@ -462,7 +209,7 @@
     "probes_count": 850
   },
   {
-    "id": 43,
+    "id": 20,
     "timestamp": "2026-02-01T18:15:59.984536",
     "description": "Редактирование пробы #576",
     "author": "anonymous",
@@ -473,7 +220,7 @@
     "probes_count": 850
   },
   {
-    "id": 44,
+    "id": 21,
     "timestamp": "2026-02-01T18:16:02.696112",
     "description": "Расчет полей для проб в сериях",
     "author": "system",
@@ -484,7 +231,7 @@
     "probes_count": 850
   },
   {
-    "id": 45,
+    "id": 22,
     "timestamp": "2026-02-01T18:16:03.155513",
     "description": "Расчет полей завершен: обновлено 198 серий, рассчитано 250 полей",
     "author": "system",
@@ -495,7 +242,7 @@
     "probes_count": 850
   },
   {
-    "id": 46,
+    "id": 23,
     "timestamp": "2026-02-01T18:16:03.743870",
     "description": "Перерасчет массы металлов: жидких - 126, твердых - 166, полей mX - 8154, ошибок - 0",
     "author": "system",
@@ -506,7 +253,7 @@
     "probes_count": 850
   },
   {
-    "id": 47,
+    "id": 24,
     "timestamp": "2026-02-01T18:16:04.407859",
     "description": "Пересчет зависимых полей завершен: масса - 805, плотность - 317",
     "author": "system",
@@ -517,7 +264,7 @@
     "probes_count": 850
   },
   {
-    "id": 48,
+    "id": 25,
     "timestamp": "2026-02-01T18:23:21.589605",
     "description": "Расчет полей завершен: обновлено 198 серий, рассчитано 250 полей",
     "author": "system",
@@ -528,7 +275,7 @@
     "probes_count": 850
   },
   {
-    "id": 49,
+    "id": 26,
     "timestamp": "2026-02-01T18:23:22.174821",
     "description": "Перерасчет массы металлов: жидких - 126, твердых - 166, полей mX - 8154, ошибок - 0",
     "author": "system",
@@ -539,7 +286,7 @@
     "probes_count": 850
   },
   {
-    "id": 50,
+    "id": 27,
     "timestamp": "2026-02-01T18:23:22.870574",
     "description": "Пересчет зависимых полей завершен: масса - 805, плотность - 317",
     "author": "system",
@@ -548,5 +295,258 @@
     "filename": "v51_data.json",
     "data_size": 2674060,
     "probes_count": 850
+  },
+  {
+    "id": 28,
+    "timestamp": "2026-02-06T13:09:44.927430",
+    "description": "Расчет полей для проб в сериях",
+    "author": "system",
+    "change_type": "fields_calculation",
+    "hash": "cdb0037010c6cd61c17cfdb2754171b6",
+    "filename": "v51_data.json",
+    "data_size": 2674060,
+    "probes_count": 850
+  },
+  {
+    "id": 29,
+    "timestamp": "2026-02-06T13:09:45.373298",
+    "description": "Перерасчет массы металлов: жидких - 126, твердых - 166, полей mX - 8154, ошибок - 0",
+    "author": "system",
+    "change_type": "metal_mass_recalculation_complete",
+    "hash": "6103fda0893751e12aa40875b9553fb8",
+    "filename": "v51_data.json",
+    "data_size": 2674060,
+    "probes_count": 850
+  },
+  {
+    "id": 30,
+    "timestamp": "2026-02-06T13:09:45.863970",
+    "description": "Пересчет зависимых полей завершен: масса - 805, плотность - 317",
+    "author": "system",
+    "change_type": "recalculation_complete",
+    "hash": "c8e2cbfe1307fc3a752123afde5688ae",
+    "filename": "v51_data.json",
+    "data_size": 2674060,
+    "probes_count": 850
+  },
+  {
+    "id": 31,
+    "timestamp": "2026-02-06T13:09:46.434894",
+    "description": "Форматирование завершено: 90933 значений в 850 пробах",
+    "author": "system",
+    "change_type": "formatting_complete",
+    "hash": "2aa757bd11499fec481777bc3f0ddbeb",
+    "filename": "v51_data.json",
+    "data_size": 2645073,
+    "probes_count": 850
+  },
+  {
+    "id": 32,
+    "timestamp": "2026-02-06T13:09:54.292709",
+    "description": "Импорт файла 'export_20260206_100723.csv' - обновлено: 846, добавлено: 9",
+    "author": "anonymous",
+    "change_type": "import",
+    "hash": "50849001fd2a187805cf292a88fd9b21",
+    "filename": "v51_data.json",
+    "data_size": 2702513,
+    "probes_count": 859
+  },
+  {
+    "id": 33,
+    "timestamp": "2026-02-06T13:09:56.951707",
+    "description": "Нормализация завершена: обновлено 10 ID",
+    "author": "system",
+    "change_type": "normalization_complete",
+    "hash": "d45a25cc990d2fccb8b42ba1f4d5755f",
+    "filename": "v51_data.json",
+    "data_size": 2701479,
+    "probes_count": 859
+  },
+  {
+    "id": 34,
+    "timestamp": "2026-02-06T13:09:57.698224",
+    "description": "Перерасчет массы металлов: жидких - 142, твердых - 172, полей mX - 8732, ошибок - 0",
+    "author": "system",
+    "change_type": "metal_mass_recalculation_complete",
+    "hash": "01a48cf450e3bf84e3435153d57f209e",
+    "filename": "v51_data.json",
+    "data_size": 2758671,
+    "probes_count": 859
+  },
+  {
+    "id": 35,
+    "timestamp": "2026-02-06T13:09:58.169552",
+    "description": "Пересчет зависимых полей завершен: масса - 769, плотность - 291",
+    "author": "system",
+    "change_type": "recalculation_complete",
+    "hash": "a5bd2e1ad67fa790efda8487e174947f",
+    "filename": "v51_data.json",
+    "data_size": 2775619,
+    "probes_count": 859
+  },
+  {
+    "id": 36,
+    "timestamp": "2026-02-06T13:10:20.163409",
+    "description": "Подтверждение удаления пробы #850",
+    "author": "system",
+    "change_type": "delete_confirm",
+    "hash": "5e65a49c3dddee9f57188356c4486398",
+    "filename": "v51_data.json",
+    "data_size": 2772862,
+    "probes_count": 858
+  },
+  {
+    "id": 37,
+    "timestamp": "2026-02-06T13:10:42.013873",
+    "description": "Нормализация завершена: обновлено 9 ID",
+    "author": "system",
+    "change_type": "normalization_complete",
+    "hash": "8b22220e8eb3bca94e52810f4a7f556f",
+    "filename": "v51_data.json",
+    "data_size": 2772849,
+    "probes_count": 858
+  },
+  {
+    "id": 38,
+    "timestamp": "2026-02-06T13:10:42.860433",
+    "description": "Перерасчет массы металлов: жидких - 142, твердых - 172, полей mX - 8732, ошибок - 0",
+    "author": "system",
+    "change_type": "metal_mass_recalculation_complete",
+    "hash": "a064477765bed00437d190cb53c0efe7",
+    "filename": "v51_data.json",
+    "data_size": 2773331,
+    "probes_count": 858
+  },
+  {
+    "id": 39,
+    "timestamp": "2026-02-06T13:10:43.372886",
+    "description": "Пересчет зависимых полей завершен: масса - 769, плотность - 291",
+    "author": "system",
+    "change_type": "recalculation_complete",
+    "hash": "542998eff17d9f5075eea77787b69548",
+    "filename": "v51_data.json",
+    "data_size": 2773022,
+    "probes_count": 858
+  },
+  {
+    "id": 40,
+    "timestamp": "2026-02-06T13:11:49.102644",
+    "description": "Перерасчет массы металлов: жидких - 142, твердых - 172, полей mX - 8732, ошибок - 0",
+    "author": "system",
+    "change_type": "metal_mass_recalculation_complete",
+    "hash": "db495139251c4eb4f6e6b4457c9a7109",
+    "filename": "v51_data.json",
+    "data_size": 2773022,
+    "probes_count": 858
+  },
+  {
+    "id": 41,
+    "timestamp": "2026-02-06T13:11:49.807273",
+    "description": "Пересчет зависимых полей завершен: масса - 769, плотность - 291",
+    "author": "system",
+    "change_type": "recalculation_complete",
+    "hash": "68d8fd901cfe79bfdaac894841b1d730",
+    "filename": "v51_data.json",
+    "data_size": 2773022,
+    "probes_count": 858
+  },
+  {
+    "id": 42,
+    "timestamp": "2026-02-06T13:11:53.380331",
+    "description": "Перерасчет массы металлов: жидких - 142, твердых - 172, полей mX - 8732, ошибок - 0",
+    "author": "system",
+    "change_type": "metal_mass_recalculation_complete",
+    "hash": "d7042ac80dc3efdb320854d548f80477",
+    "filename": "v51_data.json",
+    "data_size": 2773022,
+    "probes_count": 858
+  },
+  {
+    "id": 43,
+    "timestamp": "2026-02-06T13:11:54.112492",
+    "description": "Пересчет зависимых полей завершен: масса - 769, плотность - 291",
+    "author": "system",
+    "change_type": "recalculation_complete",
+    "hash": "9464a1046c020f80aeb3aac268e17151",
+    "filename": "v51_data.json",
+    "data_size": 2773022,
+    "probes_count": 858
+  },
+  {
+    "id": 44,
+    "timestamp": "2026-02-06T13:13:22.671400",
+    "description": "Расчет полей для проб в сериях",
+    "author": "system",
+    "change_type": "fields_calculation",
+    "hash": "a2f42993368264d6452b903002a8918c",
+    "filename": "v51_data.json",
+    "data_size": 2735326,
+    "probes_count": 858
+  },
+  {
+    "id": 45,
+    "timestamp": "2026-02-06T13:13:23.331986",
+    "description": "Перерасчет массы металлов: жидких - 126, твердых - 172, полей mX - 8284, ошибок - 0",
+    "author": "system",
+    "change_type": "metal_mass_recalculation_complete",
+    "hash": "0e8eaa83ef30f52b2ba7dbcaba0a1973",
+    "filename": "v51_data.json",
+    "data_size": 2735326,
+    "probes_count": 858
+  },
+  {
+    "id": 46,
+    "timestamp": "2026-02-06T13:13:23.981285",
+    "description": "Пересчет зависимых полей завершен: масса - 769, плотность - 291",
+    "author": "system",
+    "change_type": "recalculation_complete",
+    "hash": "afe57c07cc4adab5389a60b6dbe6bf39",
+    "filename": "v51_data.json",
+    "data_size": 2735326,
+    "probes_count": 858
+  },
+  {
+    "id": 47,
+    "timestamp": "2026-02-06T14:05:52.204787",
+    "description": "Расчет полей для проб в сериях",
+    "author": "system",
+    "change_type": "fields_calculation",
+    "hash": "832fe5e16115bc638b686f3a96aae6d4",
+    "filename": "v51_data.json",
+    "data_size": 2730496,
+    "probes_count": 858
+  },
+  {
+    "id": 48,
+    "timestamp": "2026-02-06T14:05:52.717446",
+    "description": "Расчет полей завершен: обновлено 203 серий, рассчитано 255 полей",
+    "author": "system",
+    "change_type": "fields_calculation_complete",
+    "hash": "1f2f749dc8dfd87332570e40fc4d9e4e",
+    "filename": "v51_data.json",
+    "data_size": 2731215,
+    "probes_count": 858
+  },
+  {
+    "id": 49,
+    "timestamp": "2026-02-06T14:05:53.444052",
+    "description": "Перерасчет массы металлов: жидких - 126, твердых - 173, полей mX - 8372, ошибок - 0",
+    "author": "system",
+    "change_type": "metal_mass_recalculation_complete",
+    "hash": "175e1cdc1752c3e5477983efcff2017e",
+    "filename": "v51_data.json",
+    "data_size": 2732213,
+    "probes_count": 858
+  },
+  {
+    "id": 50,
+    "timestamp": "2026-02-06T14:05:54.168264",
+    "description": "Пересчет зависимых полей завершен: масса - 854, плотность - 319",
+    "author": "system",
+    "change_type": "recalculation_complete",
+    "hash": "86f87040274b45da7c4f2305d45faa35",
+    "filename": "v51_data.json",
+    "data_size": 2722687,
+    "probes_count": 858
   }
 ]

@@ -19,6 +19,7 @@ import plotly.graph_objs as go
 from flask_cors import CORS
 import re
 from collections import defaultdict
+import numpy as np
 
 load_dotenv()
 
@@ -2363,141 +2364,411 @@ def plot_graph():
     """Главная страница"""
     return render_template('plot_graph.html')
 
-@app.route('/api/columns', methods=['GET'])
+
+def extract_series_info() -> Dict:
+    """Извлечение информации о сериях из данных"""
+    probes = load_data().get("probes", [])
+    probe_map = {p['name']: p for p in probes}
+    
+    series_dict = {}
+    root_pattern = re.compile(r"^T2-(\d+)C(\d+)$")
+    
+    for probe in probes:
+        match = root_pattern.match(probe['name'])
+        if match:
+            m = match.group(1)  # Номер методики
+            n = match.group(2)  # Номер повторности
+            
+            series_key = f"T2-{m}C{n}"
+            
+            if series_key not in series_dict:
+                series_dict[series_key] = {
+                    'method': m,
+                    'replicate': n,
+                    'probes': {},
+                    'stages': {}
+                }
+            
+            # Определяем стадию и тип пробы
+            name = probe['name']
+            print(name)
+            if f"T2-{m}A{n}" in name or f"T2-{m}B{n}" in name:
+                stage = 'start'
+                sample_type = 'A' if 'A' in name else 'B'
+            elif f"T2-L{m}A{n}" in name or f"T2-L{m}B{n}" in name:
+                stage = 'st2'
+                sample_type = 'A' if 'A' in name else 'B'
+            elif f"T2-L{m}P{m}A{n}" in name or f"T2-L{m}P{m}B{n}" in name:
+                stage = 'st3'
+                sample_type = 'A' if 'A' in name else 'B'
+            elif f"T2-L{m}P{m}F{m}A{n}" in name or f"T2-L{m}P{m}F{m}B{n}" in name or f"T2-L{m}P{m}F{m}D{n}" in name:
+                stage = 'st4'
+                if 'A' in name:
+                    sample_type = 'A'
+                elif 'B' in name:
+                    sample_type = 'B'
+                else:
+                    sample_type = 'D'
+            elif f"T2-L{m}P{m}F{m}N{m}A{n}" in name or f"T2-L{m}P{m}F{m}N{m}B{n}" in name:
+                stage = 'st5'
+                sample_type = 'A' if 'A' in name else 'B'
+            elif f"T2-L{m}P{m}F{m}N{m}E{n}" in name or f"T2-L{m}P{m}F{m}N{m}G{n}" in name:
+                stage = 'st6'
+                sample_type = 'E' if 'E' in name else 'G'
+            else:
+                continue
+            
+            series_dict[series_key]['probes'][name] = probe
+            if stage not in series_dict[series_key]['stages']:
+                series_dict[series_key]['stages'][stage] = {}
+            series_dict[series_key]['stages'][stage][sample_type] = probe
+    
+    return series_dict
+
+@app.route('/api/columns')
 def get_columns():
-    """API для получения доступных колонок"""
-    columns = get_available_columns()
-    return jsonify({"columns": columns})
+    """Получение списка числовых колонок"""
+    try:
+        db_data = load_data()
+        if not db_data["probes"]:
+            return jsonify({"columns": []}), 404
+        
+        df = pd.DataFrame(db_data["probes"])
+        
+        # Исключаем нечисловые колонки и черный список
+        blacklist = [
+            'Описание', 'is_solid', 'id', 'last_normalized', 
+            'status_id', 'is_solution', 'name', 'tags', 'method', 'replicate','is_series','series_base'
+            ,'priority','repeat_number','method_number','created_at','Масса навески (g)','merge_date','merged_from','mass_volume_source',
+            'last_mass_volume_update','масса','общая','V_aliq (l)','Масса навески (mg)','Разбавление','volume_calculation_note','Масса','mass_source_for_solid',
+            'mass_solid_copied_from_C','last_copy_check','skip_reason','mass_volume_copy_skipped','mass_source_for_solid','mass_calculation_note'
+        ]
+        
+        numeric_columns = []
+        for col in df.columns:
+            if col in blacklist:
+                continue
+            if pd.api.types.is_numeric_dtype(df[col]):
+                numeric_columns.append(col)
+            else:
+                try:
+                    # Пробуем преобразовать в числовой тип
+                    pd.to_numeric(df[col], errors='raise')
+                    numeric_columns.append(col)
+                except:
+                    continue
+        
+        return jsonify({"columns": sorted(numeric_columns)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/series')
+def get_series():
+    """Получение списка доступных серий"""
+    try:
+        series_dict = extract_series_info()
+        series_list = sorted(list(series_dict.keys()))
+        return jsonify({"series": series_list})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/plot', methods=['POST'])
 def create_plot():
-    """API для создания графика"""
+    """API для создания графика с поддержкой серий"""
     try:
         data = request.json
+        analysis_mode = data.get('analysis_mode', 'single') # type: ignore
         x_axis = data.get('x_axis') # type: ignore
         y_axis = data.get('y_axis') # type: ignore
-        
-        print(f"API called with x_axis={x_axis}, y_axis={y_axis}")
+        selected_series = data.get('series', []) # type: ignore
+        filters = data.get('filters', {}) # type: ignore
         
         if not x_axis or not y_axis:
             return jsonify({"error": "Не указаны оси X и Y"}), 400
         
-        # Загружаем данные
-        db_data = load_data()
-        if not db_data["probes"]:
-            print("No probes data found")
-            return jsonify({"error": "Нет данных"}), 404
+        series_dict = extract_series_info()
         
-        df = pd.DataFrame(db_data["probes"])
-        print(f"DataFrame loaded with {len(df)} rows, columns: {list(df.columns)}")
+        if analysis_mode == 'average':
+            # Используем все серии для усреднения
+            selected_series = list(series_dict.keys())
         
-        # Проверяем наличие колонок
-        if x_axis not in df.columns:
-            print(f"X axis column '{x_axis}' not found in DataFrame")
-            return jsonify({"error": f"Колонка X '{x_axis}' не найдена"}), 404
+        # Фильтрация данных в зависимости от режима
+        plot_data = []
+        colors = [
+            '#2b6cb0', '#3182ce', '#4299e1', '#63b3ed', '#90cdf4',  # Blue scale
+            '#38a169', '#48bb78', '#68d391', '#9ae6b4',  # Green scale
+            '#d69e2e', '#ed8936', '#f6ad55', '#fbd38d',  # Orange scale
+            '#9f7aea', '#b794f4', '#d6bcfa',  # Purple scale
+        ]
         
-        if y_axis not in df.columns:
-            print(f"Y axis column '{y_axis}' not found in DataFrame")
-            return jsonify({"error": f"Колонка Y '{y_axis}' не найдена"}), 404
+        for i, series_name in enumerate(selected_series):
+            if series_name not in series_dict:
+                continue
+            
+            series_info = series_dict[series_name]
+            print(series_info)
+            series_data = []
+            
+            # Собираем данные для серии
+            for probe_name, probe_data in series_info['probes'].items():
+                # Применяем фильтры
+                if filters.get('hide_zero', True):
+                    if (x_axis in probe_data and (probe_data[x_axis] == 0 or pd.isna(probe_data[x_axis]))):
+                        continue
+                    if (y_axis in probe_data and (probe_data[y_axis] == 0 or pd.isna(probe_data[y_axis]))):
+                        continue
+                
+                # Фильтр по типу пробы (A/B)
+                sample_type = probe_name[-1]  # Последний символ - тип пробы
+                if sample_type == 'A' and not filters.get('show_liquid', True):
+                    continue
+                if sample_type == 'B' and not filters.get('show_solid', True):
+                    continue
+                
+                if x_axis in probe_data and y_axis in probe_data:
+                    try:
+                        x_val = float(probe_data[x_axis])
+                        y_val = float(probe_data[y_axis])
+                        
+                        # Пропускаем NaN значения
+                        if pd.isna(x_val) or pd.isna(y_val):
+                            continue
+                        
+                        series_data.append({
+                            'x': x_val,
+                            'y': y_val,
+                            'name': probe_name,
+                            'sample_type': sample_type,
+                            'series': series_name
+                        })
+                    except (ValueError, TypeError):
+                        continue
+            
+            if series_data:
+                plot_data.append({
+                    'series_name': series_name,
+                    'data': series_data,
+                    'color': colors[i % len(colors)]
+                })
         
-        print(f"Data sample for {x_axis}: {df[x_axis].head().tolist()}")
-        print(f"Data sample for {y_axis}: {df[y_axis].head().tolist()}")
-        
-        # Проверяем, есть ли числовые данные
-        print(f"X data type: {df[x_axis].dtype}, NaN count: {df[x_axis].isna().sum()}")
-        print(f"Y data type: {df[y_axis].dtype}, NaN count: {df[y_axis].isna().sum()}")
-        
-        # Создаем график
+        # Создаем график в зависимости от режима
         fig = go.Figure()
         
-        # Разделяем точки по статусу (если есть)
-        if 'status_id' in df.columns:
-            statuses = df['status_id'].unique()
-            colors = ['#00ff88', '#0088ff', '#ff8800', '#ff0088', '#8800ff']
-            
-            print(f"Found {len(statuses)} unique statuses: {statuses}")
-            
-            for i, status in enumerate(statuses):
-                mask = df['status_id'] == status
-                mask_data = df.loc[mask]
-                print(f"Status {status}: {mask.sum()} points")
-                print(f"X values: {mask_data[x_axis].head().tolist()}")
-                print(f"Y values: {mask_data[y_axis].head().tolist()}")
-                
+        if analysis_mode == 'single':
+            # Одна серия - один график
+            if plot_data:
+                series_data = plot_data[0]['data']
                 fig.add_trace(go.Scatter(
-                    x=mask_data[x_axis].tolist(),
-                    y=mask_data[y_axis].tolist(),
-                    mode='markers',
-                    name=f'Status {status}',
+                    x=[d['x'] for d in series_data],
+                    y=[d['y'] for d in series_data],
+                    mode='markers+lines',
+                    name=plot_data[0]['series_name'],
                     marker=dict(
-                        size=12,
-                        color=colors[i % len(colors)],
+                        size=10,
+                        color=plot_data[0]['color'],
                         line=dict(width=2, color='white')
                     ),
-                    hovertext=mask_data['name'].tolist() if 'name' in mask_data.columns else None,
+                    line=dict(width=2, color=plot_data[0]['color']),
+                    hovertext=[d['name'] for d in series_data],
+                    hoverinfo='text+x+y',
+                    customdata=[[d['series'], d['sample_type']] for d in series_data]
+                ))
+        
+        elif analysis_mode == 'multiple':
+            # Несколько серий - несколько линий
+            for series_info in plot_data:
+                series_data = series_info['data']
+                fig.add_trace(go.Scatter(
+                    x=[d['x'] for d in series_data],
+                    y=[d['y'] for d in series_data],
+                    mode='markers+lines',
+                    name=series_info['series_name'],
+                    marker=dict(
+                        size=8,
+                        color=series_info['color'],
+                        line=dict(width=1, color='white')
+                    ),
+                    line=dict(width=2, color=series_info['color'], dash='dash'),
+                    hovertext=[d['name'] for d in series_data],
+                    hoverinfo='text+x+y',
+                    customdata=[[d['series'], d['sample_type']] for d in series_data]
+                ))
+        
+        elif analysis_mode == 'average':
+            # Среднее по сериям
+            # Группируем по типам проб
+            sample_types = {}
+            for series_info in plot_data:
+                for point in series_info['data']:
+                    sample_type = point['sample_type']
+                    if sample_type not in sample_types:
+                        sample_types[sample_type] = []
+                    sample_types[sample_type].append(point)
+            
+            for sample_type, points in sample_types.items():
+                if len(points) < 2:
+                    continue
+                
+                # Сортируем по X для правильного построения линии
+                points.sort(key=lambda p: p['x'])
+                
+                fig.add_trace(go.Scatter(
+                    x=[p['x'] for p in points],
+                    y=[p['y'] for p in points],
+                    mode='lines+markers',
+                    name=f'Avg {sample_type}-type',
+                    marker=dict(size=10),
+                    line=dict(width=3),
+                    hovertext=[f"Average of {len(selected_series)} series" for _ in points],
                     hoverinfo='text+x+y'
                 ))
-        else:
-            # Все точки одним цветом
-            print(f"Total points: {len(df)}")
-            print(f"X values: {df[x_axis].head().tolist()}")
-            print(f"Y values: {df[y_axis].head().tolist()}")
-            
-            fig.add_trace(go.Scatter(
-                x=df[x_axis].tolist(),
-                y=df[y_axis].tolist(),
-                mode='markers',
-                marker=dict(
-                    size=12,
-                    color='#00ff88',
-                    line=dict(width=2, color='white')
-                ),
-                hovertext=df['name'].tolist() if 'name' in df.columns else None,
-                hoverinfo='text+x+y'
-            ))
         
-        # Настройка стиля графика
+        elif analysis_mode == 'percentage':
+            # Процентный анализ
+            reference_type = data.get('reference_type', 'start') # type: ignore
+            sample_type = data.get('sample_type', 'A') # type: ignore
+            
+            percentages = []
+            for series_name in selected_series:
+                if series_name not in series_dict:
+                    continue
+                
+                series_info = series_dict[series_name]
+                
+                # Находим референсное значение
+                reference_value = None
+                if reference_type in series_info['stages']:
+                    ref_probes = series_info['stages'][reference_type]
+                    for probe_type, probe_data in ref_probes.items():
+                        if y_axis in probe_data:
+                            try:
+                                reference_value = float(probe_data[y_axis])
+                                break
+                            except:
+                                continue
+                
+                if reference_value is None or reference_value == 0:
+                    continue
+                
+                # Находим значения для указанного типа пробы на всех стадиях
+                for stage_name, stage_probes in series_info['stages'].items():
+                    if sample_type in stage_probes:
+                        probe_data = stage_probes[sample_type]
+                        if x_axis in probe_data and y_axis in probe_data:
+                            try:
+                                x_val = float(probe_data[x_axis])
+                                y_val = float(probe_data[y_axis])
+                                percentage = (y_val / reference_value) * 100
+                                
+                                percentages.append({
+                                    'x': x_val,
+                                    'y': percentage,
+                                    'series': series_name,
+                                    'stage': stage_name,
+                                    'reference': reference_value,
+                                    'actual': y_val
+                                })
+                            except:
+                                continue
+            
+            if percentages:
+                # Группируем по стадиям
+                stages = {}
+                for p in percentages:
+                    stage = p['stage']
+                    if stage not in stages:
+                        stages[stage] = []
+                    stages[stage].append(p)
+                
+                for i, (stage_name, stage_points) in enumerate(stages.items()):
+                    stage_points.sort(key=lambda p: p['x'])
+                    
+                    fig.add_trace(go.Scatter(
+                        x=[p['x'] for p in stage_points],
+                        y=[p['y'] for p in stage_points],
+                        mode='markers+lines',
+                        name=f'{stage_name} ({sample_type})',
+                        marker=dict(size=10, color=colors[i % len(colors)]),
+                        line=dict(width=2, color=colors[i % len(colors)]),
+                        hovertext=[f"{p['series']}: {p['actual']:.2f}/{p['reference']:.2f}" for p in stage_points],
+                        hoverinfo='text+x+y'
+                    ))
+        
+        # Настройка стиля графика (светлая тема)
         fig.update_layout(
-            plot_bgcolor='rgba(10, 10, 20, 0.9)',
-            paper_bgcolor='rgba(10, 10, 20, 0.7)',
-            font=dict(color='#ffffff', family='Arial, sans-serif'),
+            plot_bgcolor='white',
+            paper_bgcolor='white',
+            font=dict(color='#2d3748', family='Arial, sans-serif'),
             title=dict(
-                text=f'{y_axis} vs {x_axis}',
-                font=dict(size=20, color='#00ff88')
+                text=f'{y_axis} vs {x_axis} - {analysis_mode.title()} Mode',
+                font=dict(size=20, color='#2b6cb0')
             ),
             xaxis=dict(
-                title=dict(text=x_axis, font=dict(size=14, color='#ffffff')),
-                gridcolor='rgba(255, 255, 255, 0.1)',
-                zerolinecolor='rgba(255, 255, 255, 0.3)'
+                title=dict(text=x_axis, font=dict(size=14, color='#4a5568')),
+                gridcolor='#e2e8f0',
+                zerolinecolor='#cbd5e0',
+                linecolor='#cbd5e0',
+                mirror=True
             ),
             yaxis=dict(
-                title=dict(text=y_axis, font=dict(size=14, color='#ffffff')),
-                gridcolor='rgba(255, 255, 255, 0.1)',
-                zerolinecolor='rgba(255, 255, 255, 0.3)'
+                title=dict(text=y_axis, font=dict(size=14, color='#4a5568')),
+                gridcolor='#e2e8f0',
+                zerolinecolor='#cbd5e0',
+                linecolor='#cbd5e0',
+                mirror=True
             ),
             hovermode='closest',
-            showlegend='status_id' in df.columns,
+            showlegend=True,
             legend=dict(
-                font=dict(color='#ffffff'),
-                bgcolor='rgba(0, 0, 0, 0.5)'
+                font=dict(color='#4a5568'),
+                bgcolor='rgba(255, 255, 255, 0.8)',
+                bordercolor='#e2e8f0'
             ),
-            margin=dict(l=50, r=50, t=50, b=50)
+            margin=dict(l=50, r=50, t=80, b=50)
         )
+        
+        # Рассчитываем статистику
+        all_x = []
+        all_y = []
+        for series_info in plot_data:
+            for point in series_info['data']:
+                all_x.append(point['x'])
+                all_y.append(point['y'])
+        
+        if all_x and all_y:
+            # Вычисляем R²
+            if len(all_x) > 1:
+                correlation_matrix = np.corrcoef(all_x, all_y)
+                r_squared = correlation_matrix[0, 1] ** 2
+            else:
+                r_squared = 0
+            
+            statistics = {
+                'series_count': len(plot_data),
+                'total_points': len(all_x),
+                'x_mean': float(np.mean(all_x)),
+                'y_mean': float(np.mean(all_y)),
+                'x_std': float(np.std(all_x)),
+                'y_std': float(np.std(all_y)),
+                'r_squared': float(r_squared)
+            }
+        else:
+            statistics = {
+                'series_count': 0,
+                'total_points': 0,
+                'x_mean': None,
+                'y_mean': None,
+                'x_std': None,
+                'y_std': None,
+                'r_squared': None
+            }
         
         # Конвертируем в JSON
         graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
         
-        print(f"Generated plot JSON length: {len(graphJSON)}")
-        
         return jsonify({
             "plot": graphJSON,
-            "statistics": {
-                "total_points": len(df),
-                "x_mean": float(df[x_axis].mean()),
-                "y_mean": float(df[y_axis].mean()),
-                "x_std": float(df[x_axis].std()),
-                "y_std": float(df[y_axis].std())
-            }
+            "statistics": statistics
         })
         
     except Exception as e:
@@ -2506,12 +2777,16 @@ def create_plot():
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/data/sample', methods=['GET'])
-def get_data_sample():
-    """API для получения образца данных"""
-    data = load_data()
-    sample = data["probes"]
-    return jsonify({"sample": sample})
+@app.route('/api/data/sample')
+def get_sample_data():
+    """Получение образца данных"""
+    try:
+        db_data = load_data()
+        return jsonify({"sample": db_data["probes"] if db_data["probes"] else []})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
 
 @app.route('/api/add_series', methods=['POST'])
 def add_series():

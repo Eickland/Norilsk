@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scientific Data Visualizer | Probe Analysis</title>
+    <title>Scientific Data Visualizer | Series Analysis</title>
     <script src="https://cdn.plot.ly/plotly-2.24.1.min.js" charset="utf-8"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/plot.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Exo+2:wght@300;400;500&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
         <header class="header">
             <div class="logo">
                 <h1><span class="logo-sci">SCI</span><span class="logo-data">DATA</span> <span class="logo-viz">VIZ</span></h1>
-                <p class="subtitle">Interactive Probe Data Analysis System</p>
+                <p class="subtitle">Series-based Probe Analysis System</p>
             </div>
             <div class="system-status">
                 <div class="status-indicator active"></div>
@@ -32,6 +32,34 @@
                 </div>
                 
                 <div class="controls-grid">
+                    <!-- Режим анализа -->
+                    <div class="control-group">
+                        <label for="analysis-mode" class="control-label">
+                            <span class="axis-icon">📊</span> ANALYSIS MODE
+                        </label>
+                        <select id="analysis-mode" class="control-select">
+                            <option value="single">Single Series</option>
+                            <option value="multiple">Multiple Series</option>
+                            <option value="average">Average of Series</option>
+                            <option value="percentage">Percentage Analysis</option>
+                        </select>
+                    </div>
+
+                    <!-- Селекторы серий -->
+                    <div class="control-group" id="series-selector-group">
+                        <label for="series-select" class="control-label">
+                            <span class="axis-icon">📁</span> SERIES
+                        </label>
+                        <select id="series-select" class="control-select" multiple size="4">
+                            <option value="">Loading series...</option>
+                        </select>
+                        <div class="series-controls">
+                            <button id="select-all-series" class="small-btn">All</button>
+                            <button id="clear-series" class="small-btn">Clear</button>
+                        </div>
+                    </div>
+
+                    <!-- Селекторы осей -->
                     <div class="control-group">
                         <label for="x-axis" class="control-label">
                             <span class="axis-icon">↔</span> X-AXIS
@@ -48,6 +76,53 @@
                         <select id="y-axis" class="control-select">
                             <option value="">Select Y Axis</option>
                         </select>
+                    </div>
+
+                    <!-- Дополнительные опции для процентного анализа -->
+                    <div id="percentage-options" class="control-group" style="display: none;">
+                        <label for="reference-type" class="control-label">
+                            <span class="axis-icon">⚖️</span> REFERENCE TYPE
+                        </label>
+                        <select id="reference-type" class="control-select">
+                            <option value="start">Start (Input)</option>
+                            <option value="st2">Stage 2</option>
+                            <option value="st3">Stage 3</option>
+                            <option value="st4">Stage 4</option>
+                            <option value="st5">Stage 5</option>
+                            <option value="st6">Stage 6</option>
+                        </select>
+                        
+                        <label for="sample-type" class="control-label">
+                            <span class="axis-icon">🧪</span> SAMPLE TYPE
+                        </label>
+                        <select id="sample-type" class="control-select">
+                            <option value="A">Liquid (A)</option>
+                            <option value="B">Solid (B)</option>
+                            <option value="D">D-type</option>
+                            <option value="E">E-type</option>
+                            <option value="G">G-type</option>
+                        </select>
+                    </div>
+
+                    <!-- Фильтры -->
+                    <div class="control-group">
+                        <label class="control-label">
+                            <span class="axis-icon">🔍</span> FILTERS
+                        </label>
+                        <div class="filter-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="filter-zero" checked>
+                                <span>Hide zero values</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="filter-liquid" checked>
+                                <span>Show Liquid (A)</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="filter-solid" checked>
+                                <span>Show Solid (B)</span>
+                            </label>
+                        </div>
                     </div>
                     
                     <div class="control-group full-width">
@@ -66,7 +141,8 @@
                 <div class="viz-header">
                     <h2><span class="viz-icon">📈</span> DATA VISUALIZATION</h2>
                     <div class="data-info">
-                        <span id="data-count">0</span> probes loaded
+                        <span id="data-count">0</span> probes loaded | 
+                        <span id="series-count">0</span> series
                     </div>
                 </div>
                 
@@ -80,6 +156,10 @@
                 
                 <div class="plot-stats">
                     <div class="stat-card">
+                        <div class="stat-label">Series Count</div>
+                        <div id="series-stats" class="stat-value">-</div>
+                    </div>
+                    <div class="stat-card">
                         <div class="stat-label">X Mean</div>
                         <div id="x-mean" class="stat-value">-</div>
                     </div>
@@ -88,12 +168,8 @@
                         <div id="y-mean" class="stat-value">-</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">X Std Dev</div>
-                        <div id="x-std" class="stat-value">-</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Y Std Dev</div>
-                        <div id="y-std" class="stat-value">-</div>
+                        <div class="stat-label">R²</div>
+                        <div id="r-squared" class="stat-value">-</div>
                     </div>
                 </div>
             </section>
@@ -101,38 +177,54 @@
             <!-- Информационная панель -->
             <section class="info-panel">
                 <div class="info-header">
-                    <h2><span class="info-icon">ℹ️</span> SYSTEM INFO</h2>
+                    <h2><span class="info-icon">ℹ️</span> SERIES INFO</h2>
                 </div>
                 
                 <div class="info-content">
                     <div class="info-card">
-                        <h3>Available Fields</h3>
-                        <div id="fields-list" class="fields-list">
-                            Loading available fields...
+                        <h3>Available Series</h3>
+                        <div id="series-list" class="fields-list">
+                            Loading series data...
                         </div>
                     </div>
                     
                     <div class="info-card">
-                        <h3>Blacklisted Fields</h3>
-                        <div class="blacklist">
-                            <span class="blacklist-item">Описание</span>
-                            <span class="blacklist-item">is_solid</span>
-                            <span class="blacklist-item">id</span>
-                            <span class="blacklist-item">last_normalized</span>
-                            <span class="blacklist-item">status_id</span>
-                            <span class="blacklist-item">is_solution</span>
-                            <span class="blacklist-item">name</span>
-                            <span class="blacklist-item">tags</span>
+                        <h3>Series Structure</h3>
+                        <div class="series-structure">
+                            <div class="stage-item">
+                                <span class="stage-name">Input:</span>
+                                <span class="stage-probes">T2-{m}A{n}, T2-{m}B{n}</span>
+                            </div>
+                            <div class="stage-item">
+                                <span class="stage-name">Stage 2:</span>
+                                <span class="stage-probes">T2-L{m}A{n}, T2-L{m}B{n}</span>
+                            </div>
+                            <div class="stage-item">
+                                <span class="stage-name">Stage 3:</span>
+                                <span class="stage-probes">T2-L{m}P{m}A{n}, T2-L{m}P{m}B{n}</span>
+                            </div>
+                            <div class="stage-item">
+                                <span class="stage-name">Stage 4:</span>
+                                <span class="stage-probes">T2-L{m}P{m}F{m}A{n}, T2-L{m}P{m}F{m}B{n}, T2-L{m}P{m}F{m}D{n}</span>
+                            </div>
+                            <div class="stage-item">
+                                <span class="stage-name">Stage 5:</span>
+                                <span class="stage-probes">T2-L{m}P{m}F{m}N{m}A{n}, T2-L{m}P{m}F{m}N{m}B{n}</span>
+                            </div>
+                            <div class="stage-item">
+                                <span class="stage-name">Stage 6:</span>
+                                <span class="stage-probes">T2-L{m}P{m}F{m}N{m}E{n}, T2-L{m}P{m}F{m}N{m}G{n}</span>
+                            </div>
                         </div>
                     </div>
                     
                     <div class="info-card">
-                        <h3>Instructions</h3>
+                        <h3>Analysis Modes</h3>
                         <ol class="instructions">
-                            <li>Select X and Y axes from available numeric fields</li>
-                            <li>Click GENERATE PLOT to visualize data</li>
-                            <li>Hover over points to see probe details</li>
-                            <li>Use plot controls to zoom/pan</li>
+                            <li><strong>Single Series:</strong> Plot data for one selected series</li>
+                            <li><strong>Multiple Series:</strong> Compare multiple series</li>
+                            <li><strong>Average of Series:</strong> Calculate mean across series</li>
+                            <li><strong>Percentage:</strong> Calculate % relative to reference</li>
                         </ol>
                     </div>
                 </div>
@@ -142,11 +234,12 @@
         <!-- Футер -->
         <footer class="footer">
             <div class="footer-content">
-                <p class="footer-text">Data Visualizer v1.0</p>
+                <p class="footer-text">Series Analyzer v2.0</p>
+                <p class="footer-subtext">Supports T2-{m}C{n} series analysis</p>
             </div>
             <div class="footer-status">
                 <div class="pulse"></div>
-                <span>DATA STREAM: ACTIVE</span>
+                <span>MULTI-SERIES MODE</span>
             </div>
         </footer>
     </div>
