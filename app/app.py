@@ -2373,55 +2373,85 @@ def extract_series_info() -> Dict:
     series_dict = {}
     root_pattern = re.compile(r"^T2-(\d+)C(\d+)$")
     
+    patterns = {
+        'start_A': re.compile(r"^T2-(\d+)A(\d+)$"),
+        'start_B': re.compile(r"^T2-(\d+)B(\d+)$"),
+        'start_C': re.compile(r"^T2-(\d+)C(\d+)$"),
+        'st2_A': re.compile(r"^T2-L(\d+)A(\d+)$"),
+        'st2_B': re.compile(r"^T2-L(\d+)B(\d+)$"),
+        'st3_A': re.compile(r"^T2-L(\d+)P\1A(\d+)$"),  # \1 проверяет что номер методики одинаков
+        'st3_B': re.compile(r"^T2-L(\d+)P\1B(\d+)$"),
+        'st3_C': re.compile(r"^T2-L(\d+)P\1C(\d+)$"),
+        'st4_A': re.compile(r"^T2-L(\d+)P\1F\1A(\d+)$"),
+        'st4_B': re.compile(r"^T2-L(\d+)P\1F\1B(\d+)$"),
+        'st4_D': re.compile(r"^T2-L(\d+)P\1F\1D(\d+)$")
+    }    
+
+    # Проходим по всем пробам и определяем их тип
     for probe in probes:
-        match = root_pattern.match(probe['name'])
-        if match:
-            m = match.group(1)  # Номер методики
-            n = match.group(2)  # Номер повторности
+        probe_name = probe.get('name', '')
+        if not probe_name:
+            continue
+        
+        m = None
+        n = None
+        probe_type = None
+        
+        # Определяем тип пробы
+        for pattern_name, pattern in patterns.items():
+            match = pattern.match(probe_name)
+            if match:
+                probe_type = pattern_name
+                m = match.group(1)  # Номер методики
+                n = match.group(2)  # Номер повторности
+                break
+        
+        if not probe_type or not m or not n:
+            continue
             
-            series_key = f"T2-{m}C{n}"
-            
-            if series_key not in series_dict:
-                series_dict[series_key] = {
-                    'method': m,
-                    'replicate': n,
-                    'probes': {},
-                    'stages': {}
-                }
-            
-            # Определяем стадию и тип пробы
-            name = probe['name']
-            print(name)
-            if f"T2-{m}A{n}" in name or f"T2-{m}B{n}" in name:
-                stage = 'start'
-                sample_type = 'A' if 'A' in name else 'B'
-            elif f"T2-L{m}A{n}" in name or f"T2-L{m}B{n}" in name:
-                stage = 'st2'
-                sample_type = 'A' if 'A' in name else 'B'
-            elif f"T2-L{m}P{m}A{n}" in name or f"T2-L{m}P{m}B{n}" in name:
-                stage = 'st3'
-                sample_type = 'A' if 'A' in name else 'B'
-            elif f"T2-L{m}P{m}F{m}A{n}" in name or f"T2-L{m}P{m}F{m}B{n}" in name or f"T2-L{m}P{m}F{m}D{n}" in name:
-                stage = 'st4'
-                if 'A' in name:
-                    sample_type = 'A'
-                elif 'B' in name:
-                    sample_type = 'B'
-                else:
-                    sample_type = 'D'
-            elif f"T2-L{m}P{m}F{m}N{m}A{n}" in name or f"T2-L{m}P{m}F{m}N{m}B{n}" in name:
-                stage = 'st5'
-                sample_type = 'A' if 'A' in name else 'B'
-            elif f"T2-L{m}P{m}F{m}N{m}E{n}" in name or f"T2-L{m}P{m}F{m}N{m}G{n}" in name:
-                stage = 'st6'
-                sample_type = 'E' if 'E' in name else 'G'
+        series_key = f"T2-{m}C{n}"
+        
+        if series_key not in series_dict:
+            series_dict[series_key] = {
+                'method': m,
+                'replicate': n,
+                'probes': {},
+                'stages': {}
+            }
+        
+        # Определяем стадию и тип пробы
+        name = probe['name']
+        print(name)
+        if f"T2-{m}A{n}" in name or f"T2-{m}B{n}" in name:
+            stage = 'start'
+            sample_type = 'A' if 'A' in name else 'B'
+        elif f"T2-L{m}A{n}" in name or f"T2-L{m}B{n}" in name:
+            stage = 'st2'
+            sample_type = 'A' if 'A' in name else 'B'
+        elif f"T2-L{m}P{m}A{n}" in name or f"T2-L{m}P{m}B{n}" in name:
+            stage = 'st3'
+            sample_type = 'A' if 'A' in name else 'B'
+        elif f"T2-L{m}P{m}F{m}A{n}" in name or f"T2-L{m}P{m}F{m}B{n}" in name or f"T2-L{m}P{m}F{m}D{n}" in name:
+            stage = 'st4'
+            if 'A' in name:
+                sample_type = 'A'
+            elif 'B' in name:
+                sample_type = 'B'
             else:
-                continue
-            
-            series_dict[series_key]['probes'][name] = probe
-            if stage not in series_dict[series_key]['stages']:
-                series_dict[series_key]['stages'][stage] = {}
-            series_dict[series_key]['stages'][stage][sample_type] = probe
+                sample_type = 'D'
+        elif f"T2-L{m}P{m}F{m}N{m}A{n}" in name or f"T2-L{m}P{m}F{m}N{m}B{n}" in name:
+            stage = 'st5'
+            sample_type = 'A' if 'A' in name else 'B'
+        elif f"T2-L{m}P{m}F{m}N{m}E{n}" in name or f"T2-L{m}P{m}F{m}N{m}G{n}" in name:
+            stage = 'st6'
+            sample_type = 'E' if 'E' in name else 'G'
+        else:
+            continue
+        
+        series_dict[series_key]['probes'][name] = probe
+        if stage not in series_dict[series_key]['stages']:
+            series_dict[series_key]['stages'][stage] = {}
+        series_dict[series_key]['stages'][stage][sample_type] = probe
     
     return series_dict
 
