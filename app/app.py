@@ -397,6 +397,7 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
 
         # Плотность суспензии Ca(OH)2 (г/мл) - предположительное значение
         CAOH2_SUSPENSION_DENSITY = 1.2
+        
 
         # Проходим по всем пробам и определяем их тип
         for probe in probes:
@@ -503,32 +504,37 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     
                     # Получаем необходимые значения из пробы C
                     mass_fraction_caoh2 = probe_st3_C.get('Массовая доля Ca(OH)2')  # от 0 до 1
-                    suspension_volume = probe_st3_C.get('Объем суспензии Ca(OH)2')  # мл
+                    suspension_volume_caoh2 = probe_st3_C.get('Объем суспензии Ca(OH)2')  # мл
                     iron_pellets_mass = probe_st3_C.get('Масса железных окатышей (g)')
+                    
+                    mass_fraction_caco3 = probe_st3_C.get('Массовая доля CaCO3')  # от 0 до 1
+                    suspension_volume_caco3 = probe_st3_C.get('Объем суспензии CaCO3')  # мл                    
                     
                     # Получаем sample_mass из предыдущей стадии
                     st2_mass = probe_st2_B.get('sample_mass')
                     
                     if (st2_mass is not None and 
                         mass_fraction_caoh2 is not None and 
-                        suspension_volume is not None and 
+                        suspension_volume_caoh2 is not None and 
                         iron_pellets_mass is not None):
                         
                         # Рассчитываем массу суспензии
-                        suspension_mass = suspension_volume * CAOH2_SUSPENSION_DENSITY
+                        suspension_mass_caoh2 = suspension_volume_caoh2 * CAOH2_SUSPENSION_DENSITY
+                        suspension_mass_caco3 = suspension_volume_caco3 * 1.2
                         
                         # Рассчитываем массу твердой фазы Ca(OH)2 в суспензии
-                        caoh2_mass = suspension_mass * mass_fraction_caoh2
+                        caoh2_mass = suspension_mass_caoh2 * mass_fraction_caoh2
+                        caco3_mass = suspension_mass_caco3 * mass_fraction_caco3
                         
                         # sample_mass = sample_mass(T2-L{m}B{n}) + 
                         # 2.32 * масса_твердой_фазы_Ca(OH)2 + Масса железных окатышей (g)
                         new_mass = (st2_mass + 
                                 2.32 * caoh2_mass + 
-                                iron_pellets_mass)
+                                iron_pellets_mass + 3.03*caco3_mass)
                         
                         probe['sample_mass'] = new_mass
                         probe['mass_calculation_note'] = (
-                            f"{st2_mass} + 2.32*({suspension_volume}мл*{CAOH2_SUSPENSION_DENSITY}г/мл*{mass_fraction_caoh2}) + {iron_pellets_mass}"
+                            f"{st2_mass} + 2.32*({suspension_volume_caoh2}мл*{CAOH2_SUSPENSION_DENSITY}г/мл*{mass_fraction_caoh2}) + {iron_pellets_mass}"
                         )
                         stats['calculated_fields'] += 1
                         series_updated = True
@@ -546,20 +552,23 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     
                     # Получаем данные суспензии из пробы C
                     mass_fraction_caoh2 = probe_st3_C.get('Массовая доля Ca(OH)2')  # от 0 до 1
-                    suspension_volume = probe_st3_C.get('Объем суспензии Ca(OH)2')  # мл
+                    suspension_volume_caoh2 = probe_st3_C.get('Объем суспензии Ca(OH)2')  # мл
+                    mass_fraction_caco3 = probe_st3_C.get('Массовая доля CaCO3')  # от 0 до 1
+                    suspension_volume_caco3 = probe_st3_C.get('Объем суспензии CaCO3')  # мл                       
                     
                     if (st2_A_volume is not None and 
                         mass_fraction_caoh2 is not None and 
-                        suspension_volume is not None):
+                        suspension_volume_caoh2 is not None):
                         
                         # Рассчитываем массу суспензии
-                        suspension_mass = suspension_volume * CAOH2_SUSPENSION_DENSITY
+                        suspension_mass_caoh2 = suspension_volume_caoh2 * CAOH2_SUSPENSION_DENSITY
+                        suspension_mass_caco3 = suspension_volume_caco3 * 1.2                        
                         
                         # Рассчитываем массу твердой фазы Ca(OH)2
-                        caoh2_solid_mass = suspension_mass * mass_fraction_caoh2
-                        
+                        caoh2_solid_mass = suspension_mass_caoh2 * mass_fraction_caoh2
+                        caco3_solid_mass = suspension_mass_caco3 * mass_fraction_caco3                        
                         # Рассчитываем массу жидкой фазы суспензии
-                        liquid_phase_mass = suspension_mass - caoh2_solid_mass
+                        liquid_phase_mass = suspension_mass_caoh2 - caoh2_solid_mass + suspension_mass_caco3 - caco3_solid_mass
                         
                         # Упрощенно считаем объем жидкой фазы (предполагаем плотность ~1 г/мл)
                         liquid_phase_volume = liquid_phase_mass  # ~мл
