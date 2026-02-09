@@ -176,7 +176,7 @@ def process_metal_samples_csv(file_path, output_path=None):
         if match:
             return match.group(1)
         
-        return clean_name
+        return clean_name+'_MS'
     
     # Переименовываем столбцы
     new_columns = {col: normalize_column_name(col) for col in df.columns}

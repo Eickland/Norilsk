@@ -3,7 +3,7 @@ from datetime import datetime
 import json
 import os
 from werkzeug.utils import secure_filename
-from test_ISP_AES import process_icp_aes_data
+from ISP_AES import process_icp_aes_data
 from ISP_MS import process_metal_samples_csv, expand_sample_code
 import pandas as pd
 from version_control import VersionControlSystem
@@ -70,7 +70,10 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
        m(Me) = V_aliq(l) * [Me] * 1000 * Масса твердого(g) / Масса навески(mg)
        Добавляется тег "ошибка расчета твердой пробы" при ошибке
     
-    Прямо изменяет базу данных, добавляя поля mFe, mCu и т.д.
+    Теперь учитываются две концентрации: из ИСП АЭС (с суффиксом '_AES') 
+    и из ИСП МС (с суффиксом '_MS')
+    
+    Прямо изменяет базу данных, добавляя поля mFe_AES, mCu_AES, mFe_MS и т.д.
     
     Args:
         data_file: Путь к JSON файлу с данными
@@ -99,7 +102,7 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
         
         # Создаем версию перед перерасчетом
         version_info = vcs.create_version(
-            description="Перерасчет концентраций металлов в абсолютную массу",
+            description="Перерасчет концентраций металлов в абсолютную массу (AES и MS)",
             author="system",
             change_type="metal_mass_recalculation"
         )
@@ -110,30 +113,113 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
             'liquid_probes': 0,           # Пробы с разбавлением
             'solid_probes': 0,            # Пробы с массой твердого
             'elements_calculated': 0,     # Всего рассчитанных полей mX
+            'elements_aes_calculated': 0, # Поля mX_AES
+            'elements_ms_calculated': 0,  # Поля mX_MS
             'probes_modified': 0,         # Проб, в которых что-то изменилось
             'errors': 0,                  # Количество ошибок
             'liquid_errors': 0,           # Ошибки в жидких пробах
             'solid_errors': 0,            # Ошибки в твердых пробах
-            'new_mass_fields': []         # Созданные поля масс
+            'new_mass_fields': [],        # Созданные поля масс
+            'new_mass_fields_aes': [],    # Поля масс AES
+            'new_mass_fields_ms': []      # Поля масс MS
         }
         
         # Список химических элементов для расчета (из всех проб)
-        metal_elements = set()
+        # Теперь ищем элементы с суффиксами _AES и _MS
+        metal_elements_aes = set()
+        metal_elements_ms = set()
+        metal_elements_base = set()  # Для совместимости со старыми полями
+        
         for probe in probes:
             for key in probe.keys():
-                # Проверяем, является ли поле химическим элементом
-                if (len(key) <= 3 and 
-                    key[0].isupper() and 
-                    key not in ['V', 'Ca', 'Co', 'Cu', 'Fe', 'Ni', 'Pd', 'Pt', 'Rh'] and
-                    key not in BLACKLIST_FIELDS):
-                    # Проверяем остальные символы (если есть)
+                # Проверяем на AES элементы
+                if key.endswith('_AES'):
+                    base_element = key[:-4]  # Убираем '_AES'
+                    if (len(base_element) <= 3 and 
+                        base_element[0].isupper() and 
+                        base_element not in BLACKLIST_FIELDS and
+                        not base_element.endswith('_MS')):
+                        metal_elements_aes.add(base_element)
+                
+                # Проверяем на MS элементы
+                elif key.endswith('_MS'):
+                    base_element = key[:-3]  # Убираем '_MS'
+                    if (len(base_element) <= 3 and 
+                        base_element[0].isupper() and 
+                        base_element not in BLACKLIST_FIELDS and
+                        not base_element.endswith('_AES')):
+                        metal_elements_ms.add(base_element)
+                
+                # Для совместимости со старыми полями без суффиксов
+                elif (len(key) <= 3 and 
+                      key[0].isupper() and 
+                      key not in ['V', 'Ca', 'Co', 'Cu', 'Fe', 'Ni', 'Pd', 'Pt', 'Rh'] and
+                      key not in BLACKLIST_FIELDS):
                     if all(c.islower() for c in key[1:]):
-                        metal_elements.add(key)
+                        metal_elements_base.add(key)
         
         # Добавляем основные элементы, которые точно есть
         basic_elements = ['Fe', 'Cu', 'Ni', 'Ca', 'Co', 'Pd', 'Pt', 'Rh', 
                          'Al', 'Mg', 'Zn', 'Pb', 'Cr', 'Mn', 'Ag', 'Au', 'Ti']
-        metal_elements.update(basic_elements)
+        metal_elements_aes.update(basic_elements)
+        metal_elements_ms.update(basic_elements)
+        metal_elements_base.update(basic_elements)
+        
+        # Функция для расчета массы
+        def calculate_mass_for_element(element, concentration_field, mass_field_prefix, probe, probe_name, 
+                                       dilution_float=None, volume_float=None, 
+                                       aliquot_float=None, solid_mass_float=None, sample_weight_float=None):
+            """Рассчитывает массу для конкретного элемента и метода анализа"""
+            
+            # Проверяем наличие концентрации
+            if concentration_field not in probe or probe[concentration_field] in [None, 'null', '']:
+                return False, None
+            
+            try:
+                concentration = float(probe[concentration_field])
+                
+                # Расчет в зависимости от типа пробы
+                if dilution_float is not None and volume_float is not None:
+                    # Жидкая проба
+                    if "L" not in probe_name:
+                        mass = concentration * dilution_float * ((volume_float - probe.get('Масса твердого (g)', 0)/3) / 1000.0)
+                    else:
+                        mass = concentration * dilution_float * volume_float / 1000.0
+                
+                elif aliquot_float is not None and solid_mass_float is not None and sample_weight_float is not None:
+                    # Твердая проба
+                    if solid_mass_float == 0:
+                        return False, None
+                    mass = (aliquot_float * concentration * sample_weight_float) / solid_mass_float
+                
+                else:
+                    return False, None
+                
+                # Формируем имя поля для массы
+                mass_field = f'm{mass_field_prefix}'
+                
+                # Сохраняем результат
+                probe[mass_field] = float(mass)
+                
+                # Статистика по типу анализа
+                if '_AES' in concentration_field:
+                    stats['elements_aes_calculated'] += 1
+                    if mass_field not in stats['new_mass_fields_aes']:
+                        stats['new_mass_fields_aes'].append(mass_field)
+                elif '_MS' in concentration_field:
+                    stats['elements_ms_calculated'] += 1
+                    if mass_field not in stats['new_mass_fields_ms']:
+                        stats['new_mass_fields_ms'].append(mass_field)
+                else:
+                    stats['elements_calculated'] += 1
+                
+                if mass_field not in stats['new_mass_fields']:
+                    stats['new_mass_fields'].append(mass_field)
+                
+                return True, mass_field
+                
+            except (ValueError, TypeError, ZeroDivisionError):
+                return False, None
         
         # Перебираем все пробы
         for probe in probes:
@@ -165,29 +251,40 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
                         if volume_ml and volume_ml != 'null':
                             volume_float = float(volume_ml)
                             
-                            # Расчет для каждого металла, который есть в пробе
-                            for element in metal_elements:
-                                if element in probe and probe[element] not in [None, 'null', '']:
-                                    try:
-                                        concentration = float(probe[element])
-                                        
-                                        # Расчет массы металла
-                                        if "L" not in probe_name:
-                                            mass = concentration * dilution_float * ((volume_float - probe.get('Масса твердого (g)')/3) / 1000.0)
-                                            
-                                        else:
-                                             mass = concentration * dilution_float * volume_float / 1000.0
-                                        
-                                        # Сохраняем результат
-                                        mass_field = f'm{element}'
-                                        probe[mass_field] = float(mass)
+                            # Расчет для AES элементов
+                            for element in metal_elements_aes:
+                                # Проверяем наличие поля _AES
+                                element_aes = f"{element}_AES"
+                                success, mass_field = calculate_mass_for_element(
+                                    element, element_aes, element_aes, probe, probe_name,
+                                    dilution_float=dilution_float, volume_float=volume_float
+                                )
+                                if success:
+                                    mass_fields_added.append(mass_field)
+                                    probe_modified = True
+                            
+                            # Расчет для MS элементов
+                            for element in metal_elements_ms:
+                                # Проверяем наличие поля _MS
+                                element_ms = f"{element}_MS"
+                                success, mass_field = calculate_mass_for_element(
+                                    element, element_ms, element_ms, probe, probe_name,
+                                    dilution_float=dilution_float, volume_float=volume_float
+                                )
+                                if success:
+                                    mass_fields_added.append(mass_field)
+                                    probe_modified = True
+                            
+                            # Расчет для старых элементов без суффикса (для совместимости)
+                            for element in metal_elements_base:
+                                if element in probe:
+                                    success, mass_field = calculate_mass_for_element(
+                                        element, element, element, probe, probe_name,
+                                        dilution_float=dilution_float, volume_float=volume_float
+                                    )
+                                    if success:
                                         mass_fields_added.append(mass_field)
-                                        stats['elements_calculated'] += 1
                                         probe_modified = True
-                                        
-                                    except (ValueError, TypeError):
-                                        # Пропускаем этот элемент, если нет значения
-                                        continue
                             
                             stats['liquid_probes'] += 1
                             
@@ -216,26 +313,46 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
                             if sample_weight_float == 0:
                                 raise ValueError("Масса навески не может быть нулевой")
                             
-                            # Расчет для каждого металла, который есть в пробе
-                            for element in metal_elements:
-                                if element in probe and probe[element] not in [None, 'null', '']:
-                                    try:
-                                        concentration = float(probe[element])
-                                        
-                                        # Расчет массы металла
-                                        mass = (aliquot_float * concentration * 
-                                                sample_weight_float) / solid_mass_float
-                                        
-                                        # Сохраняем результат
-                                        mass_field = f'm{element}'
-                                        probe[mass_field] = float(mass)
+                            # Расчет для AES элементов
+                            for element in metal_elements_aes:
+                                # Проверяем наличие поля _AES
+                                element_aes = f"{element}_AES"
+                                success, mass_field = calculate_mass_for_element(
+                                    element, element_aes, element_aes, probe, probe_name,
+                                    aliquot_float=aliquot_float, 
+                                    solid_mass_float=solid_mass_float, 
+                                    sample_weight_float=sample_weight_float
+                                )
+                                if success:
+                                    mass_fields_added.append(mass_field)
+                                    probe_modified = True
+                            
+                            # Расчет для MS элементов
+                            for element in metal_elements_ms:
+                                # Проверяем наличие поля _MS
+                                element_ms = f"{element}_MS"
+                                success, mass_field = calculate_mass_for_element(
+                                    element, element_ms, element_ms, probe, probe_name,
+                                    aliquot_float=aliquot_float, 
+                                    solid_mass_float=solid_mass_float, 
+                                    sample_weight_float=sample_weight_float
+                                )
+                                if success:
+                                    mass_fields_added.append(mass_field)
+                                    probe_modified = True
+                            
+                            # Расчет для старых элементов без суффикса (для совместимости)
+                            for element in metal_elements_base:
+                                if element in probe:
+                                    success, mass_field = calculate_mass_for_element(
+                                        element, element, element, probe, probe_name,
+                                        aliquot_float=aliquot_float, 
+                                        solid_mass_float=solid_mass_float, 
+                                        sample_weight_float=sample_weight_float
+                                    )
+                                    if success:
                                         mass_fields_added.append(mass_field)
-                                        stats['elements_calculated'] += 1
                                         probe_modified = True
-                                        
-                                    except (ValueError, TypeError):
-                                        # Пропускаем этот элемент, если нет значения
-                                        continue
                             
                             stats['solid_probes'] += 1
                             
@@ -258,13 +375,13 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
             if probe_modified:
                 stats['probes_modified'] += 1
                 
-                # Записываем поля масс, которые были добавлены
-                for field in mass_fields_added:
-                    if field not in stats['new_mass_fields']:
-                        stats['new_mass_fields'].append(field)
-                
                 # Добавляем метку времени последнего пересчета
                 probe['last_mass_recalculation'] = datetime.now().isoformat()
+        
+        # Обновляем общее количество рассчитанных полей
+        stats['elements_calculated'] = (stats['elements_calculated'] + 
+                                       stats['elements_aes_calculated'] + 
+                                       stats['elements_ms_calculated'])
         
         # Обновляем метаданные
         if 'metadata' not in data:
@@ -281,7 +398,11 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
         
         # Создаем финальную версию
         vcs.create_version(
-            description=f"Перерасчет массы металлов: жидких - {stats['liquid_probes']}, твердых - {stats['solid_probes']}, полей mX - {stats['elements_calculated']}, ошибок - {stats['errors']}",
+            description=f"Перерасчет массы металлов: жидких - {stats['liquid_probes']}, "
+                       f"твердых - {stats['solid_probes']}, "
+                       f"полей mX_AES - {stats['elements_aes_calculated']}, "
+                       f"полей mX_MS - {stats['elements_ms_calculated']}, "
+                       f"ошибок - {stats['errors']}",
             author="system",
             change_type="metal_mass_recalculation_complete"
         )
@@ -292,16 +413,20 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
             message_parts.append(f"жидких проб: {stats['liquid_probes']}")
         if stats['solid_probes'] > 0:
             message_parts.append(f"твердых проб: {stats['solid_probes']}")
-        if stats['elements_calculated'] > 0:
-            message_parts.append(f"полей mX: {stats['elements_calculated']}")
+        if stats['elements_aes_calculated'] > 0:
+            message_parts.append(f"полей mX_AES: {stats['elements_aes_calculated']}")
+        if stats['elements_ms_calculated'] > 0:
+            message_parts.append(f"полей mX_MS: {stats['elements_ms_calculated']}")
         if stats['errors'] > 0:
             message_parts.append(f"ошибок: {stats['errors']}")
         
         message = "Перерасчет массы металлов: " + ", ".join(message_parts) if message_parts else "Изменений не требуется"
         
         # Добавляем информацию о созданных полях
-        if stats['new_mass_fields']:
-            message += f". Созданы поля: {', '.join(sorted(stats['new_mass_fields']))}"
+        if stats['new_mass_fields_aes']:
+            message += f". Созданы поля AES: {', '.join(sorted(stats['new_mass_fields_aes']))}"
+        if stats['new_mass_fields_ms']:
+            message += f". Созданы поля MS: {', '.join(sorted(stats['new_mass_fields_ms']))}"
         
         return {
             'success': True,
@@ -319,10 +444,12 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
             'liquid_probes': 0,
             'solid_probes': 0,
             'elements_calculated': 0,
+            'elements_aes_calculated': 0,
+            'elements_ms_calculated': 0,
             'errors': 1,
             'probes_modified': 0
         }
-
+        
 def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
     """
     Рассчитывает поля для проб в сериях согласно новой логике.
@@ -393,7 +520,8 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
             'st3_C': re.compile(r"^T2-L(\d+)P\1C(\d+)$"),
             'st4_A': re.compile(r"^T2-L(\d+)P\1F\1A(\d+)$"),
             'st4_B': re.compile(r"^T2-L(\d+)P\1F\1B(\d+)$"),
-            'st4_D': re.compile(r"^T2-L(\d+)P\1F\1D(\d+)$")
+            'st4_D': re.compile(r"^T2-L(\d+)P\1F\1D(\d+)$"),
+            'st6_E': re.compile(r"^T2-L(\d+)P\1F\1N\1E(\d+)$")
         }
 
         # Плотность суспензии Ca(OH)2 (г/мл) - предположительное значение
@@ -496,8 +624,23 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                         series_updated = True
             
             elif probe_type == 'st3_B':
+                st2_A_name = f"T2-L{m}A{n}"
                 st2_B_name = f"T2-L{m}B{n}"
                 st3_C_name = f"T2-L{m}P{m}C{n}"
+                
+                if st2_A_name in probe_map:
+                    
+                    probe_st2_A = probe_map[st2_A_name]
+                    
+                    if probe_st2_A['Valiq, ml'] is not None:
+                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - probe_st2_A['Valiq, ml'])
+                        
+                    else:
+                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - 10)
+                        
+                else:
+                    
+                    leaching_analysis_coef = 1.05                
                 
                 if st2_B_name in probe_map and st3_C_name in probe_map:
                     probe_st2_B = probe_map[st2_B_name]
@@ -539,6 +682,13 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                         )
                         stats['calculated_fields'] += 1
                         series_updated = True
+                        
+                if probe['flag_rebalance_mass'] != True:
+                    
+                    new_mass = probe['sample_mass']*leaching_analysis_coef
+                    probe['zero_sample_mass'] = probe['sample_mass']
+                    probe['sample_mass'] = new_mass
+                    probe['flag_rebalance_mass'] = True                        
             
             elif probe_type == 'st3_A':
                 st2_A_name = f"T2-L{m}A{n}"
@@ -583,9 +733,41 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                         )
                         stats['calculated_fields'] += 1
                         series_updated = True
+                        
+                    if probe_st2_A['Valiq, ml'] is not None:
+                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - probe_st2_A['Valiq, ml'])
+                        
+                    else:
+                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - 10)
+                        
+                else:
+                    
+                    leaching_analysis_coef = 1.05 
+                    
+                if probe['flag_rebalance_volume'] != True:
+                    
+                    new_voume = probe['V (ml)']*leaching_analysis_coef
+                    probe['zero_V (ml)'] = probe['V (ml)']
+                    probe['V (ml)'] = new_voume
+                    probe['flag_rebalance_volume'] = True                    
             
             elif probe_type == 'st4_A':
+                st2_A_name = f"T2-L{m}A{n}"
                 st3_A_name = f"T2-L{m}P{m}A{n}"
+
+                if st2_A_name in probe_map:
+                    
+                    probe_st2_A = probe_map[st2_A_name]
+                    
+                    if probe_st2_A['Valiq, ml'] is not None:
+                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - probe_st2_A['Valiq, ml'])
+                        
+                    else:
+                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - 10)
+                        
+                else:
+                    
+                    leaching_analysis_coef = 1.05
                 
                 if st3_A_name in probe_map:
                     probe_st3_A = probe_map[st3_A_name]
@@ -598,8 +780,26 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                         probe['volume_calculation_note'] = f"Скопирован из {st3_A_name}"
                         stats['calculated_fields'] += 1
                         series_updated = True
+                        
+                    if probe_st3_A['Valiq, ml'] is not None:
+                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - probe_st3_A['Valiq, ml'])
+                        
+                    else:
+                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - 10)
+                        
+                else:
+                    sulfur_analysis_coef = 1.025
+                        
+                if probe['flag_rebalance_volume'] != True:
+                    
+                    new_voume = probe['V (ml)']*leaching_analysis_coef*sulfur_analysis_coef
+                    probe['zero_V (ml)'] = probe['V (ml)']
+                    probe['V (ml)'] = new_voume
+                    probe['flag_rebalance_volume'] = True                                                
             
             elif probe_type == 'st4_B':
+                st2_A_name = f"T2-L{m}A{n}"
+                st3_A_name = f"T2-L{m}P{m}A{n}"                
                 st3_B_name = f"T2-L{m}P{m}B{n}"
                 st4_D_name = f"T2-L{m}P{m}F{m}D{n}"
                 
@@ -620,6 +820,141 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                         )
                         stats['calculated_fields'] += 1
                         series_updated = True
+                        
+                if st2_A_name in probe_map:
+                    
+                    probe_st2_A = probe_map[st2_A_name]
+                    
+                    if probe_st2_A['Valiq, ml'] is not None:
+                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - probe_st2_A['Valiq, ml'])
+                        
+                    else:
+                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - 10)
+                        
+                else:
+                    
+                    leaching_analysis_coef = 1.05
+                    
+                if st3_A_name in probe_map:
+                    
+                    probe_st3_A = probe_map[st3_A_name]
+                    
+                    if probe_st3_A['Valiq, ml'] is not None:
+                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - probe_st3_A['Valiq, ml'])
+                        
+                    else:
+                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - 10)
+                
+                else:
+                    
+                    sulfur_analysis_coef = 1.025
+                                                        
+                if probe['flag_rebalance_mass'] != True:
+                    
+                    new_mass = probe['sample_mass']*leaching_analysis_coef*sulfur_analysis_coef
+                    probe['zero_sample_mass'] = probe['sample_mass']
+                    probe['sample_mass'] = new_mass
+                    probe['flag_rebalance_mass'] = True                        
+
+            elif probe_type == 'st4_D':
+                st2_A_name = f"T2-L{m}A{n}"
+                st3_A_name = f"T2-L{m}P{m}A{n}"
+                    
+                if st2_A_name in probe_map:
+                    
+                    probe_st2_A = probe_map[st2_A_name]
+                    
+                    if probe_st2_A['Valiq, ml'] is not None:
+                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - probe_st2_A['Valiq, ml'])
+                        
+                    else:
+                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - 10)
+                        
+                else:
+                    
+                    leaching_analysis_coef = 1.05
+                    
+                if st3_A_name in probe_map:
+                    
+                    probe_st3_A = probe_map[st3_A_name]
+                    
+                    if probe_st3_A['Valiq, ml'] is not None:
+                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - probe_st3_A['Valiq, ml'])
+                        
+                    else:
+                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - 10)
+                
+                else:
+                    
+                    sulfur_analysis_coef = 1.025
+                    
+                        
+                flotation_extraction_coef = 1.05                                     
+
+                if probe['flag_rebalance_mass'] != True:
+                    
+                    new_mass = probe['sample_mass']*leaching_analysis_coef*sulfur_analysis_coef*flotation_extraction_coef
+                    probe['zero_sample_mass'] = probe['sample_mass']
+                    probe['sample_mass'] = new_mass
+                    probe['flag_rebalance_mass'] = True
+                       
+            elif probe_type == 'st6_E':
+                st2_A_name = f"T2-L{m}A{n}"
+                st3_A_name = f"T2-L{m}P{m}A{n}"
+                st4_A_name = f"T2-L{m}P{m}F{m}A{n}"
+                    
+                if st2_A_name in probe_map:
+                    
+                    probe_st2_A = probe_map[st2_A_name]
+                    
+                    if probe_st2_A['Valiq, ml'] is not None:
+                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - probe_st2_A['Valiq, ml'])
+                        
+                    else:
+                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - 10)
+                        
+                else:
+                    
+                    leaching_analysis_coef = 1.05
+                    
+                if st3_A_name in probe_map:
+                    
+                    probe_st3_A = probe_map[st3_A_name]
+                    
+                    if probe_st3_A['Valiq, ml'] is not None:
+                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - probe_st3_A['Valiq, ml'])
+                        
+                    else:
+                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - 10)
+                
+                else:
+                    
+                    sulfur_analysis_coef = 1.025
+                    
+                if st4_A_name in probe_map:
+                    
+                    probe_st4_A = probe_map[st4_A_name]
+                    
+                    if probe_st4_A['Valiq, ml'] is not None:
+                        flotation_analysis_coef = probe_st4_A['V (ml)']/(probe_st4_A['V (ml)'] - probe_st4_A['Valiq, ml'])
+                        
+                    else:
+                        flotation_analysis_coef = probe_st4_A['V (ml)']/(probe_st4_A['V (ml)'] - 10)
+                
+                else:
+                    
+                    flotation_analysis_coef = 1.025
+                        
+                neutralization_analysis_coef = 1.0125 # 5 стадия
+                neutralization_extraction_coef = 1.05                                     
+
+                if probe['flag_rebalance_mass'] != True:
+                    
+                    new_mass = probe['sample_mass']*leaching_analysis_coef*sulfur_analysis_coef*flotation_analysis_coef*neutralization_analysis_coef*neutralization_extraction_coef
+                    probe['zero_sample_mass'] = probe['sample_mass']
+                    probe['sample_mass'] = new_mass
+                    probe['flag_rebalance_mass'] = True
+                        
             
             # Также обрабатываем корневые пробы C для подсчета серий
             if probe_type == 'start_C':
@@ -680,7 +1015,6 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
             'missing_probes': [],
             'errors': [{'error': str(e)}]
         }
-
 
 def get_series_probes(data_file: str = str(DATA_FILE)) -> List[Dict[str, Any]]:
     """
@@ -1779,8 +2113,6 @@ def upload_data():
             'message': 'Error processing file'
         }), 500
 
-
-
 @app.route('/api/download/<filename>', methods=['GET'])
 def download_result(filename):
     """API для скачивания обработанного JSON файла"""
@@ -2033,7 +2365,6 @@ def update_probe(probe_id):
             'error': str(e),
             'message': 'Ошибка при обновлении пробы'
         }), 500
-
 
 # Функция для валидации данных пробы
 def validate_probe_data(probe_data):
@@ -2363,7 +2694,6 @@ def get_available_columns():
 def plot_graph():
     """Главная страница"""
     return render_template('plot_graph.html')
-
 
 def extract_series_info() -> Dict:
     """Извлечение информации о сериях из данных"""
@@ -2816,8 +3146,6 @@ def get_sample_data():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-
-
 @app.route('/api/add_series', methods=['POST'])
 def add_series():
     """API для создания серии проб"""
@@ -2921,7 +3249,6 @@ def add_series():
             'error': str(e),
             'message': 'Ошибка при создании серии проб'
         }), 500
-
 
 @app.route('/api/validate_series_name', methods=['POST'])
 def validate_series_name():
@@ -3143,7 +3470,6 @@ def recalculate_dependent_fields(data_file: str = str(DATA_FILE)) -> Dict[str, A
             'errors': [{'field': 'система', 'error': str(e)}]
         }
 
-
 def check_and_recalculate_dependent_fields(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
     """
     Проверяет необходимость пересчета и выполняет его.
@@ -3170,7 +3496,6 @@ def check_and_recalculate_dependent_fields(data_file: str = str(DATA_FILE)) -> D
             'message': f"Ошибка проверки необходимости пересчета: {str(e)}"
         }
 from probe_manager import ProbeManager
-
 
 probe_manager = ProbeManager(str(DATA_FILE)) # type: ignore
 
@@ -3395,7 +3720,6 @@ def parse_probe_name():
 @app.route('/mass')
 def render_mass():
     return render_template('mass.html')
-
 
 @app.route('/api/calculate_balance')
 def calculate_balance():
@@ -3628,7 +3952,6 @@ def calculate_balance():
 
     return jsonify(series_list)
 
-
 # Вспомогательная функция для получения значений из проб
 def get_probe_value(probe_map, probe_name, element_key):
     """
@@ -3792,7 +4115,6 @@ def format_numeric_values(data_file: str = str(DATA_FILE), decimal_places: int =
             'errors': [{'field': 'система', 'error': str(e)}]
         }
 
-
 def check_and_format_numeric_values(data_file: str = str(DATA_FILE), force: bool = False) -> Dict[str, Any]:
     """
     Проверяет необходимость форматирования и выполняет его.
@@ -3837,10 +4159,8 @@ def check_and_format_numeric_values(data_file: str = str(DATA_FILE), force: bool
 from werkzeug.utils import secure_filename
 import logging
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 
 def is_valid_json(file_path):
     """Проверяем, что файл содержит валидный JSON"""

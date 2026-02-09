@@ -696,7 +696,7 @@ def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -
     metals_sorted = sorted(metal_mean_data.keys())
 
     for metal in metals_sorted:
-        sorted_columns.append(f'{metal}')
+        sorted_columns.append(f'{metal}_AES')
     
     for metal in metals_sorted:
         sorted_columns.append(f'd{metal}')
