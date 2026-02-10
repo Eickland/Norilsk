@@ -182,7 +182,7 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
                 if dilution_float is not None and volume_float is not None:
                     # Жидкая проба
                     if "L" not in probe_name:
-                        mass = concentration * dilution_float * ((volume_float - probe.get('Масса твердого (g)', 0)/3) / 1000.0)
+                        mass = concentration * dilution_float * ((volume_float - probe.get('Масса твердого (g)', 0)/3.2) / 1000.0)
                     else:
                         mass = concentration * dilution_float * volume_float / 1000.0
                 
@@ -3371,7 +3371,7 @@ def recalculate_dependent_fields(data_file: str = str(DATA_FILE)) -> Dict[str, A
                             raise ValueError("Значения не являются числами")
                         
                         # Рассчитываем массу твердого
-                        solid_mass = 1.5 * (sample_mass - volume)
+                        solid_mass = 1.45 * (sample_mass - volume)
                         
                         # Сохраняем значение
                         probe['Масса твердого (g)'] = float(solid_mass)
