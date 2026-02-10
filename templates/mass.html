@@ -8,11 +8,11 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <!-- Feather Icons -->
-  <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <!-- Custom CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/mass.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mass.css') }}">
     <style>
         :root {
             --sidebar-width: 240px;
@@ -167,6 +167,44 @@
             color: #333;
         }
         
+        /* Method selector buttons */
+        .method-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 15px;
+        }
+        
+        .method-buttons {
+            display: flex;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            padding: 2px;
+        }
+        
+        .method-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.8);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .method-btn:hover {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+        
+        .method-btn.active {
+            background: rgba(255,255,255,0.25);
+            color: white;
+            font-weight: 600;
+        }
+        
         /* Metal selector in series header */
         .metal-selector {
             display: flex;
@@ -207,6 +245,24 @@
         
         .comparison-chart-card:hover {
             transform: scale(1.02);
+        }
+        
+        /* Method badge in comparison */
+        .method-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
+        
+        .method-badge.aes {
+            background-color: #0dcaf0;
+            color: white;
+        }
+        
+        .method-badge.ms {
+            background-color: #20c997;
+            color: white;
         }
         
         /* Loading indicator */
@@ -275,6 +331,26 @@
             .chart-container {
                 height: 300px;
             }
+            
+            .series-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .method-selector {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .method-buttons {
+                width: 100%;
+            }
+            
+            .method-btn {
+                flex: 1;
+                text-align: center;
+            }
         }
         
         /* Accessibility improvements */
@@ -329,6 +405,20 @@
                             <p class="mb-0"><strong>Процент:</strong> <span id="fallbackPercentage">-</span></p>
                         </div>
                     </div>
+                    
+                    <h6 class="sidebar-heading mt-4">Метод анализа</h6>
+                    <div class="px-3 py-2">
+                        <div class="small">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="method-badge aes mr-2">AES</div>
+                                <span>ИСП АЭС (ат. эмис.)</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="method-badge ms mr-2">MS</div>
+                                <span>ИСП МС (масс-спектр.)</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </nav>
 
@@ -376,6 +466,18 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="form-group">
+                        <label for="compareMethod"><strong>Выберите метод анализа:</strong></label>
+                        <div class="method-buttons mb-3">
+                            <button type="button" class="method-btn active" data-method="AES">
+                                <i data-feather="zap" class="mr-1" width="14" height="14"></i> ИСП АЭС
+                            </button>
+                            <button type="button" class="method-btn" data-method="MS">
+                                <i data-feather="activity" class="mr-1" width="14" height="14"></i> ИСП МС
+                            </button>
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
                         <label for="compareMetal"><strong>Выберите металл для сравнения:</strong></label>
                         <select class="form-control" id="compareMetal">
@@ -468,7 +570,6 @@
             { id: 'mK', name: 'Калий (K)' },
             { id: 'mMn', name: 'Марганец (Mn)' },
             { id: 'mCa', name: 'Кальций (Ca)' }
-
         ];
         
         const PRODUCTS = ['A', 'B', 'D', 'E', 'G'];
@@ -505,6 +606,7 @@
         
         let seriesData = [];
         let chartInstances = []; // To store chart references for cleanup
+        let currentMethod = 'AES'; // Default method
         
         // Initialize the application
         $(document).ready(function() {
@@ -528,6 +630,13 @@
             $('#compareBtn').on('click', function() {
                 populateCompareModal();
                 $('#compareModal').modal('show');
+            });
+            
+            // Method selection buttons in comparison modal
+            $('#compareModal .method-btn').on('click', function() {
+                $('#compareModal .method-btn').removeClass('active');
+                $(this).addClass('active');
+                currentMethod = $(this).data('method');
             });
             
             // Build comparison button
@@ -660,11 +769,24 @@
                     <div class="card series-card" id="${seriesId}">
                         <div class="card-header series-header">
                             <span>Серия ${series.method}-${series.repeat}</span>
-                            <div class="metal-selector">
-                                <label class="mb-0 text-white">Металл:</label>
-                                <select class="form-control form-control-sm metal-selector-dropdown" data-series-id="${series.id}">
-                                    ${METALS.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
-                                </select>
+                            <div class="d-flex align-items-center">
+                                <div class="method-selector">
+                                    <span class="text-white mr-2">Метод:</span>
+                                    <div class="method-buttons">
+                                        <button class="method-btn active" data-method="AES" data-series-id="${series.id}">
+                                            <i data-feather="zap" class="mr-1" width="14" height="14"></i> AES
+                                        </button>
+                                        <button class="method-btn" data-method="MS" data-series-id="${series.id}">
+                                            <i data-feather="activity" class="mr-1" width="14" height="14"></i> MS
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="metal-selector">
+                                    <label class="mb-0 text-white">Металл:</label>
+                                    <select class="form-control form-control-sm metal-selector-dropdown" data-series-id="${series.id}">
+                                        ${METALS.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">
@@ -692,44 +814,89 @@
                 
                 container.append(card);
                 
-                // Рендерим обе диаграммы для первого металла
-                renderStackedChart(series, firstMetal, `chart-main-${series.id}`);
-                renderDoughnutChart(series, firstMetal, `chart-pie-${series.id}`);
+                // Рендерим обе диаграммы для первого металла и метода AES
+                renderStackedChart(series, firstMetal, `chart-main-${series.id}`, 'AES');
+                renderDoughnutChart(series, firstMetal, `chart-pie-${series.id}`, 'AES');
+                
+                // Setup method selector change event
+                card.find('.method-btn').on('click', function() {
+                    const seriesId = $(this).data('series-id');
+                    const selectedMethod = $(this).data('method');
+                    
+                    // Update active state
+                    $(this).parent().find('.method-btn').removeClass('active');
+                    $(this).addClass('active');
+                    
+                    // Get selected metal
+                    const selectedMetal = card.find(`.metal-selector-dropdown[data-series-id="${seriesId}"]`).val();
+                    const series = seriesData.find(s => s.id === seriesId);
+                    
+                    // Перерисовываем диаграммы с новым методом
+                    redrawChartsForSeries(seriesId, series, selectedMetal, selectedMethod);
+                });
                 
                 // Setup metal selector change event
                 card.find('.metal-selector-dropdown').on('change', function() {
-                    const selectedMetal = $(this).val();
                     const seriesId = $(this).data('series-id');
+                    const selectedMetal = $(this).val();
                     const series = seriesData.find(s => s.id === seriesId);
                     
-                    // Удаляем старые диаграммы
-                    const mainCanvas = document.getElementById(`chart-main-${seriesId}`);
-                    const pieCanvas = document.getElementById(`chart-pie-${seriesId}`);
+                    // Get current method
+                    const currentMethodBtn = card.find(`.method-btn.active[data-series-id="${seriesId}"]`);
+                    const selectedMethod = currentMethodBtn.data('method') || 'AES';
                     
-                    if (mainCanvas) {
-                        const chartInstance = Chart.getChart(mainCanvas);
-                        if (chartInstance) chartInstance.destroy();
-                    }
-                    
-                    if (pieCanvas) {
-                        const chartInstance = Chart.getChart(pieCanvas);
-                        if (chartInstance) chartInstance.destroy();
-                    }
-                    
-                    // Создаем новые диаграммы
-                    renderStackedChart(series, selectedMetal, `chart-main-${seriesId}`);
-                    renderDoughnutChart(series, selectedMetal, `chart-pie-${seriesId}`);
+                    // Перерисовываем диаграммы с новым металлом
+                    redrawChartsForSeries(seriesId, series, selectedMetal, selectedMethod);
                 });
             });
             
             // Initialize sidebar active state
             $(window).on('scroll', updateSidebarActiveState);
             updateSidebarActiveState();
+            
+            // Initialize Feather icons in new content
+            feather.replace();
         }
-
-        function renderStackedChart(series, metal, canvasId) {
+        
+        function redrawChartsForSeries(seriesId, series, metal, method) {
+            // Удаляем старые диаграммы
+            const mainCanvas = document.getElementById(`chart-main-${seriesId}`);
+            const pieCanvas = document.getElementById(`chart-pie-${seriesId}`);
+            
+            if (mainCanvas) {
+                const chartInstance = Chart.getChart(mainCanvas);
+                if (chartInstance) chartInstance.destroy();
+            }
+            
+            if (pieCanvas) {
+                const chartInstance = Chart.getChart(pieCanvas);
+                if (chartInstance) chartInstance.destroy();
+            }
+            
+            // Создаем новые диаграммы с выбранным методом
+            renderStackedChart(series, metal, `chart-main-${seriesId}`, method);
+            renderDoughnutChart(series, metal, `chart-pie-${seriesId}`, method);
+        }
+        
+        function renderStackedChart(series, metal, canvasId, method) {
             const ctx = document.getElementById(canvasId).getContext('2d');
-            const stages = series.elements[metal].stages; // Array of 6 objects with A,B,D,E,G
+            
+            // Добавляем суффикс метода к названию металла, если он не уже добавлен
+            const metalWithMethod = metal.endsWith(`_${method}`) ? metal : `${metal}_${method}`;
+            
+            // Проверяем, есть ли данные для этого металла и метода
+            let stages = [];
+            if (series.elements[metalWithMethod]) {
+                stages = series.elements[metalWithMethod].stages;
+            } else if (series.elements[metal]) {
+                // Если данных для метода нет, используем базовые данные
+                stages = series.elements[metal].stages;
+            } else {
+                // Если вообще нет данных, создаем пустые стадии
+                stages = Array(6).fill().map(() => ({
+                    'A': 0, 'B': 0, 'D': 0, 'E': 0, 'G': 0
+                }));
+            }
             
             // Prepare datasets for each product
             const datasets = PRODUCTS.map(product => {
@@ -742,6 +909,10 @@
                     barPercentage: 0.8
                 };
             });
+            
+            // Get metal name without method suffix
+            const baseMetalId = metal.replace(/_(AES|MS)$/, '');
+            const metalName = METALS.find(m => m.id === baseMetalId)?.name || baseMetalId;
             
             // Create chart
             const chart = new Chart(ctx, {
@@ -756,7 +927,7 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: `Распределение ${METALS.find(m => m.id === metal)?.name || metal} по стадиям`,
+                            text: `Распределение ${metalName} по стадиям (${method})`,
                             font: {
                                 size: 16,
                                 weight: 'bold'
@@ -842,6 +1013,10 @@
         }
         
         function populateCompareModal() {
+            // Set current method buttons
+            $('#compareModal .method-btn').removeClass('active');
+            $(`#compareModal .method-btn[data-method="${currentMethod}"]`).addClass('active');
+            
             // Populate metal dropdown
             const metalSelect = $('#compareMetal');
             metalSelect.empty();
@@ -862,7 +1037,7 @@
                 }
                 
                 seriesData.forEach(series => {
-                    const label = `Серия ${series.method}-${series.repeat} (Метод ${series.method})`;
+                    const label = `Серия ${series.method}-${series.repeat}`;
                     const isFallback = series.probe_availability.used_fallback ? ' (с замещением)' : '';
                     checkboxesContainer.append(`
                         <div class="form-check">
@@ -881,8 +1056,8 @@
             }, 300);
         }
         
-
         function buildComparison() {
+            const selectedMethod = $('#compareModal .method-btn.active').data('method');
             const selectedMetal = $('#compareMetal').val();
             const selectedChecks = $('.series-check:checked');
             const selectedSeriesIds = selectedChecks.map((_, el) => $(el).val()).get();
@@ -919,29 +1094,31 @@
             // Build charts for each selected series
             selectedSeriesIds.forEach(seriesId => {
                 const series = seriesData.find(s => s.id === seriesId);
-                if (!series || !series.elements[selectedMetal]) return;
+                if (!series) return;
                 
-                const chartId = `comp-chart-${seriesId}-${selectedMetal}`.replace(/[^a-z0-9]/gi, '-');
+                const chartId = `comp-chart-${seriesId}-${selectedMetal}-${selectedMethod}`.replace(/[^a-z0-9]/gi, '-');
                 const metalName = METALS.find(m => m.id === selectedMetal)?.name || selectedMetal;
                 
                 // ИЗМЕНЕНИЯ: заменяем сетку на вертикальное расположение (col-12 вместо col-lg-6 col-xl-4)
-                // Увеличиваем высоту диаграммы для лучшей читаемости в вертикальном режиме
                 const card = $(`
-                    <div class="col-12 mb-4"> <!-- БЫЛО: col-lg-6 col-xl-4 -->
+                    <div class="col-12 mb-4">
                         <div class="card comparison-chart-card">
                             <div class="card-header bg-light font-weight-bold">
                                 Серия ${series.method}-${series.repeat}
+                                <span class="method-badge ${selectedMethod.toLowerCase()} ml-2">
+                                    ${selectedMethod}
+                                </span>
                                 ${series.probe_availability.used_fallback ? 
                                     '<span class="badge badge-warning float-right" title="Использованы данные с замещением">Fallback</span>' : 
                                     ''}
                             </div>
                             <div class="card-body">
-                                <div class="chart-container" style="height: 400px;"> <!-- Увеличена высота с 280px до 400px -->
+                                <div class="chart-container" style="height: 400px;">
                                     <canvas id="${chartId}"></canvas>
                                 </div>
                             </div>
                             <div class="card-footer bg-light small">
-                                Метод ${series.method} | Повторность ${series.repeat}
+                                Метод ${series.method} | Повторность ${series.repeat} | Анализ: ${selectedMethod}
                                 ${series.probe_availability.used_fallback ? 
                                     '<br><span class="text-warning"><i data-feather="alert-triangle" width="14" height="14"></i> Использованы данные с замещением</span>' : 
                                     ''}
@@ -951,7 +1128,7 @@
                 `);
                 
                 $('#comparisonCharts').append(card);
-                renderStackedChart(series, selectedMetal, chartId);
+                renderStackedChart(series, selectedMetal, chartId, selectedMethod);
             });
             
             // Initialize Feather icons in the new content
@@ -981,12 +1158,78 @@
                 } else {
                     infoMessage.html(`
                         Загружено ${total} серий проб. Все данные полные, без замещения пропущенных проб.
+                        <br><small>Для просмотра данных разных методов анализа используйте переключатели в заголовках карточек серий.</small>
                     `);
                     infoAlert.removeClass('alert-warning').addClass('alert-info').show();
                 }
             } else {
                 infoAlert.hide();
             }
+        }
+        
+        function renderDoughnutChart(series, metal, canvasId, method) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            
+            // Добавляем суффикс метода к названию металла
+            const metalWithMethod = metal.endsWith(`_${method}`) ? metal : `${metal}_${method}`;
+            
+            // Проверяем, есть ли данные для этого металла и метода
+            let balance = { E_pct: 0, D_pct: 0, G_pct: 0, Loss_pct: 0 };
+            if (series.elements[metalWithMethod]) {
+                balance = series.elements[metalWithMethod].balance;
+            } else if (series.elements[metal]) {
+                balance = series.elements[metal].balance;
+            }
+            
+            const dataValues = [
+                balance.E_pct,
+                balance.D_pct,
+                balance.G_pct,
+                balance.Loss_pct < 0 ? 0 : balance.Loss_pct
+            ];
+
+            // Get metal name without method suffix
+            const baseMetalId = metal.replace(/_(AES|MS)$/, '');
+            const metalName = METALS.find(m => m.id === baseMetalId)?.name || baseMetalId;
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Продукт E (ЖКК)', 'Продукт D (Кам.)', 'Оборот G', 'Потери/Невязка'],
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: [
+                            PRODUCT_COLORS['E'], 
+                            PRODUCT_COLORS['D'], 
+                            PRODUCT_COLORS['G'], 
+                            '#ef4444'
+                        ],
+                        borderWidth: 2,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Распределение баланса ${metalName} (%)`,
+                            font: { size: 14, weight: 'bold' }
+                        },
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    let value = ctx.raw || 0;
+                                    return ' ' + ctx.label + ': ' + value.toFixed(2) + '%';
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
         }
         
         function updateSidebarActiveState() {
@@ -1012,65 +1255,11 @@
             }
         }
 
-            function renderDoughnutChart(series, metal, canvasId) {
-                const ctx = document.getElementById(canvasId).getContext('2d');
-                const balance = series.elements[metal].balance;
-                
-                const dataValues = [
-                    balance.E_pct,
-                    balance.D_pct,
-                    balance.G_pct,
-                    balance.Loss_pct < 0 ? 0 : balance.Loss_pct
-                ];
-
-                new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Продукт E (ЖКК)', 'Продукт D (Кам.)', 'Оборот G', 'Потери/Невязка'],
-                        datasets: [{
-                            data: dataValues,
-                            backgroundColor: [
-                                PRODUCT_COLORS['E'], 
-                                PRODUCT_COLORS['D'], 
-                                PRODUCT_COLORS['G'], 
-                                '#ef4444'
-                            ],
-                            borderWidth: 2,
-                            hoverOffset: 10
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Распределение баланса (%)',
-                                font: { size: 14, weight: 'bold' }
-                            },
-                            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(ctx) {
-                                        let value = ctx.raw || 0;
-                                        return ' ' + ctx.label + ': ' + value.toFixed(2) + '%';
-                                    }
-                                }
-                            }
-                        },
-                        cutout: '65%'
-                    }
-                });
-            }      
-
         // Cleanup on page unload
         $(window).on('beforeunload', function() {
             // Destroy all chart instances to prevent memory leaks
             chartInstances.forEach(chart => chart.destroy());
         });
-        
-
-        
     </script>
 </body>
 </html>

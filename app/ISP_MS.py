@@ -174,9 +174,9 @@ def process_metal_samples_csv(file_path, output_path=None):
         element_pattern = r'([A-Z][a-z]?)'
         match = re.match(element_pattern, clean_name)
         if match:
-            return match.group(1)
+            return match.group(1)+'_MS'
         
-        return clean_name+'_MS'
+        return clean_name
     
     # Переименовываем столбцы
     new_columns = {col: normalize_column_name(col) for col in df.columns}
