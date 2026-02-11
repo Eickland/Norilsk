@@ -3856,7 +3856,7 @@ def calculate_balance():
                     # Оборотная жидкость
                     out_Recycle = out_G
                     
-                    total_out = out_D + out_E + out_Recycle
+                    total_out = out_D + get_probe_value(probe_map, names["st6_E"], element) + out_Recycle
                     loss = input_val - total_out
                     
                     # Предотвращение деления на ноль
@@ -3898,7 +3898,7 @@ def calculate_balance():
                     # Стадия 6 (с учётом fallback)
                     stages.append({
                         'A': 0.0, 'B': 0.0, 'D': 0.0,
-                        'E': out_E,
+                        'E': get_probe_value(probe_map, names["st6_E"], element),
                         'G': out_G
                     })
 
@@ -3921,12 +3921,12 @@ def calculate_balance():
                         "balance": {
                             "input": round(input_val, 9),
                             "D": round(out_D, 9),         # Камерный продукт
-                            "E": round(out_E, 9),         # Продукт E
+                            "E": get_probe_value(probe_map, names["st6_E"], element),         # Продукт E
                             "G": round(out_G, 9),         # Оборотная жидкость G
                             "Recycle": round(out_Recycle, 9),
                             "Loss": round(loss, 9),
                             "D_pct": round((out_D / calc_base) * 100, 9),
-                            "E_pct": round((out_E / calc_base) * 100, 9),
+                            "E_pct": round((get_probe_value(probe_map, names["st6_E"], element) / calc_base) * 100, 9),
                             "G_pct": round((out_G / calc_base) * 100, 9),
                             "Recycle_pct": round((out_Recycle / calc_base) * 100, 9),
                             "Loss_pct": round((loss / calc_base) * 100, 9),
@@ -3943,8 +3943,8 @@ def calculate_balance():
                             "st6_G": get_probe_value(probe_map, names["st6_G"], element),
                             "st6_E_actual": get_probe_value(probe_map, names["st6_E"], element),
                             "st6_G_actual": get_probe_value(probe_map, names["st6_G"], element),
-                            "st6_E_used": out_E,
-                            "st6_G_used": out_G
+                            "st6_E_used": get_probe_value(probe_map, names["st6_E"], element),
+                            "st6_G_used": get_probe_value(probe_map, names["st6_G"], element)
                         }
                     }
                 
