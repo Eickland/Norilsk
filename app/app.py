@@ -58,6 +58,8 @@ app.config['DATA_FILE'] = DATA_FILE
 # Инициализация системы управления версиями
 vcs = VersionControlSystem(app.config['DATA_FILE'], app.config['VERSIONS_DIR'])
 
+SOLID_DENCITY_PARAM = 3
+
 def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
     """
     Перерасчет концентраций металлов в абсолютную массу по правилам:
@@ -182,7 +184,7 @@ def recalculate_metal_mass(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
                 if dilution_float is not None and volume_float is not None:
                     # Жидкая проба
                     if "L" not in probe_name:
-                        mass = concentration * dilution_float * ((volume_float - probe.get('Масса твердого (g)', 0)/3.2) / 1000.0)
+                        mass = concentration * dilution_float * ((volume_float - probe.get('Масса твердого (g)', 0)/SOLID_DENCITY_PARAM) / 1000.0)
                     else:
                         mass = concentration * dilution_float * volume_float / 1000.0
                 
@@ -480,7 +482,7 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
             data = json.load(f)
         
         probes = data.get('probes', [])
-
+        
         if not probes:
             return {
                 'success': True,
@@ -527,10 +529,11 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
         # Плотность суспензии Ca(OH)2 (г/мл) - предположительное значение
         CAOH2_SUSPENSION_DENSITY = 1.2
         
-
+        i = 0
         # Проходим по всем пробам и определяем их тип
         for probe in probes:
             probe_name = probe.get('name', '')
+            i += 1           
             if not probe_name:
                 continue
             
@@ -548,12 +551,14 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     break
             
             if not probe_type or not m or not n:
+
                 continue
             
             series_updated = False
             
             # Обрабатываем каждый тип пробы
             if probe_type == 'start_A':
+
                 probe_C_name = f"T2-{m}C{n}"
                 if probe_C_name in probe_map:
                     probe_C = probe_map[probe_C_name]
@@ -632,14 +637,14 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     
                     probe_st2_A = probe_map[st2_A_name]
                     
-                    if probe_st2_A['Valiq, ml'] is not None:
-                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - probe_st2_A['Valiq, ml'])
-                        
+                    v_ml = probe_st2_A.get('V (ml)')
+                    v_aliq = probe_st2_A.get('Valiq, ml', 10) # 10 как значение по умолчанию
+                                        
+                    if v_ml is not None and (v_ml - v_aliq) != 0:
+                        leaching_analysis_coef = v_ml / (v_ml - v_aliq)
                     else:
-                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - 10)
-                        
+                        leaching_analysis_coef = 1.05                        
                 else:
-                    
                     leaching_analysis_coef = 1.05                
                 
                 if st2_B_name in probe_map and st3_C_name in probe_map:
@@ -683,6 +688,9 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                         stats['calculated_fields'] += 1
                         series_updated = True
                         
+                if 'flag_rebalance_mass' not in probe:
+                    probe['flag_rebalance_mass'] = False
+                            
                 if probe['flag_rebalance_mass'] != True:
                     
                     new_mass = probe['sample_mass']*leaching_analysis_coef
@@ -734,16 +742,19 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                         stats['calculated_fields'] += 1
                         series_updated = True
                         
-                    if probe_st2_A['Valiq, ml'] is not None:
-                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - probe_st2_A['Valiq, ml'])
-                        
+                    v_ml = probe_st2_A.get('V (ml)')
+                    v_aliq = probe_st2_A.get('Valiq, ml', 10) # 10 как значение по умолчанию
+                                        
+                    if v_ml is not None and (v_ml - v_aliq) != 0:
+                        leaching_analysis_coef = v_ml / (v_ml - v_aliq)
                     else:
-                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - 10)
-                        
+                        leaching_analysis_coef = 1.05                        
                 else:
-                    
-                    leaching_analysis_coef = 1.05 
-                    
+                    leaching_analysis_coef = 1.05
+                     
+                if 'flag_rebalance_volume' not in probe:
+                    probe['flag_rebalance_volume'] = False
+                                        
                 if probe['flag_rebalance_volume'] != True:
                     
                     new_voume = probe['V (ml)']*leaching_analysis_coef
@@ -759,11 +770,13 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     
                     probe_st2_A = probe_map[st2_A_name]
                     
-                    if probe_st2_A['Valiq, ml'] is not None:
-                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - probe_st2_A['Valiq, ml'])
-                        
+                    v_ml = probe_st2_A.get('V (ml)')
+                    v_aliq = probe_st2_A.get('Valiq, ml', 10) # 10 как значение по умолчанию
+                                        
+                    if v_ml is not None and (v_ml - v_aliq) != 0:
+                        leaching_analysis_coef = v_ml / (v_ml - v_aliq)
                     else:
-                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - 10)
+                        leaching_analysis_coef = 1.05 
                         
                 else:
                     
@@ -781,14 +794,19 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                         stats['calculated_fields'] += 1
                         series_updated = True
                         
-                    if probe_st3_A['Valiq, ml'] is not None:
-                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - probe_st3_A['Valiq, ml'])
-                        
+                    v_ml = probe_st3_A.get('V (ml)')
+                    v_aliq = probe_st3_A.get('Valiq, ml', 10) # 10 как значение по умолчанию
+                                        
+                    if v_ml is not None and (v_ml - v_aliq) != 0:
+                        sulfur_analysis_coef = v_ml / (v_ml - v_aliq)
                     else:
-                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - 10)
+                        sulfur_analysis_coef = 1.025 
                         
                 else:
                     sulfur_analysis_coef = 1.025
+                
+                if 'flag_rebalance_volume' not in probe:
+                    probe['flag_rebalance_volume'] = False               
                         
                 if probe['flag_rebalance_volume'] != True:
                     
@@ -825,11 +843,13 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     
                     probe_st2_A = probe_map[st2_A_name]
                     
-                    if probe_st2_A['Valiq, ml'] is not None:
-                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - probe_st2_A['Valiq, ml'])
-                        
+                    v_ml = probe_st2_A.get('V (ml)')
+                    v_aliq = probe_st2_A.get('Valiq, ml', 10) # 10 как значение по умолчанию
+                                        
+                    if v_ml is not None and (v_ml - v_aliq) != 0:
+                        leaching_analysis_coef = v_ml / (v_ml - v_aliq)
                     else:
-                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - 10)
+                        leaching_analysis_coef = 1.05 
                         
                 else:
                     
@@ -839,15 +859,20 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     
                     probe_st3_A = probe_map[st3_A_name]
                     
-                    if probe_st3_A['Valiq, ml'] is not None:
-                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - probe_st3_A['Valiq, ml'])
-                        
+                    v_ml = probe_st3_A.get('V (ml)')
+                    v_aliq = probe_st3_A.get('Valiq, ml', 10) # 10 как значение по умолчанию
+                                        
+                    if v_ml is not None and (v_ml - v_aliq) != 0:
+                        sulfur_analysis_coef = v_ml / (v_ml - v_aliq)
                     else:
-                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - 10)
+                        sulfur_analysis_coef = 1.025 
                 
                 else:
                     
                     sulfur_analysis_coef = 1.025
+                
+                if 'flag_rebalance_mass' not in probe:
+                    probe['flag_rebalance_mass'] = False                 
                                                         
                 if probe['flag_rebalance_mass'] != True:
                     
@@ -864,11 +889,13 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     
                     probe_st2_A = probe_map[st2_A_name]
                     
-                    if probe_st2_A['Valiq, ml'] is not None:
-                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - probe_st2_A['Valiq, ml'])
-                        
+                    v_ml = probe_st2_A.get('V (ml)')
+                    v_aliq = probe_st2_A.get('Valiq, ml', 10) # 10 как значение по умолчанию
+                                        
+                    if v_ml is not None and (v_ml - v_aliq) != 0:
+                        leaching_analysis_coef = v_ml / (v_ml - v_aliq)
                     else:
-                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - 10)
+                        leaching_analysis_coef = 1.05
                         
                 else:
                     
@@ -878,19 +905,24 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     
                     probe_st3_A = probe_map[st3_A_name]
                     
-                    if probe_st3_A['Valiq, ml'] is not None:
-                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - probe_st3_A['Valiq, ml'])
-                        
+                    v_ml = probe_st3_A.get('V (ml)')
+                    v_aliq = probe_st3_A.get('Valiq, ml', 10) # 10 как значение по умолчанию
+                                        
+                    if v_ml is not None and (v_ml - v_aliq) != 0:
+                        sulfur_analysis_coef = v_ml / (v_ml - v_aliq)
                     else:
-                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - 10)
+                        sulfur_analysis_coef = 1.025
                 
                 else:
                     
                     sulfur_analysis_coef = 1.025
                     
                         
-                flotation_extraction_coef = 1.05                                     
-
+                flotation_extraction_coef = 1.05
+                                                     
+                if 'flag_rebalance_mass' not in probe:
+                    probe['flag_rebalance_mass'] = False
+                     
                 if probe['flag_rebalance_mass'] != True:
                     
                     new_mass = probe['sample_mass']*leaching_analysis_coef*sulfur_analysis_coef*flotation_extraction_coef
@@ -907,11 +939,13 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     
                     probe_st2_A = probe_map[st2_A_name]
                     
-                    if probe_st2_A['Valiq, ml'] is not None:
-                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - probe_st2_A['Valiq, ml'])
-                        
+                    v_ml = probe_st2_A.get('V (ml)')
+                    v_aliq = probe_st2_A.get('Valiq, ml', 10) # 10 как значение по умолчанию
+                                        
+                    if v_ml is not None and (v_ml - v_aliq) != 0:
+                        leaching_analysis_coef = v_ml / (v_ml - v_aliq)
                     else:
-                        leaching_analysis_coef = probe_st2_A['V (ml)']/(probe_st2_A['V (ml)'] - 10)
+                        leaching_analysis_coef = 1.05
                         
                 else:
                     
@@ -921,11 +955,13 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     
                     probe_st3_A = probe_map[st3_A_name]
                     
-                    if probe_st3_A['Valiq, ml'] is not None:
-                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - probe_st3_A['Valiq, ml'])
-                        
+                    v_ml = probe_st3_A.get('V (ml)')
+                    v_aliq = probe_st3_A.get('Valiq, ml', 10) # 10 как значение по умолчанию
+                                        
+                    if v_ml is not None and (v_ml - v_aliq) != 0:
+                        sulfur_analysis_coef = v_ml / (v_ml - v_aliq)
                     else:
-                        sulfur_analysis_coef = probe_st3_A['V (ml)']/(probe_st3_A['V (ml)'] - 10)
+                        sulfur_analysis_coef = 1.025
                 
                 else:
                     
@@ -935,19 +971,24 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     
                     probe_st4_A = probe_map[st4_A_name]
                     
-                    if probe_st4_A['Valiq, ml'] is not None:
-                        flotation_analysis_coef = probe_st4_A['V (ml)']/(probe_st4_A['V (ml)'] - probe_st4_A['Valiq, ml'])
-                        
+                    v_ml = probe_st4_A.get('V (ml)')
+                    v_aliq = probe_st4_A.get('Valiq, ml', 10) # 10 как значение по умолчанию
+                                        
+                    if v_ml is not None and (v_ml - v_aliq) != 0:
+                        flotation_analysis_coef = v_ml / (v_ml - v_aliq)
                     else:
-                        flotation_analysis_coef = probe_st4_A['V (ml)']/(probe_st4_A['V (ml)'] - 10)
+                        flotation_analysis_coef = 1.025
                 
                 else:
                     
                     flotation_analysis_coef = 1.025
                         
                 neutralization_analysis_coef = 1.0125 # 5 стадия
-                neutralization_extraction_coef = 1.05                                     
-
+                neutralization_extraction_coef = 1.05
+                                                     
+                if 'flag_rebalance_mass' not in probe:
+                    probe['flag_rebalance_mass'] = False
+                    
                 if probe['flag_rebalance_mass'] != True:
                     
                     new_mass = probe['sample_mass']*leaching_analysis_coef*sulfur_analysis_coef*flotation_analysis_coef*neutralization_analysis_coef*neutralization_extraction_coef
@@ -1006,6 +1047,8 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
         }
         
     except Exception as e:
+        import traceback
+        print(traceback.format_exc())
         return {
             'success': False,
             'message': f"Ошибка расчета полей: {str(e)}",
@@ -3371,7 +3414,7 @@ def recalculate_dependent_fields(data_file: str = str(DATA_FILE)) -> Dict[str, A
                             raise ValueError("Значения не являются числами")
                         
                         # Рассчитываем массу твердого
-                        solid_mass = 1.45 * (sample_mass - volume)
+                        solid_mass = 1/(1-(1/SOLID_DENCITY_PARAM)) * (sample_mass - volume)
                         
                         # Сохраняем значение
                         probe['Масса твердого (g)'] = float(solid_mass)

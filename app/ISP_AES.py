@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Set, Tuple, Optional
 import re
 
-black_list_column = ['Разбавление','sample_mass','Масса навески (g)']
+black_list_column = ['Разбавление','sample_mass','Масса навески (g)','Valiq. ml']
 
 def load_json_data(json_path: Path) -> Dict:
     """Загрузка данных из JSON файла"""
@@ -687,7 +687,7 @@ def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -
             metal_std_data[metal] = pd.Series(0, index=metal_df.index)
     
     for metal in metal_mean_data.keys():
-        final_df[f'{metal}'] = metal_mean_data[metal]
+        final_df[f'{metal}_AES'] = metal_mean_data[metal]
     
     for metal in metal_std_data.keys():
         final_df[f'd{metal}'] = metal_std_data[metal]
