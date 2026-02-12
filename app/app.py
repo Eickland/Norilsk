@@ -2677,20 +2677,20 @@ def save_probes():
 
 @app.route('/api/export/excel', methods=['GET'])
 def export_excel():
-    """Экспорт всей базы данных в Excel"""
+    """Экспорт всей базы данных в CSV"""
     try:
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
             
         df = pd.json_normalize(data=data['probes'])
-        filename = f"export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        filename = f"export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
         output = BytesIO()
-        df.to_excel(output, index=False)
+        df.to_csv(output, index=False, encoding='utf-8-sig')
         output.seek(0)
         
         return send_file(
                 output,
-                mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                mimetype='text/csv',
                 as_attachment=True,
                 download_name=filename
             )
