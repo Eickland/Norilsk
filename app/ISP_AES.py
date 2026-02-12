@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Set, Tuple, Optional
 import re
 
-black_list_column = ['Разбавление','sample_mass','Масса навески (g)','Valiq. ml']
+black_list_column = ['Разбавление','sample_mass','Масса навески (g)','Valiq, ml']
 
 def load_json_data(json_path: Path) -> Dict:
     """Загрузка данных из JSON файла"""
