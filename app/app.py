@@ -2685,7 +2685,7 @@ def export_excel():
         df = pd.json_normalize(data=data['probes'])
         filename = f"export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
         output = BytesIO()
-        df.to_csv(output, index=False, encoding='utf-8-sig')
+        df.to_csv(output, index=False, encoding='utf-8-sig',sep=";")
         output.seek(0)
         
         return send_file(
