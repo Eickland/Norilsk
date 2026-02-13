@@ -5,10 +5,9 @@ services:
     build: .
     restart: always
     volumes:
-      - ./app/allowed_users.json:/app/allowed_users.json
       - ./data:/data
-      - ./templates:/templates
-      - ./static:/static
+      - ./templates:/src/templates
+      - ./static:/src/static
     environment:
       - PYTHONUNBUFFERED=1
 

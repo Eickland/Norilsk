@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Table Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="adminPanel" class="admin-container">
+        <h2>Управление полями базы данных</h2>
+        <p class="warning-text">Внимание: действия в этом разделе применяются ко ВСЕМ пробам в базе данных.</p>
+        
+        <div class="schema-table-wrapper">
+            <table id="schemaTable">
+                <thead>
+                    <tr>
+                        <th>Название поля</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="schemaFieldsBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="fieldEditModal" class="modal">
+        <div class="modal-content">
+            <h3 id="fieldEditTitle">Редактирование поля</h3>
+            <input type="hidden" id="currentFieldName">
+            
+            <div class="form-group">
+                <label>Новое название поля:</label>
+                <input type="text" id="newFieldName" class="form-control">
+                <button onclick="adminLab.renameField()" class="btn-action-primary">Переименовать везде</button>
+            </div>
+            <hr>
+            <div class="form-group">
+                <label>Установить значение для всех проб:</label>
+                <input type="text" id="globalFieldValue" class="form-control" placeholder="Значение">
+                <label><input type="checkbox" id="overwriteCheckbox" checked> Перезаписать существующие</label>
+                <button onclick="adminLab.setGlobalValue()" class="btn-action-secondary">Применить значение</button>
+            </div>
+            
+            <div class="modal-footer">
+                <button onclick="document.getElementById('fieldEditModal').style.display='none'" class="btn">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/table.js') }}"></script>
+</body>
+</html>

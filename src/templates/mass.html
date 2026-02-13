@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mass Balance Analytics // T-Series</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mass.css') }}">
+    <style>
+        :root {
+            --sidebar-width: 240px;
+            --sidebar-bg: #f8f9fa;
+            --sidebar-border: #e9ecef;
+            --primary-color: #0d6efd;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+            padding-top: 56px;
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            top: 56px;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            padding: 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-sticky {
+            height: calc(100vh - 56px);
+            overflow-y: auto;
+            padding: 15px 0;
+        }
+        
+        .sidebar-heading {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-left: 15px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            color: #6c757d;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            padding: 8px 20px;
+            color: #495057;
+            border-left: 3px solid transparent;
+            margin: 2px 0;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover, .nav-link:focus {
+            color: var(--primary-color);
+            background-color: rgba(13, 110, 253, 0.08);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(13, 110, 253, 0.12);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        /* Main content adjustments */
+        main {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s ease;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                overflow: hidden;
+                box-shadow: none;
+            }
+            
+            main {
+                margin-left: 0;
+            }
+            
+            .sidebar-visible .sidebar {
+                width: var(--sidebar-width);
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .sidebar-visible main {
+                margin-left: var(--sidebar-width);
+            }
+        }
+        
+        /* Navbar enhancements */
+        .navbar-dark {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+        
+        /* Chart container */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        /* Series card styling */
+        .series-card {
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #eaeaea;
+        }
+        
+        .series-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+        }
+        
+        .series-header {
+            background: linear-gradient(120deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .series-header select {
+            max-width: 250px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 4px;
+        }
+        
+        .series-header select option {
+            color: #333;
+        }
+        
+        /* Method selector buttons */
+        .method-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 15px;
+        }
+        
+        .method-buttons {
+            display: flex;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            padding: 2px;
+        }
+        
+        .method-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.8);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .method-btn:hover {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+        
+        .method-btn.active {
+            background: rgba(255,255,255,0.25);
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* Metal selector in series header */
+        .metal-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .metal-selector label {
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        /* Comparison modal styling */
+        #seriesCheckboxes {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        
+        .form-check {
+            padding: 5px 0;
+            margin: 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-check:last-child {
+            border-bottom: none;
+        }
+        
+        .comparison-chart-card {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        
+        .comparison-chart-card:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Method badge in comparison */
+        .method-badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
+        
+        .method-badge.aes {
+            background-color: #0dcaf0;
+            color: white;
+        }
+        
+        .method-badge.ms {
+            background-color: #20c997;
+            color: white;
+        }
+        
+        /* Loading indicator */
+        #loadingIndicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            transition: opacity 0.4s ease;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(13, 110, 253, 0.2);
+            border-top: 5px solid #0d6efd;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 1.25rem;
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        /* Fallback indicator */
+        .fallback-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ffc107;
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        
+        /* Toggle sidebar button for mobile */
+        #toggleSidebar {
+            display: none;
+            margin-right: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            #toggleSidebar {
+                display: block;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+            
+            .series-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .method-selector {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .method-buttons {
+                width: 100%;
+            }
+            
+            .method-btn {
+                flex: 1;
+                text-align: center;
+            }
+        }
+        
+        /* Accessibility improvements */
+        .btn-primary:focus, .btn-primary:hover {
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.5);
+        }
+        
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator">
+        <div class="spinner"></div>
+        <div class="loading-text">Загрузка данных анализа...</div>
+        <div class="text-muted mt-2">Подготовка диаграмм и информации о пробах</div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+        <button class="navbar-toggler" type="button" id="toggleSidebar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand mr-auto" href="#">
+            <i data-feather="bar-chart-2" class="mr-2"></i>
+            Mass Balance Analytics // T-Series
+        </a>
+        <button class="btn btn-primary" id="compareBtn">
+            <i data-feather="git-compare" class="mr-1"></i> Сравнить серии
+        </button>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <nav id="sidebar" class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <h6 class="sidebar-heading">Быстрый переход</h6>
+                    <ul class="nav flex-column" id="series-nav-list">
+                        <li class="nav-item">
+                            <span class="nav-link text-muted">Загрузка списка серий...</span>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="sidebar-heading mt-4">Информация</h6>
+                    <div class="px-3 py-2">
+                        <div class="small text-muted">
+                            <p class="mb-1"><strong>Всего серий:</strong> <span id="totalSeries">-</span></p>
+                            <p class="mb-1"><strong>С fallback:</strong> <span id="fallbackSeries">-</span></p>
+                            <p class="mb-0"><strong>Процент:</strong> <span id="fallbackPercentage">-</span></p>
+                        </div>
+                    </div>
+                    
+                    <h6 class="sidebar-heading mt-4">Метод анализа</h6>
+                    <div class="px-3 py-2">
+                        <div class="small">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="method-badge aes mr-2">AES</div>
+                                <span>ИСП АЭС (ат. эмис.)</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="method-badge ms mr-2">MS</div>
+                                <span>ИСП МС (масс-спектр.)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-md-4 py-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Анализ массового баланса</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group mr-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="refreshData">
+                                <i data-feather="refresh-cw" class="mr-1"></i> Обновить данные
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info" id="dataInfoAlert" style="display:none;">
+                    <i data-feather="info" class="mr-2" width="18" height="18"></i>
+                    <span id="dataInfoMessage"></span>
+                </div>
+
+                <div id="series-container">
+                    <!-- Series cards will be dynamically inserted here -->
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Загрузка...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Подготовка данных для визуализации</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Comparison Modal -->
+    <div class="modal fade" id="compareModal" tabindex="-1" aria-labelledby="compareModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="compareModalLabel">
+                        <i data-feather="git-compare" class="mr-2"></i> Сравнение серий проб
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="compareMethod"><strong>Выберите метод анализа:</strong></label>
+                        <div class="method-buttons mb-3">
+                            <button type="button" class="method-btn active" data-method="AES">
+                                <i data-feather="zap" class="mr-1" width="14" height="14"></i> ИСП АЭС
+                            </button>
+                            <button type="button" class="method-btn" data-method="MS">
+                                <i data-feather="activity" class="mr-1" width="14" height="14"></i> ИСП МС
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="compareMetal"><strong>Выберите металл для сравнения:</strong></label>
+                        <select class="form-control" id="compareMetal">
+                            <option value="">-- Выберите металл --</option>
+                        </select>
+                        <small class="form-text text-muted">Выбранный металл будет отображен на всех диаграммах сравнения</small>
+                    </div>
+                    
+                    <div class="form-group mt-4">
+                        <label><strong>Выберите серии для сравнения (минимум 2):</strong></label>
+                        <div id="seriesCheckboxes" class="mt-2">
+                            <div class="text-center py-3">
+                                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                    <span class="sr-only">Загрузка...</span>
+                                </div>
+                                <p class="mt-2 text-muted small">Загрузка списка серий...</p>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted mt-2">Отметьте серии, которые хотите сравнить. Можно выбрать более двух серий.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i data-feather="x" class="mr-1"></i> Отмена
+                    </button>
+                    <button type="button" class="btn btn-primary" id="buildComparison">
+                        <i data-feather="bar-chart-2" class="mr-1"></i> Построить сравнение
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Results Modal -->
+    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultModalLabel">
+                        <i data-feather="bar-chart-2" class="mr-2"></i> Результаты сравнения серий
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning d-none" id="fallbackWarning">
+                        <i data-feather="alert-triangle" class="mr-2" width="18" height="18"></i>
+                        <strong>Внимание:</strong> Для некоторых серий использованы данные с замещением (fallback) из предыдущих стадий, так как пробы стадии 6 отсутствовали.
+                    </div>
+                    <div id="comparisonCharts" class="row">
+                        <!-- Comparison charts will be inserted here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i data-feather="x" class="mr-1"></i> Закрыть
+                    </button>
+                    <button type="button" class="btn btn-success" id="exportComparison">
+                        <i data-feather="download" class="mr-1"></i> Экспортировать результаты
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    
+    <script>
+        // Constants and configuration
+        const METALS = [
+            { id: 'mFe', name: 'Железо (Fe)' },
+            { id: 'mCu', name: 'Медь (Cu)' },
+            { id: 'mNi', name: 'Никель (Ni)' },
+            { id: 'mPd', name: 'Палладий (Pd)' },
+            { id: 'mPt', name: 'Платина (Pt)' },
+            { id: 'mRh', name: 'Родий (Rh)' },
+            { id: 'mAu', name: 'Золото (Au)' },
+            { id: 'mAg', name: 'Серебро (Ag)' },
+            { id: 'mOs', name: 'Осмий (Os)' },
+            { id: 'mRu', name: 'Рутений (Ru)' },
+            { id: 'mIr', name: 'Иридий (Ir)' },
+            { id: 'mAl', name: 'Алюминий (Al)' },
+            { id: 'mMg', name: 'Магний (Mg)' },
+            { id: 'mCo', name: 'Кобальт (Co)' },
+            { id: 'mZn', name: 'Цинк (Zn)' },
+            { id: 'mK', name: 'Калий (K)' },
+            { id: 'mMn', name: 'Марганец (Mn)' },
+            { id: 'mCa', name: 'Кальций (Ca)' }
+        ];
+        
+        const PRODUCTS = ['A', 'B', 'D', 'E', 'G'];
+        const PRODUCT_LABELS = {
+            'A': 'Жидкое',
+            'B': 'Твердое',
+            'D': 'Флотоконцетрат (D)',
+            'E': 'ЖКК',
+            'G': 'Оборот'
+        };
+        const PRODUCT_COLORS = {
+            'A': 'rgba(2, 55, 244, 1)',
+            'B': 'rgba(253, 84, 5, 1)',
+            'D': 'rgba(184, 184, 173, 1)',
+            'E': 'rgba(75, 192, 192, 0.8)',
+            'G': 'rgba(153, 102, 255, 0.8)'
+        };
+        const PRODUCT_BORDERS = {
+            'A': 'rgba(255, 99, 132, 1)',
+            'B': 'rgba(54, 162, 235, 1)',
+            'D': 'rgba(255, 206, 86, 1)',
+            'E': 'rgba(75, 192, 192, 1)',
+            'G': 'rgba(153, 102, 255, 1)'
+        };
+        
+        const STAGE_LABELS = [
+            'Пульпа ССФ',
+            'САВ',
+            'Сульфидизация',
+            'Флотация',
+            'Нейтрализация',
+            'ЖКК'
+        ];
+        
+        let seriesData = [];
+        let chartInstances = []; // To store chart references for cleanup
+        let currentMethod = 'AES'; // Default method
+        
+        // Initialize the application
+        $(document).ready(function() {
+            // Initialize Feather icons
+            feather.replace();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Load data
+            loadData();
+            
+            // Setup sidebar toggle for mobile
+            $('#toggleSidebar').on('click', function() {
+                $('body').toggleClass('sidebar-visible');
+            });
+        });
+        
+        function setupEventListeners() {
+            // Compare button
+            $('#compareBtn').on('click', function() {
+                populateCompareModal();
+                $('#compareModal').modal('show');
+            });
+            
+            // Method selection buttons in comparison modal
+            $('#compareModal .method-btn').on('click', function() {
+                $('#compareModal .method-btn').removeClass('active');
+                $(this).addClass('active');
+                currentMethod = $(this).data('method');
+            });
+            
+            // Build comparison button
+            $('#buildComparison').on('click', buildComparison);
+            
+            // Refresh data button
+            $('#refreshData').on('click', function() {
+                $('#loadingIndicator').fadeIn();
+                loadData();
+            });
+            
+            // Export comparison button
+            $('#exportComparison').on('click', function() {
+                alert('Экспорт результатов будет реализован в следующей версии');
+            });
+        }
+        
+        function loadData() {
+            $.getJSON('/api/calculate_balance', function(data) {
+                seriesData = data;
+                renderPageContent();
+                $('#loadingIndicator').fadeOut();
+            }).fail(function() {
+                $('#loadingIndicator').html(`
+                    <div class="text-danger mb-3">
+                        <i data-feather="alert-octagon" width="60" height="60"></i>
+                    </div>
+                    <div class="loading-text">Ошибка загрузки данных</div>
+                    <div class="text-muted mt-2">Не удалось получить данные с сервера</div>
+                    <button class="btn btn-primary mt-4" id="retryLoad">
+                        <i data-feather="refresh-cw" class="mr-1"></i> Повторить попытку
+                    </button>
+                `);
+                feather.replace();
+                $('#retryLoad').on('click', loadData);
+            });
+        }
+        
+        function renderPageContent() {
+            // Update sidebar navigation
+            buildSidebarNavigation();
+            
+            // Update statistics
+            updateStatistics();
+            
+            // Render series cards
+            renderSeriesCards();
+            
+            // Show data info alert if needed
+            showDataInfo();
+        }
+        
+        function buildSidebarNavigation() {
+            const navList = $('#series-nav-list');
+            navList.empty();
+            
+            if (seriesData.length === 0) {
+                navList.append(`
+                    <li class="nav-item">
+                        <span class="nav-link text-muted">Серии не найдены</span>
+                    </li>
+                `);
+                return;
+            }
+            
+            seriesData.forEach(series => {
+                const seriesId = `series-${series.id}`;
+                const label = `Серия ${series.method}-${series.repeat}`;
+                navList.append(`
+                    <li class="nav-item">
+                        <a class="nav-link" href="#${seriesId}" data-series-id="${series.id}">
+                            ${label}
+                            ${series.probe_availability.used_fallback ? 
+                                '<span class="badge badge-warning ml-2" title="Использованы данные с замещением">!</span>' : 
+                                ''}
+                        </a>
+                    </li>
+                `);
+            });
+            
+            // Setup smooth scrolling for navigation links
+            $('.nav-link[data-series-id]').on('click', function(e) {
+                e.preventDefault();
+                const targetId = $(this).attr('href');
+                if ($(targetId).length) {
+                    $('html, body').animate({
+                        scrollTop: $(targetId).offset().top - 20
+                    }, 500);
+                    
+                    // Update active state
+                    $('.nav-link').removeClass('active');
+                    $(this).addClass('active');
+                }
+            });
+        }
+        
+        function updateStatistics() {
+            if (seriesData.length > 0 && seriesData[0].stats) {
+                const stats = seriesData[0].stats;
+                $('#totalSeries').text(stats.total_series);
+                $('#fallbackSeries').text(stats.series_with_fallback);
+                $('#fallbackPercentage').text(`${stats.fallback_percentage}%`);
+            } else {
+                $('#totalSeries').text(seriesData.length);
+                $('#fallbackSeries').text('0');
+                $('#fallbackPercentage').text('0%');
+            }
+        }
+        
+        function renderSeriesCards() {
+            const container = $('#series-container');
+            container.empty();
+            
+            if (seriesData.length === 0) {
+                container.html(`
+                    <div class="alert alert-warning">
+                        <i data-feather="alert-triangle" class="mr-2"></i>
+                        Не найдено ни одной серии проб для отображения. Проверьте данные или параметры фильтрации.
+                    </div>
+                `);
+                feather.replace();
+                return;
+            }
+            
+            seriesData.forEach(series => {
+                const seriesId = `series-${series.id}`;
+                const firstMetal = METALS[0].id;
+                
+                const card = $(`
+                    <div class="card series-card" id="${seriesId}">
+                        <div class="card-header series-header">
+                            <span>Серия ${series.method}-${series.repeat}</span>
+                            <div class="d-flex align-items-center">
+                                <div class="method-selector">
+                                    <span class="text-white mr-2">Метод:</span>
+                                    <div class="method-buttons">
+                                        <button class="method-btn active" data-method="AES" data-series-id="${series.id}">
+                                            <i data-feather="zap" class="mr-1" width="14" height="14"></i> AES
+                                        </button>
+                                        <button class="method-btn" data-method="MS" data-series-id="${series.id}">
+                                            <i data-feather="activity" class="mr-1" width="14" height="14"></i> MS
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="metal-selector">
+                                    <label class="mb-0 text-white">Металл:</label>
+                                    <select class="form-control form-control-sm metal-selector-dropdown" data-series-id="${series.id}">
+                                        ${METALS.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            ${series.probe_availability.used_fallback ? `
+                                <div class="alert alert-warning alert-sm mb-3">
+                                    <i data-feather="alert-triangle" width="16" height="16"></i>
+                                    Использован fallback (стадия 5 → 6)
+                                </div>
+                            ` : ''}
+                            <div class="row">
+                                <div class="col-lg-8 border-right">
+                                    <div class="chart-container" style="height: 350px; box-shadow: none;">
+                                        <canvas id="chart-main-${series.id}"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="chart-container" style="height: 350px; box-shadow: none;">
+                                        <canvas id="chart-pie-${series.id}"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+                
+                container.append(card);
+                
+                // Рендерим обе диаграммы для первого металла и метода AES
+                renderStackedChart(series, firstMetal, `chart-main-${series.id}`, 'AES');
+                renderDoughnutChart(series, firstMetal, `chart-pie-${series.id}`, 'AES');
+                
+                // Setup method selector change event
+                card.find('.method-btn').on('click', function() {
+                    const seriesId = $(this).data('series-id');
+                    const selectedMethod = $(this).data('method');
+                    
+                    // Update active state
+                    $(this).parent().find('.method-btn').removeClass('active');
+                    $(this).addClass('active');
+                    
+                    // Get selected metal
+                    const selectedMetal = card.find(`.metal-selector-dropdown[data-series-id="${seriesId}"]`).val();
+                    const series = seriesData.find(s => s.id === seriesId);
+                    
+                    // Перерисовываем диаграммы с новым методом
+                    redrawChartsForSeries(seriesId, series, selectedMetal, selectedMethod);
+                });
+                
+                // Setup metal selector change event
+                card.find('.metal-selector-dropdown').on('change', function() {
+                    const seriesId = $(this).data('series-id');
+                    const selectedMetal = $(this).val();
+                    const series = seriesData.find(s => s.id === seriesId);
+                    
+                    // Get current method
+                    const currentMethodBtn = card.find(`.method-btn.active[data-series-id="${seriesId}"]`);
+                    const selectedMethod = currentMethodBtn.data('method') || 'AES';
+                    
+                    // Перерисовываем диаграммы с новым металлом
+                    redrawChartsForSeries(seriesId, series, selectedMetal, selectedMethod);
+                });
+            });
+            
+            // Initialize sidebar active state
+            $(window).on('scroll', updateSidebarActiveState);
+            updateSidebarActiveState();
+            
+            // Initialize Feather icons in new content
+            feather.replace();
+        }
+        
+        function redrawChartsForSeries(seriesId, series, metal, method) {
+            // Удаляем старые диаграммы
+            const mainCanvas = document.getElementById(`chart-main-${seriesId}`);
+            const pieCanvas = document.getElementById(`chart-pie-${seriesId}`);
+            
+            if (mainCanvas) {
+                const chartInstance = Chart.getChart(mainCanvas);
+                if (chartInstance) chartInstance.destroy();
+            }
+            
+            if (pieCanvas) {
+                const chartInstance = Chart.getChart(pieCanvas);
+                if (chartInstance) chartInstance.destroy();
+            }
+            
+            // Создаем новые диаграммы с выбранным методом
+            renderStackedChart(series, metal, `chart-main-${seriesId}`, method);
+            renderDoughnutChart(series, metal, `chart-pie-${seriesId}`, method);
+        }
+        
+        function renderStackedChart(series, metal, canvasId, method) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            
+            // Добавляем суффикс метода к названию металла, если он не уже добавлен
+            const metalWithMethod = metal.endsWith(`_${method}`) ? metal : `${metal}_${method}`;
+            
+            // Проверяем, есть ли данные для этого металла и метода
+            let stages = [];
+            if (series.elements[metalWithMethod]) {
+                stages = series.elements[metalWithMethod].stages;
+            } else if (series.elements[metal]) {
+                // Если данных для метода нет, используем базовые данные
+                stages = series.elements[metal].stages;
+            } else {
+                // Если вообще нет данных, создаем пустые стадии
+                stages = Array(6).fill().map(() => ({
+                    'A': 0, 'B': 0, 'D': 0, 'E': 0, 'G': 0
+                }));
+            }
+            
+            // Prepare datasets for each product
+            const datasets = PRODUCTS.map(product => {
+                return {
+                    label: PRODUCT_LABELS[product],
+                    data: stages.map(stage => stage[product] || 0),
+                    backgroundColor: PRODUCT_COLORS[product],
+                    borderColor: PRODUCT_BORDERS[product],
+                    borderWidth: 1,
+                    barPercentage: 0.8
+                };
+            });
+            
+            // Get metal name without method suffix
+            const baseMetalId = metal.replace(/_(AES|MS)$/, '');
+            const metalName = METALS.find(m => m.id === baseMetalId)?.name || baseMetalId;
+            
+            // Create chart
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: STAGE_LABELS,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Распределение ${metalName} по стадиям (${method})`,
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 20
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed.y;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                    return `${context.dataset.label}: ${value.toFixed(6)} (${percentage}%)`;
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Стадии технологического процесса',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            },
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 0,
+                                minRotation: 0,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Масса, мг',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            },
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 6
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+            
+            // Store chart instance for cleanup if needed
+            chartInstances.push(chart);
+            
+            // Add fallback badge if needed
+            if (series.probe_availability.used_fallback) {
+                $(`#${canvasId}`).parent().append(`
+                    <div class="fallback-badge" title="Использованы данные с замещением из предыдущих стадий">
+                        <i data-feather="alert-triangle" width="12" height="12" class="mr-1"></i> Fallback
+                    </div>
+                `);
+                feather.replace();
+            }
+        }
+        
+        function populateCompareModal() {
+            // Set current method buttons
+            $('#compareModal .method-btn').removeClass('active');
+            $(`#compareModal .method-btn[data-method="${currentMethod}"]`).addClass('active');
+            
+            // Populate metal dropdown
+            const metalSelect = $('#compareMetal');
+            metalSelect.empty();
+            metalSelect.append('<option value="">-- Выберите металл --</option>');
+            METALS.forEach(metal => {
+                metalSelect.append(`<option value="${metal.id}">${metal.name}</option>`);
+            });
+            
+            // Populate series checkboxes
+            const checkboxesContainer = $('#seriesCheckboxes');
+            checkboxesContainer.html('<div class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary" role="status"><span class="sr-only">Загрузка...</span></div><p class="mt-2 text-muted small">Загрузка списка серий...</p></div>');
+            
+            setTimeout(() => {
+                checkboxesContainer.empty();
+                if (seriesData.length === 0) {
+                    checkboxesContainer.html('<div class="alert alert-warning">Серии не найдены</div>');
+                    return;
+                }
+                
+                seriesData.forEach(series => {
+                    const label = `Серия ${series.method}-${series.repeat}`;
+                    const isFallback = series.probe_availability.used_fallback ? ' (с замещением)' : '';
+                    checkboxesContainer.append(`
+                        <div class="form-check">
+                            <input class="form-check-input series-check" type="checkbox" 
+                                value="${series.id}" id="check-${series.id.replace(/[^a-z0-9]/gi, '-')}" 
+                                data-has-fallback="${series.probe_availability.used_fallback}">
+                            <label class="form-check-label" for="check-${series.id.replace(/[^a-z0-9]/gi, '-')}">
+                                ${label}${isFallback}
+                                ${series.probe_availability.used_fallback ? 
+                                    '<span class="badge badge-warning ml-2" title="Использованы данные с замещением">!</span>' : 
+                                    ''}
+                            </label>
+                        </div>
+                    `);
+                });
+            }, 300);
+        }
+        
+        function buildComparison() {
+            const selectedMethod = $('#compareModal .method-btn.active').data('method');
+            const selectedMetal = $('#compareMetal').val();
+            const selectedChecks = $('.series-check:checked');
+            const selectedSeriesIds = selectedChecks.map((_, el) => $(el).val()).get();
+            const hasFallback = selectedChecks.filter('[data-has-fallback="true"]').length > 0;
+            
+            // Validation
+            if (!selectedMetal) {
+                alert('Пожалуйста, выберите металл для сравнения');
+                return;
+            }
+            
+            if (selectedSeriesIds.length < 2) {
+                alert('Пожалуйста, выберите минимум 2 серии для сравнения');
+                return;
+            }
+            
+            // Clear previous charts
+            $('#comparisonCharts').empty();
+            chartInstances = chartInstances.filter(c => {
+                if (c.canvas.parentNode.closest('#comparisonCharts')) {
+                    c.destroy();
+                    return false;
+                }
+                return true;
+            });
+            
+            // Show fallback warning if needed
+            if (hasFallback) {
+                $('#fallbackWarning').removeClass('d-none');
+            } else {
+                $('#fallbackWarning').addClass('d-none');
+            }
+            
+            // Build charts for each selected series
+            selectedSeriesIds.forEach(seriesId => {
+                const series = seriesData.find(s => s.id === seriesId);
+                if (!series) return;
+                
+                const chartId = `comp-chart-${seriesId}-${selectedMetal}-${selectedMethod}`.replace(/[^a-z0-9]/gi, '-');
+                const metalName = METALS.find(m => m.id === selectedMetal)?.name || selectedMetal;
+                
+                // ИЗМЕНЕНИЯ: заменяем сетку на вертикальное расположение (col-12 вместо col-lg-6 col-xl-4)
+                const card = $(`
+                    <div class="col-12 mb-4">
+                        <div class="card comparison-chart-card">
+                            <div class="card-header bg-light font-weight-bold">
+                                Серия ${series.method}-${series.repeat}
+                                <span class="method-badge ${selectedMethod.toLowerCase()} ml-2">
+                                    ${selectedMethod}
+                                </span>
+                                ${series.probe_availability.used_fallback ? 
+                                    '<span class="badge badge-warning float-right" title="Использованы данные с замещением">Fallback</span>' : 
+                                    ''}
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container" style="height: 400px;">
+                                    <canvas id="${chartId}"></canvas>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-light small">
+                                Метод ${series.method} | Повторность ${series.repeat} | Анализ: ${selectedMethod}
+                                ${series.probe_availability.used_fallback ? 
+                                    '<br><span class="text-warning"><i data-feather="alert-triangle" width="14" height="14"></i> Использованы данные с замещением</span>' : 
+                                    ''}
+                            </div>
+                        </div>
+                    </div>
+                `);
+                
+                $('#comparisonCharts').append(card);
+                renderStackedChart(series, selectedMetal, chartId, selectedMethod);
+            });
+            
+            // Initialize Feather icons in the new content
+            feather.replace();
+            
+            // Hide selection modal and show results
+            $('#compareModal').modal('hide');
+            $('#resultModal').modal('show');
+        }
+        
+        function showDataInfo() {
+            const infoAlert = $('#dataInfoAlert');
+            const infoMessage = $('#dataInfoMessage');
+            
+            if (seriesData.length > 0) {
+                const total = seriesData.length;
+                const withFallback = seriesData.filter(s => s.probe_availability.used_fallback).length;
+                const percentage = total > 0 ? Math.round((withFallback / total) * 100) : 0;
+                
+                if (withFallback > 0) {
+                    infoMessage.html(`
+                        <strong>Внимание:</strong> В ${withFallback} из ${total} серий (${percentage}%) 
+                        использованы данные с замещением (fallback) из стадии 5, так как пробы стадии 6 отсутствовали. 
+                        Это может повлиять на точность баланса для стадии 6.
+                    `);
+                    infoAlert.removeClass('alert-info').addClass('alert-warning').show();
+                } else {
+                    infoMessage.html(`
+                        Загружено ${total} серий проб. Все данные полные, без замещения пропущенных проб.
+                        <br><small>Для просмотра данных разных методов анализа используйте переключатели в заголовках карточек серий.</small>
+                    `);
+                    infoAlert.removeClass('alert-warning').addClass('alert-info').show();
+                }
+            } else {
+                infoAlert.hide();
+            }
+        }
+        
+        function renderDoughnutChart(series, metal, canvasId, method) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            
+            // Добавляем суффикс метода к названию металла
+            const metalWithMethod = metal.endsWith(`_${method}`) ? metal : `${metal}_${method}`;
+            
+            // Проверяем, есть ли данные для этого металла и метода
+            let balance = { E_pct: 0, D_pct: 0, G_pct: 0, Loss_pct: 0 };
+            if (series.elements[metalWithMethod]) {
+                balance = series.elements[metalWithMethod].balance;
+            } else if (series.elements[metal]) {
+                balance = series.elements[metal].balance;
+            }
+            
+            const dataValues = [
+                balance.E_pct,
+                balance.D_pct,
+                balance.G_pct,
+                balance.Loss_pct < 0 ? 0 : balance.Loss_pct
+            ];
+
+            // Get metal name without method suffix
+            const baseMetalId = metal.replace(/_(AES|MS)$/, '');
+            const metalName = METALS.find(m => m.id === baseMetalId)?.name || baseMetalId;
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Продукт E (ЖКК)', 'Продукт D (Кам.)', 'Оборот G', 'Потери/Невязка'],
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: [
+                            PRODUCT_COLORS['E'], 
+                            PRODUCT_COLORS['D'], 
+                            PRODUCT_COLORS['G'], 
+                            '#ef4444'
+                        ],
+                        borderWidth: 2,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: `Распределение баланса ${metalName} (%)`,
+                            font: { size: 14, weight: 'bold' }
+                        },
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) {
+                                    let value = ctx.raw || 0;
+                                    return ' ' + ctx.label + ': ' + value.toFixed(2) + '%';
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+        
+        function updateSidebarActiveState() {
+            const scrollPosition = $(window).scrollTop() + 100; // Offset for header
+            
+            $('.nav-link[data-series-id]').removeClass('active');
+            
+            // Find the series card that is currently in view
+            let activeSeriesId = null;
+            $('.series-card').each(function() {
+                const cardTop = $(this).offset().top;
+                const cardBottom = cardTop + $(this).outerHeight();
+                
+                if (scrollPosition >= cardTop && scrollPosition < cardBottom) {
+                    activeSeriesId = $(this).attr('id').replace('series-', '');
+                    return false; // Break the loop
+                }
+            });
+            
+            // Activate the corresponding nav link
+            if (activeSeriesId) {
+                $(`.nav-link[data-series-id="${activeSeriesId}"]`).addClass('active');
+            }
+        }
+
+        // Cleanup on page unload
+        $(window).on('beforeunload', function() {
+            // Destroy all chart instances to prevent memory leaks
+            chartInstances.forEach(chart => chart.destroy());
+        });
+    </script>
+</body>
+</html>
