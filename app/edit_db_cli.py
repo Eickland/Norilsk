@@ -5,7 +5,7 @@ CLI интерфейс для редактирования базы данных
 
 import argparse
 import sys
-from database_editor import DatabaseEditor
+from app.database_editor import DatabaseEditor
 
 def main():
     parser = argparse.ArgumentParser(
