@@ -32,7 +32,6 @@ BASE_DIR = Path(__file__).parent.parent
 
 app = Flask(__name__, template_folder=str(BASE_DIR /'src'/ 'templates'), static_folder=str(BASE_DIR /'src'/ 'static'))
 CORS(app)
-
 # Черный список полей, которые не должны отображаться как оси
 BLACKLIST_FIELDS = {
     "Описание", "is_solid", "id", "last_normalized", 

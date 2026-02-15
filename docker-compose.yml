@@ -6,8 +6,8 @@ services:
     restart: always
     volumes:
       - ./data:/data
-      - ./templates:/src/templates
-      - ./static:/src/static
+      - ./src/templates:/src/templates
+      - ./src/static:/src/static
     environment:
       - PYTHONUNBUFFERED=1
 
