@@ -7,5 +7,5 @@ scipy
 openpyxl
 plotly
 flask_cors
-pyms
+pymc
 arviz
