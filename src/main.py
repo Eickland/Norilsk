@@ -8,7 +8,7 @@ from handlers.ISP_MS import process_metal_samples_csv, expand_sample_code
 from handlers.ISP_AES import process_icp_aes_data
 from mass_balance.phase_calculate import calculate_fields_for_series
 from mass_balance.mass_calculate import recalculate_metal_mass
-from middleware.series_worker import get_series_probes, get_source_class_from_probe, get_probe_type
+from middleware.series_worker import get_series_dicts, get_source_class_from_probe, get_probe_type
 import pandas as pd
 from version_control.version_control import VersionControlSystem
 from io import BytesIO
@@ -2560,240 +2560,240 @@ def render_mass():
 
 @app.route('/api/calculate_balance')
 def calculate_balance():
-    probes = load_data().get("probes", [])
-    # Создаем словарь для быстрого поиска: "NAME": {probe_data}
-    probe_map = {p['name']: p for p in probes}
+    
+    # Получаем все серии с start_C
+    series_dicts = get_series_dicts()
     
     series_list = []
     
-    # Регулярное выражение для поиска "нулевых" образцов вида T2-{m}C{n}
-    # Пример: T2-4C1 -> m=4, n=1
-    root_pattern = re.compile(r"^T2-(\d+)C(\d+)$")
-
-    for probe in probes:
-        match = root_pattern.match(probe['name'])
-        if match:
-            m = match.group(1)  # Номер методики
-            n = match.group(2)  # Номер повторности
+    for series in series_dicts:
+        # Находим start_C пробу для определения m и n
+        start_c_probe = series.get('start_C')
+        if not start_c_probe:
+            continue
             
-            # Определяем имена проб для данной серии
-            names = {
-                # Исходные (Input)
-                "start_A": f"T2-{m}A{n}",
-                "start_B": f"T2-{m}B{n}",
-                
-                # Стадия 2
-                "st2_A": f"T2-L{m}A{n}",
-                "st2_B": f"T2-L{m}B{n}",
-                
-                # Стадия 3
-                "st3_A": f"T2-L{m}P{m}A{n}",
-                "st3_B": f"T2-L{m}P{m}B{n}",
-                
-                # Стадия 4
-                "st4_A": f"T2-L{m}P{m}F{m}A{n}",
-                "st4_B": f"T2-L{m}P{m}F{m}B{n}",
-                "st4_D": f"T2-L{m}P{m}F{m}D{n}",
-                
-                # Стадия 5
-                "st5_A": f"T2-L{m}P{m}F{m}N{m}A{n}",  # Оборотная жидкость
-                "st5_B": f"T2-L{m}P{m}F{m}N{m}B{n}",
-                
-                # Стадия 6 (ЖКК)
-                "st6_E": f"T2-L{m}P{m}F{m}N{m}E{n}",
-                "st6_G": f"T2-L{m}P{m}F{m}N{m}G{n}"  # Новая оборотная жидкость
-            }
-
-            # Вспомогательная функция для получения значения пробы с учетом правил связи стадий
-            def get_probe_value_with_fallback(probe_name, element, fallback_rules=None, method_suffix=""):
-                """
-                Получает значение элемента из пробы.
-                Если проба не найдена и заданы правила fallback, ищет альтернативную пробу.
-                """
-                # Пытаемся получить значение из целевой пробы (с суффиксом метода)
-                element_with_suffix = f"{element}{method_suffix}" if method_suffix else element
-                value = get_probe_value(probe_map, probe_name, element_with_suffix)
-                
-                # Если значение найдено (не ноль) или правила fallback не заданы - возвращаем
-                if value != 0 or not fallback_rules:
-                    return value
-                
-                # Применяем правила fallback
-                for fallback_name in fallback_rules:
-                    fallback_value = get_probe_value(probe_map, fallback_name, element_with_suffix)
-                    if fallback_value != 0:
-                        # Записываем информацию о том, откуда взято значение
-                        if probe_name in probe_map:
-                            probe_map[probe_name].setdefault('fallback_info', {})[element_with_suffix] = {
-                                'source': fallback_name,
-                                'value': fallback_value
-                            }
-                        return fallback_value
-                
-                return 0
-
-            # Правила связи между стадиями 5 и 6:
-            fallback_rules_st6 = {
-                "st6_E": [names["st5_B"]],  # E из 6 стадии можно взять из B 5 стадии
-                "st6_G": [names["st5_A"]]   # G из 6 стадии можно взять из A 5 стадии
-            }
-
-            # Базовые элементы без суффиксов
-            base_elements = ['Fe', 'Cu', 'Ni', 'Pd', 'Pt', 'Rh', 'Au', 'Ag', 'Os', 'Ru', 'Ir','K','Al','Mg','Co','Zn','Ca','Mn']
+        # Получаем информацию о типе пробы
+        probe_type_info = get_probe_type(start_c_probe)
+        if not probe_type_info:
+            continue
             
-            # Массы с суффиксами методов
-            elements_aes = [f'm{element}_AES' for element in base_elements]
-            elements_ms = [f'm{element}_MS' for element in base_elements]
-            elements_base = [f'm{element}' for element in base_elements]  # Для совместимости
+        probe_type, m, n = probe_type_info
+        source_class = get_source_class_from_probe(start_c_probe)
+        
+        # Формируем словарь с именами проб для данной серии
+        names = {
+            "start_A": series.get('start_A', {}).get('name', ''),
+            "start_B": series.get('start_B', {}).get('name', ''),
+            "st2_A": series.get('st2_A', {}).get('name', ''),
+            "st2_B": series.get('st2_B', {}).get('name', ''),
+            "st3_A": series.get('st3_A', {}).get('name', ''),
+            "st3_B": series.get('st3_B', {}).get('name', ''),
+            "st4_A": series.get('st4_A', {}).get('name', ''),
+            "st4_B": series.get('st4_B', {}).get('name', ''),
+            "st4_D": series.get('st4_D', {}).get('name', ''),
+            "st5_A": series.get('st5_A', {}).get('name', ''),
+            "st5_B": series.get('st5_B', {}).get('name', ''),
+            "st6_E": series.get('st6_E', {}).get('name', ''),
+            "st6_G": series.get('st6_G', {}).get('name', '')
+        }
+        
+        # Создаем probe_map для быстрого доступа к пробам
+        probe_map = {}
+        for probe in series.values():
+            if probe and 'name' in probe:
+                probe_map[probe['name']] = probe
+        
+        # Вспомогательная функция для получения значения пробы с учетом правил связи стадий
+        def get_probe_value_with_fallback(probe_name, element, fallback_rules=None, method_suffix=""):
+            """
+            Получает значение элемента из пробы.
+            Если проба не найдена и заданы правила fallback, ищет альтернативную пробу.
+            """
+            # Пытаемся получить значение из целевой пробы (с суффиксом метода)
+            element_with_suffix = f"{element}{method_suffix}" if method_suffix else element
+            value = get_probe_value(probe_map, probe_name, element_with_suffix)
             
-            series_data = {
-                "id": f"Series-{m}-{n}",
-                "method": m,
-                "repeat": n,
-                "elements": {},
-                "probe_availability": {
-                    "st5_A": names["st5_A"] in probe_map,
-                    "st5_B": names["st5_B"] in probe_map,
-                    "st6_E": names["st6_E"] in probe_map,
-                    "st6_G": names["st6_G"] in probe_map,
-                    "used_fallback": False
-                }
-            }
-
-            # Функция для расчета данных для набора элементов
-            def calculate_for_elements(elements_list, method_suffix=""):
-                elements_data = {}
-                
-                for element in elements_list:
-                    # Базовое имя элемента (без m и суффикса метода)
-                    base_element_name = element.replace('m', '').replace('_AES', '').replace('_MS', '')
-                    
-                    # 1. Расчет входной массы (Input)
-                    input_val = get_probe_value(probe_map, names["start_A"], element) + \
-                                get_probe_value(probe_map, names["start_B"], element)
-                    
-                    # 2. Расчет выходных продуктов для баланса с учетом fallback правил
-                    out_D = get_probe_value(probe_map, names["st4_D"], element)  # Камерный
-                    
-                    # Используем значения с fallback для стадии 6
-                    out_E = get_probe_value_with_fallback(
-                        names["st6_E"], 
-                        base_element_name, 
-                        fallback_rules_st6["st6_E"],
-                        method_suffix
-                    )
-                    
-                    out_G = get_probe_value_with_fallback(
-                        names["st6_G"], 
-                        base_element_name, 
-                        fallback_rules_st6["st6_G"],
-                        method_suffix
-                    )
-                    
-                    # Оборотная жидкость
-                    out_Recycle = out_G
-                    
-                    total_out = out_D + get_probe_value(probe_map, names["st6_E"], element) + out_Recycle
-                    loss = input_val - total_out
-                    
-                    # Предотвращение деления на ноль
-                    calc_base = input_val if input_val != 0 else 1
-
-                    # 3. Расчет стадий (Bar Plot Data)
-                    stages = []
-                    # Стадия 1
-                    stages.append({
-                        'A': get_probe_value(probe_map, names["start_A"], element),
-                        'B': get_probe_value(probe_map, names["start_B"], element),
-                        'D': 0.0, 'E': 0.0, 'G': 0.0
-                    })
-                    # Стадия 2
-                    stages.append({
-                        'A': get_probe_value(probe_map, names["st2_A"], element),
-                        'B': get_probe_value(probe_map, names["st2_B"], element),
-                        'D': 0.0, 'E': 0.0, 'G': 0.0
-                    })
-                    # Стадия 3
-                    stages.append({
-                        'A': get_probe_value(probe_map, names["st3_A"], element),
-                        'B': get_probe_value(probe_map, names["st3_B"], element),
-                        'D': 0.0, 'E': 0.0, 'G': 0.0
-                    })
-                    # Стадия 4
-                    stages.append({
-                        'A': get_probe_value(probe_map, names["st4_A"], element),
-                        'B': get_probe_value(probe_map, names["st4_B"], element),
-                        'D': get_probe_value(probe_map, names["st4_D"], element),
-                        'E': 0.0, 'G': 0.0
-                    })
-                    # Стадия 5
-                    stages.append({
-                        'A': get_probe_value(probe_map, names["st5_A"], element),
-                        'B': get_probe_value(probe_map, names["st5_B"], element),
-                        'D': 0.0, 'E': 0.0, 'G': 0.0
-                    })
-                    # Стадия 6 (с учётом fallback)
-                    stages.append({
-                        'A': 0.0, 'B': 0.0, 'D': 0.0,
-                        'E': get_probe_value(probe_map, names["st6_E"], element),
-                        'G': out_G
-                    })
-
-                    # Округление значений
-                    for stage in stages:
-                        for k in stage:
-                            stage[k] = round(stage[k], 9)
-
-                    # Определяем, использовались ли fallback значения
-                    element_for_check = f"m{base_element_name}{method_suffix}"
-                    used_fallback_E = (out_E != 0 and get_probe_value(probe_map, names["st6_E"], element_for_check) == 0 
-                                      and out_E == get_probe_value(probe_map, names["st5_B"], element_for_check))
-                    used_fallback_G = (out_G != 0 and get_probe_value(probe_map, names["st6_G"], element_for_check) == 0 
-                                      and out_G == get_probe_value(probe_map, names["st5_A"], element_for_check))
-                    
-                    if used_fallback_E or used_fallback_G:
-                        series_data["probe_availability"]["used_fallback"] = True
-
-                    elements_data[element] = {
-                        "balance": {
-                            "input": round(input_val, 9),
-                            "D": round(out_D, 9),         # Камерный продукт
-                            "E": get_probe_value(probe_map, names["st6_E"], element),         # Продукт E
-                            "G": round(out_G, 9),         # Оборотная жидкость G
-                            "Recycle": round(out_Recycle, 9),
-                            "Loss": round(loss, 9),
-                            "D_pct": round((out_D / calc_base) * 100, 9),
-                            "E_pct": round((get_probe_value(probe_map, names["st6_E"], element) / calc_base) * 100, 9),
-                            "G_pct": round((out_G / calc_base) * 100, 9),
-                            "Recycle_pct": round((out_Recycle / calc_base) * 100, 9),
-                            "Loss_pct": round((loss / calc_base) * 100, 9),
-                            "fallback_used": {
-                                "E": used_fallback_E,
-                                "G": used_fallback_G
-                            }
-                        },
-                        "stages": stages,
-                        "probe_details": {
-                            "st5_A": get_probe_value(probe_map, names["st5_A"], element),
-                            "st5_B": get_probe_value(probe_map, names["st5_B"], element),
-                            "st6_E": get_probe_value(probe_map, names["st6_E"], element),
-                            "st6_G": get_probe_value(probe_map, names["st6_G"], element),
-                            "st6_E_actual": get_probe_value(probe_map, names["st6_E"], element),
-                            "st6_G_actual": get_probe_value(probe_map, names["st6_G"], element),
-                            "st6_E_used": get_probe_value(probe_map, names["st6_E"], element),
-                            "st6_G_used": get_probe_value(probe_map, names["st6_G"], element)
+            # Если значение найдено (не ноль) или правила fallback не заданы - возвращаем
+            if value != 0 or not fallback_rules:
+                return value
+            
+            # Применяем правила fallback
+            for fallback_name in fallback_rules:
+                fallback_value = get_probe_value(probe_map, fallback_name, element_with_suffix)
+                if fallback_value != 0:
+                    # Записываем информацию о том, откуда взято значение
+                    if probe_name in probe_map:
+                        probe_map[probe_name].setdefault('fallback_info', {})[element_with_suffix] = {
+                            'source': fallback_name,
+                            'value': fallback_value
                         }
-                    }
-                
-                return elements_data
-
-            # Рассчитываем данные для всех методов
-            series_data["elements"].update(calculate_for_elements(elements_aes, "_AES"))
-            series_data["elements"].update(calculate_for_elements(elements_ms, "_MS"))
-            series_data["elements"].update(calculate_for_elements(elements_base, ""))  # Базовые данные
+                    return fallback_value
             
-            series_list.append(series_data)
-
+            return 0
+        
+        # Правила связи между стадиями 5 и 6:
+        fallback_rules_st6 = {
+            "st6_E": [names["st5_B"]],  # E из 6 стадии можно взять из B 5 стадии
+            "st6_G": [names["st5_A"]]   # G из 6 стадии можно взять из A 5 стадии
+        }
+        
+        # Базовые элементы без суффиксов
+        base_elements = ['Fe', 'Cu', 'Ni', 'Pd', 'Pt', 'Rh', 'Au', 'Ag', 'Os', 'Ru', 'Ir', 'K', 'Al', 'Mg', 'Co', 'Zn', 'Ca', 'Mn']
+        
+        # Массы с суффиксами методов
+        elements_aes = [f'm{element}_AES' for element in base_elements]
+        elements_ms = [f'm{element}_MS' for element in base_elements]
+        elements_base = [f'm{element}' for element in base_elements]
+        
+        series_data = {
+            "id": f"Series-{source_class}-{m}-{n}",
+            "source_class": source_class,
+            "method": m,
+            "repeat": n,
+            "elements": {},
+            "probe_availability": {
+                "st5_A": names["st5_A"] in probe_map,
+                "st5_B": names["st5_B"] in probe_map,
+                "st6_E": names["st6_E"] in probe_map,
+                "st6_G": names["st6_G"] in probe_map,
+                "used_fallback": False
+            }
+        }
+        
+        # Функция для расчета данных для набора элементов
+        def calculate_for_elements(elements_list, method_suffix=""):
+            elements_data = {}
+            
+            for element in elements_list:
+                # Базовое имя элемента (без m и суффикса метода)
+                base_element_name = element.replace('m', '').replace('_AES', '').replace('_MS', '')
+                
+                # 1. Расчет входной массы (Input)
+                input_val = get_probe_value(probe_map, names["start_A"], element) + \
+                            get_probe_value(probe_map, names["start_B"], element)
+                
+                # 2. Расчет выходных продуктов для баланса с учетом fallback правил
+                out_D = get_probe_value(probe_map, names["st4_D"], element)  # Камерный
+                
+                # Используем значения с fallback для стадии 6
+                out_E = get_probe_value_with_fallback(
+                    names["st6_E"], 
+                    base_element_name, 
+                    fallback_rules_st6["st6_E"],
+                    method_suffix
+                )
+                
+                out_G = get_probe_value_with_fallback(
+                    names["st6_G"], 
+                    base_element_name, 
+                    fallback_rules_st6["st6_G"],
+                    method_suffix
+                )
+                
+                # Оборотная жидкость
+                out_Recycle = out_G
+                
+                total_out = out_D + get_probe_value(probe_map, names["st6_E"], element) + out_Recycle
+                loss = input_val - total_out
+                
+                # Предотвращение деления на ноль
+                calc_base = input_val if input_val != 0 else 1
+                
+                # 3. Расчет стадий (Bar Plot Data)
+                stages = []
+                # Стадия 1
+                stages.append({
+                    'A': get_probe_value(probe_map, names["start_A"], element),
+                    'B': get_probe_value(probe_map, names["start_B"], element),
+                    'D': 0.0, 'E': 0.0, 'G': 0.0
+                })
+                # Стадия 2
+                stages.append({
+                    'A': get_probe_value(probe_map, names["st2_A"], element),
+                    'B': get_probe_value(probe_map, names["st2_B"], element),
+                    'D': 0.0, 'E': 0.0, 'G': 0.0
+                })
+                # Стадия 3
+                stages.append({
+                    'A': get_probe_value(probe_map, names["st3_A"], element),
+                    'B': get_probe_value(probe_map, names["st3_B"], element),
+                    'D': 0.0, 'E': 0.0, 'G': 0.0
+                })
+                # Стадия 4
+                stages.append({
+                    'A': get_probe_value(probe_map, names["st4_A"], element),
+                    'B': get_probe_value(probe_map, names["st4_B"], element),
+                    'D': get_probe_value(probe_map, names["st4_D"], element),
+                    'E': 0.0, 'G': 0.0
+                })
+                # Стадия 5
+                stages.append({
+                    'A': get_probe_value(probe_map, names["st5_A"], element),
+                    'B': get_probe_value(probe_map, names["st5_B"], element),
+                    'D': 0.0, 'E': 0.0, 'G': 0.0
+                })
+                # Стадия 6 (с учётом fallback)
+                stages.append({
+                    'A': 0.0, 'B': 0.0, 'D': 0.0,
+                    'E': get_probe_value(probe_map, names["st6_E"], element),
+                    'G': out_G
+                })
+                
+                # Округление значений
+                for stage in stages:
+                    for k in stage:
+                        stage[k] = round(stage[k], 9)
+                
+                # Определяем, использовались ли fallback значения
+                element_for_check = f"m{base_element_name}{method_suffix}"
+                used_fallback_E = (out_E != 0 and get_probe_value(probe_map, names["st6_E"], element_for_check) == 0 
+                                  and out_E == get_probe_value(probe_map, names["st5_B"], element_for_check))
+                used_fallback_G = (out_G != 0 and get_probe_value(probe_map, names["st6_G"], element_for_check) == 0 
+                                  and out_G == get_probe_value(probe_map, names["st5_A"], element_for_check))
+                
+                if used_fallback_E or used_fallback_G:
+                    series_data["probe_availability"]["used_fallback"] = True
+                
+                elements_data[element] = {
+                    "balance": {
+                        "input": round(input_val, 9),
+                        "D": round(out_D, 9),
+                        "E": get_probe_value(probe_map, names["st6_E"], element),
+                        "G": round(out_G, 9),
+                        "Recycle": round(out_Recycle, 9),
+                        "Loss": round(loss, 9),
+                        "D_pct": round((out_D / calc_base) * 100, 9),
+                        "E_pct": round((get_probe_value(probe_map, names["st6_E"], element) / calc_base) * 100, 9),
+                        "G_pct": round((out_G / calc_base) * 100, 9),
+                        "Recycle_pct": round((out_Recycle / calc_base) * 100, 9),
+                        "Loss_pct": round((loss / calc_base) * 100, 9),
+                        "fallback_used": {
+                            "E": used_fallback_E,
+                            "G": used_fallback_G
+                        }
+                    },
+                    "stages": stages,
+                    "probe_details": {
+                        "st5_A": get_probe_value(probe_map, names["st5_A"], element),
+                        "st5_B": get_probe_value(probe_map, names["st5_B"], element),
+                        "st6_E": get_probe_value(probe_map, names["st6_E"], element),
+                        "st6_G": get_probe_value(probe_map, names["st6_G"], element),
+                        "st6_E_actual": get_probe_value(probe_map, names["st6_E"], element),
+                        "st6_G_actual": get_probe_value(probe_map, names["st6_G"], element),
+                        "st6_E_used": get_probe_value(probe_map, names["st6_E"], element),
+                        "st6_G_used": get_probe_value(probe_map, names["st6_G"], element)
+                    }
+                }
+            
+            return elements_data
+        
+        # Рассчитываем данные для всех методов
+        series_data["elements"].update(calculate_for_elements(elements_aes, "_AES"))
+        series_data["elements"].update(calculate_for_elements(elements_ms, "_MS"))
+        series_data["elements"].update(calculate_for_elements(elements_base, ""))
+        
+        series_list.append(series_data)
+    
     # Добавляем общую статистику по использованию fallback
     if series_list:
         total_series = len(series_list)
@@ -2805,9 +2805,8 @@ def calculate_balance():
                 "series_with_fallback": series_with_fallback,
                 "fallback_percentage": round((series_with_fallback / total_series * 100), 2) if total_series > 0 else 0
             }
-
+    
     return jsonify(series_list)
-
 # Вспомогательная функция для получения значений из проб
 def get_probe_value(probe_map, probe_name, element_key):
     """
