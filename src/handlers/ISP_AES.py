@@ -2,75 +2,13 @@ import pandas as pd
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 from typing import Any, Dict, List, Set, Tuple, Optional
-import re
 import traceback
+import re
 
-black_list_column = ['Разбавление','sample_mass','Масса навески (g)','Valiq, ml']
+from middleware.raw_data_processing import expand_sample_code, get_base_name, merge_similar_samples, clean_value_icp_aes
 
-def expand_sample_code(sample_name):
-    """Восстанавливает полный шифр пробы из короткого"""
-    if pd.isna(sample_name):
-        return sample_name
-    
-    sample_str = str(sample_name)
-    
-    # Извлекаем компоненты из короткого имени
-    # Формат: T2-4C1 или T2-P4A1
-    pattern = r'(T\d+)-([LPFN]?)(\d+)([A-Z])(\d+)'
-    match = re.match(pattern, sample_str)
-    
-    if not match:
-        # Если не соответствует паттерну, возвращаем как есть
-        return sample_str
-    
-    prefix = match.group(1)  # T2
-    stage = match.group(2)   # стадия (может быть пусто)
-    method_num = match.group(3)  # номер методики (5)
-    product_type = match.group(4)  # тип продукта (A)
-    repeat_num = match.group(5)  # номер повторности (2)
-    
-    # Если стадия не указана или это L - возвращаем как есть
-    if not stage or stage == 'L':
-        return sample_str
-    
-    # Определяем порядок стадий и какие нужно добавить
-    stages_order = ['L', 'P', 'F', 'N']
-    
-    # Находим индекс указанной стадии
-    target_index = stages_order.index(stage)
-    
-    # Берем все стадии от L до указанной включительно
-    needed_stages = stages_order[:target_index + 1]
-    
-    # Формируем строку стадий с номером методики
-    stages_str = ''.join([f"{s}{method_num}" for s in needed_stages])
-    
-    # Собираем полное имя
-    full_code = f"{prefix}-{stages_str}{product_type}{repeat_num}"
-    
-    return full_code
+black_list_column = ['Разбавление', 'sample_mass', 'Масса навески (g)', 'Valiq, ml']
 
-def merge_similar_samples(group_df):
-    """Объединяет похожие пробы, усредняя значения"""
-    if len(group_df) == 1:
-        return group_df.iloc[0]
-    
-    # Усредняем все числовые столбцы
-    avg_row = group_df.mean(numeric_only=True)
-    avg_row['name'] = group_df['name'].iloc[0][:-1]  # Убираем последнюю цифру
-    return avg_row
-
-def get_base_name(sample_name):
-    """Извлекает базовое имя пробы (без последней цифры)"""
-    if pd.isna(sample_name):
-        return sample_name
-    
-    sample_str = str(sample_name)
-    # Проверяем, заканчивается ли на две цифры
-    if re.search(r'\d\d$', sample_str):
-        return sample_str[:-1]  # Убираем последнюю цифру
-    return sample_str
-    
 def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Обрабатывает данные ИСП АЭС и интегрирует с базой данных
@@ -84,59 +22,22 @@ def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -
     """
     # Чтение данных из CSV файла
     df = pd.read_csv(file_path, sep=';', decimal='.', encoding='utf-8')
-    df.rename(columns={f'{df.columns[0]}':'name'},inplace=True)
+    df.rename(columns={f'{df.columns[0]}': 'name'}, inplace=True)
     
     # Удаление строк, где в столбце 'name' есть 'некал' или пустые строки
-    df = df[~df[df.columns[0]].astype(str).str.contains('некал', case=False, na=False)]
-    df = df[df[df.columns[0]].astype(str).str.strip() != '']
-    
-    # Функция для очистки значений в ячейках
-    def clean_value(val):
-        if pd.isna(val):
-            return 0
-        val_str = str(val).strip()
-        
-        # Если содержит 'некал' - возвращаем NaN для последующего удаления
-        if 'некал' in val_str.lower():
-            return np.nan
-        
-        # Если содержит 'uv' или 'ox' - возвращаем 0
-        if 'uv' in val_str.lower():
-            return 0
-        
-        # Если содержит 'x' - удаляем 'x' и оставляем число
-        if 'ox' in val_str.lower():
-            cleaned = val_str.lower().replace('ox', '').strip()
-            try:
-                return float(cleaned)
-            except:
-                raise ValueError('Ошибка удаления ox')
-                   
-        # Если содержит 'x' - удаляем 'x' и оставляем число
-        if 'x' in val_str.lower():
-            cleaned = val_str.lower().replace('x', '').strip()
-            try:
-                return float(cleaned)
-            except:
-                print(cleaned)
-                raise ValueError('Ошибка удаления x')
-        
-        # Пытаемся преобразовать в число
-        try:
-            val_str = val_str.replace(',', '.')
-            return float(val_str)
-        except:
-            return 0
+    df = df[~df['name'].astype(str).str.contains('некал', case=False, na=False)]
+    df = df[df['name'].astype(str).str.strip() != '']
     
     black_dict = {}
     
-    # Применяем очистку ко всем столбцам, кроме 'Проб' и 'name'
+    # Применяем очистку ко всем столбцам, кроме 'name'
     for col in df.columns:
-        if col not in ['Проб', 'name']:
-            df[col] = df[col].apply(clean_value)
+        if col != 'name':
+            df[col] = df[col].apply(clean_value_icp_aes)
     
     # Удаляем строки, где все значения NaN (после удаления 'некал')
-    df = df.dropna(how='all', subset=[col for col in df.columns if col not in ['Проб', 'name']])
+    df = df.dropna(how='all', subset=[col for col in df.columns if col != 'name'])
+    
     # Применяем группировку и объединение
     df['BaseName'] = df['name'].apply(get_base_name)
     
@@ -151,19 +52,19 @@ def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -
     
     df = pd.DataFrame(merged_rows)
     df = df.drop(columns=['BaseName'], errors='ignore')
- 
+    
     df['name'] = df['name'].apply(expand_sample_code)
-
+    
     for col in df.columns:
         if col in black_list_column:
             black_dict[col] = df[col].to_list()
-            df.drop(columns=col,inplace=True)
+            df.drop(columns=col, inplace=True)
     
     # Определяем металлы и их длины волн
     metal_wavelengths = {}
     
     for col in df.columns:
-        if col not in ['Проб', 'name']:
+        if col != 'name':
             parts = col.split(' ')
             if len(parts) >= 2:
                 metal = parts[0]
@@ -296,7 +197,6 @@ def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -
     if 'Масса навески (g)' in final_df.columns:
         final_df['Масса навески (g)'] = final_df['Масса навески (g)'].apply(lambda x: x/1000 if x > 80 else x)
     
-
     return final_df, wavelengths_df
 
 # Пример использования функции

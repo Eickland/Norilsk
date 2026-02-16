@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 from middleware.series_worker import get_probe_type, get_probe_from_type, get_source_class_from_probe
 from app.params import settings
+import traceback
 
 BASE_DIR = Path(__file__).parent.parent.parent
 DATA_FILE = BASE_DIR / 'data' / 'data.json'
@@ -62,6 +63,7 @@ def get_suspension_data(probe_c: Dict[str, Any]) -> Tuple[float, float, float]:
 # --- Основная функция ---
 
 def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
+    print('работаем')
     try:
         with open(data_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -74,10 +76,14 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
         stats = {'total_series': 0, 'updated_probes': 0, 'calculated_fields': 0, 'missing_probes': [], 'errors': []}
         
         for probe in probes:
-            probe_type, m, n = get_probe_type(probe) # type: ignore
-            if not (probe_type and m and n): continue
+            probe_type_out = get_probe_type(probe) # type: ignore
+            if probe_type_out is not None:
+                probe_type, m ,n = probe_type_out
+            else:
+                continue
             
             source_class = get_source_class_from_probe(probe)
+            
             
             if source_class is not None:
                 
@@ -213,4 +219,6 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
         return {'success': True, 'message': f"Обновлено {stats['updated_probes']} проб", **stats}
 
     except Exception as e:
+        traceback.print_exc()
         return {'success': False, 'message': str(e)}
+        

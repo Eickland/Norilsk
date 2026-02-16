@@ -9,12 +9,10 @@ DATA_FILE = BASE_DIR / 'data' / 'data.json'
 def get_source_class_from_probe(probe:dict) -> str|None:
     
     probe_name = probe.get('name', '')        
-    if not probe_name:
-        return
+    if probe_name:
 
-    split_name = probe_name.split(sep='-')
-    
-    return split_name[0]
+        split_name = probe_name.split(sep='-')
+        return split_name[0]
 
 def get_probe_type(probe) -> tuple[str,int,int]|None:
     
@@ -41,26 +39,23 @@ def get_probe_type(probe) -> tuple[str,int,int]|None:
     }    
     
     probe_name = probe.get('name', '')        
-    if not probe_name:
-        return
+    if probe_name:
     
-    m = None
-    n = None
-    probe_type = None
-    
-    # Определяем тип пробы
-    for pattern_name, pattern in patterns.items():
-        match = pattern.match(probe_name)
-        if match:
-            probe_type = pattern_name
-            m = int(match.group(1))  # Номер методики
-            n = int(match.group(2))  # Номер повторности
-            break
-    
-    if not probe_type or not m or not n:
-        return
-
-    return probe_type, m, n
+        m = None
+        n = None
+        probe_type = None
+        
+        # Определяем тип пробы
+        for pattern_name, pattern in patterns.items():
+            match = pattern.match(probe_name)
+            if match:
+                probe_type = pattern_name
+                m = int(match.group(1))  # Номер методики
+                n = int(match.group(2))  # Номер повторности
+                break
+        
+        if probe_type and m and n:
+            return probe_type, m, n
 
 def get_probe_from_type(type:str, method_number: int, exp_number:int, data_file: str = str(DATA_FILE)) -> dict|None:
 
@@ -74,9 +69,11 @@ def get_probe_from_type(type:str, method_number: int, exp_number:int, data_file:
         raise ValueError('Нет базы данных или она пуста')
 
     for probe in probes:
-        
-        real_type, real_method, real_exp_number = get_probe_type(probe) # type: ignore
-        
+        get_probe_type_out = get_probe_type(probe)
+        if get_probe_type_out is not None:
+            real_type, real_method, real_exp_number = get_probe_type_out # type: ignore
+        else:
+            continue
         if type == real_type and method_number == real_method and exp_number == real_exp_number:
             return probe
     
