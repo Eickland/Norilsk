@@ -8,7 +8,7 @@ from handlers.ISP_MS import process_metal_samples_csv, expand_sample_code
 from handlers.ISP_AES import process_icp_aes_data
 from mass_balance.phase_calculate import calculate_fields_for_series
 from mass_balance.mass_calculate import recalculate_metal_mass
-from middleware.series_worker import get_series_dicts, get_source_class_from_probe, get_probe_type
+from middleware.series_worker import get_series_dicts, get_source_class_from_probe, get_probe_type,get_type_name_from_pattern_type
 from mass_balance.series_analyzer import analyze_series, get_series_summary, FIELD_VALIDATION_CONFIG
 import pandas as pd
 from version_control.version_control import VersionControlSystem
@@ -3372,7 +3372,7 @@ def get_series_details(series_id):
         # Добавляем информацию о пробах
         for probe_type, probe_info in target_series.probes_by_type.items():
             probe_data = {
-                'type': probe_type,
+                'type': get_type_name_from_pattern_type(probe_type),
                 'name': probe_info.probe.get('name', 'Unknown'),
                 'data': {k: v for k, v in probe_info.probe.items() if k != 'name'},
                 'warnings': probe_info.warnings

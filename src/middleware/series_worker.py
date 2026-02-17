@@ -26,9 +26,35 @@ PATTERNS = {
     'st6_G': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1N\1G(\d+)$")
 }
 
+TYPE_NAMES = {
+    'start_A' : 'Жидкая фаза исходной пульпы',
+    'start_B' : 'Твердая фаза исходной пульпы',
+    'start_C' : 'Исходная пульпа',
+    'st2_A' : 'Жидкая фаза выщелачивания',
+    'st2_B' : 'Твердая фаза выщелачивания',
+    'st2_C' : 'Выщелачивание',
+    'st3_A' : 'Жидкая фаза сульфидизации',
+    'st3_B' : 'Твердая фаза сульфидизации',
+    'st3_C' : 'Сульфидизация',
+    'st4_A' : 'Жидкая фаза флотации',
+    'st4_B' : 'Твердая фаза флотации',
+    'st4_D' : 'Флотоконцетрат',
+    'st4_C' : 'Флотация',
+    'st5_A' : 'Твердая фаза',
+    'st5_B' : 'Твердая фаза',
+    'st5_C' : 'Твердая фаза',
+    'st6_E' : 'ЖКК',
+    'st6_G' : 'Оборотная жидкость',
+}
+
 
 BASE_DIR = Path(__file__).parent.parent.parent
 DATA_FILE = BASE_DIR / 'data' / 'data.json'
+
+def get_type_name_from_pattern_type(pattern_type):
+    
+    type_name = TYPE_NAMES[pattern_type]
+    return type_name
 
 def get_source_class_from_probe(probe:dict) -> str|None:
     

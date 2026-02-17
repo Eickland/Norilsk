@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ АНАЛИЗАТОР СЕРИЙ ПРОБ ⚡</title>
+    <title>Информация о сериях</title>
     <style>
 
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
@@ -490,7 +490,7 @@
         <!-- Левая панель навигации -->
         <div class="nav-panel" id="navPanel">
             <div class="nav-header">
-                <h2>⚡ СЕРИИ ПРОБ ⚡</h2>
+                <h2>Серии</h2>
                 <div class="stats" id="seriesStats">
                     Загрузка...
                 </div>
@@ -503,7 +503,6 @@
         <!-- Основной контент -->
         <div class="main-content" id="mainContent">
             <div class="header">
-                <div class="subtitle">v.1.0.0 • Система анализа серий</div>
             </div>
             
             <div id="seriesDetails">
@@ -564,7 +563,7 @@
                     <div class="series-meta">
                         <span>${s.probe_count} проб</span>
                         <span class="badge ${s.has_warnings ? 'warning' : ''}">
-                            ${s.has_warnings ? '⚠️ ТРЕВОГА' : 'НОРМА'}
+                            ${s.has_warnings ? '⚠️ Тревога' : 'Норма'}
                         </span>
                     </div>
                     ${s.missing_count > 0 ? `<div style="margin-top: 5px; font-size: 0.7rem; color: #ff5555;">Отсутствует: ${s.missing_types.join(', ')}</div>` : ''}
@@ -642,7 +641,7 @@
                     <div class="warning-banner">
                         <div class="warning-icon">⚠️</div>
                         <div class="warning-text">
-                            ОБНАРУЖЕНЫ АНОМАЛИИ В ПОЛЯХ ДАННЫХ. ТРЕБУЕТСЯ ВНИМАНИЕ ОПЕРАТОРА.
+                            Обнаружены аномалии в полях данных.
                         </div>
                     </div>
                 `;
