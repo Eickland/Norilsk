@@ -18,7 +18,7 @@
                 <h1>PERMINOVA<span class="future">LAB</span> ANALYTICS</h1>
             </div>
             <div class="subtitle">Реестр проб</div>
-            <div class="subtitle">version 1.01</div>
+            <div class="subtitle">version 1.02</div>
         </header>
 
         <!-- Навигационное меню Bootstrap -->
@@ -44,6 +44,10 @@
                         <li class="nav-item">
                             <a class="nav-link {% if request.endpoint == 'render_mass' %}active{% endif %}" 
                                 href="{{ url_for('render_mass') }}">Масс баланс</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'render_analyzer' %}active{% endif %}" 
+                                href="{{ url_for('render_analyzer') }}">Анализ серий</a>
                         </li>
                     </ul>
                 </div>

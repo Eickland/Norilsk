@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ АНАЛИЗАТОР СЕРИЙ ПРОБ ⚡</title>
+    <style>
+        {% for i in range(50) %}
+            {% set left = range(1, 100) | random %}
+            {% set duration = range(10, 30) | random %}
+            {% set delay = range(0, 10) | random %}
+            .particle:nth-child({{ i }}) {
+                left: {{ left }}%;
+                animation-duration: {{ duration }}s;
+                animation-delay: {{ delay }}s;
+            }
+        {% endfor %}
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #1a1f35 100%);
+            color: #e0e5ff;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Футуристический фон с сеткой */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Анимированные частицы */
+        .particle {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: #00ffff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ffff;
+            animation: float 15s infinite linear;
+            opacity: 0.5;
+            z-index: 0;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        /* Создание частиц */
+        for i in range(50):
+            .particle:nth-child({i}) {
+                left: {random}%;
+                animation-duration: {random(10, 30)}s;
+                animation-delay: {random(0, 10)}s;
+            }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Левая панель навигации */
+        .nav-panel {
+            width: 300px;
+            background: rgba(10, 15, 30, 0.85);
+            backdrop-filter: blur(10px);
+            border-right: 2px solid #00ffff;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 100vh;
+            position: sticky;
+            top: 0;
+            box-shadow: 10px 0 30px rgba(0, 255, 255, 0.2);
+            z-index: 2;
+        }
+        
+        .nav-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .nav-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px #00ffff;
+            margin-bottom: 10px;
+        }
+        
+        .nav-header .stats {
+            font-size: 0.9rem;
+            color: #8a9bb5;
+        }
+        
+        .nav-header .stats span {
+            color: #00ffff;
+            font-weight: 700;
+        }
+        
+        .series-nav-list {
+            list-style: none;
+        }
+        
+        .series-nav-item {
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 12px 15px;
+            background: rgba(0, 20, 40, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .series-nav-item::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .series-nav-item:hover::before {
+            left: 100%;
+        }
+        
+        .series-nav-item:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .series-nav-item.active {
+            border-color: #00ffff;
+            background: rgba(0, 40, 80, 0.8);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+        }
+        
+        .series-nav-item.warning {
+            border-left: 4px solid #ffaa00;
+            box-shadow: 0 0 15px rgba(255, 170, 0, 0.3);
+        }
+        
+        .series-nav-item .series-id {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: #00ffff;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .series-nav-item .series-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #8a9bb5;
+        }
+        
+        .series-nav-item .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: rgba(0, 255, 255, 0.2);
+            color: #00ffff;
+            border: 1px solid #00ffff;
+        }
+        
+        .series-nav-item .badge.warning {
+            background: rgba(255, 170, 0, 0.2);
+            color: #ffaa00;
+            border-color: #ffaa00;
+        }
+        
+        /* Основной контент */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            letter-spacing: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 1rem;
+            color: #8a9bb5;
+            letter-spacing: 2px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: #00ffff;
+        }
+        
+        .loading::after {
+            content: "";
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            border: 2px solid #00ffff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error {
+            text-align: center;
+            padding: 50px;
+            color: #ff5555;
+            font-size: 1.2rem;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff5555;
+            border-radius: 10px;
+        }
+        
+        /* Карточка серии */
+        .series-card {
+            background: rgba(10, 15, 30, 0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid #00ffff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+            animation: glow 3s infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            }
+            to {
+                box-shadow: 0 0 60px rgba(0, 255, 255, 0.6);
+            }
+        }
+        
+        .series-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .series-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: #00ffff;
+            text-shadow: 0 0 15px #00ffff;
+        }
+        
+        .series-title small {
+            font-size: 1rem;
+            color: #8a9bb5;
+            margin-left: 10px;
+        }
+        
+        .series-stats {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ffff;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #8a9bb5;
+            text-transform: uppercase;
+        }
+        
+        .warning-banner {
+            background: rgba(255, 170, 0, 0.15);
+            border: 1px solid #ffaa00;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .warning-icon {
+            font-size: 2rem;
+            color: #ffaa00;
+        }
+        
+        .warning-text {
+            color: #ffaa00;
+            font-weight: 500;
+        }
+        
+        .probes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .probe-card {
+            background: rgba(0, 20, 40, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .probe-card:hover {
+            border-color: #00ffff;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+        
+        .probe-card.warning {
+            border-color: #ffaa00;
+            background: rgba(50, 30, 0, 0.3);
+        }
+        
+        .probe-type {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: #00ffff;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .probe-name {
+            font-size: 0.9rem;
+            color: #8a9bb5;
+            margin-bottom: 15px;
+            word-break: break-all;
+        }
+        
+        .probe-data {
+            font-size: 0.9rem;
+        }
+        
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .data-key {
+            color: #8a9bb5;
+        }
+        
+        .data-value {
+            color: #00ffff;
+            font-weight: 600;
+        }
+        
+        .probe-warnings {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 170, 0, 0.1);
+            border-left: 3px solid #ffaa00;
+            border-radius: 5px;
+        }
+        
+        .warning-message {
+            color: #ffaa00;
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+        
+        .missing-types {
+            margin-top: 30px;
+        }
+        
+        .missing-title {
+            font-size: 1.2rem;
+            color: #ff5555;
+            margin-bottom: 15px;
+        }
+        
+        .missing-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .missing-badge {
+            padding: 8px 15px;
+            background: rgba(255, 85, 85, 0.1);
+            border: 1px solid #ff5555;
+            border-radius: 20px;
+            color: #ff5555;
+            font-size: 0.9rem;
+        }
+        
+        .no-series {
+            text-align: center;
+            padding: 50px;
+            color: #8a9bb5;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Футуристические частицы -->
+    <div class="particle" style="left: 10%; animation-duration: 20s;"></div>
+    <div class="particle" style="left: 30%; animation-duration: 25s; animation-delay: 2s;"></div>
+    <div class="particle" style="left: 50%; animation-duration: 15s; animation-delay: 1s;"></div>
+    <div class="particle" style="left: 70%; animation-duration: 30s; animation-delay: 3s;"></div>
+    <div class="particle" style="left: 90%; animation-duration: 18s; animation-delay: 4s;"></div>
+    <div class="particle" style="left: 20%; animation-duration: 22s; animation-delay: 5s;"></div>
+    <div class="particle" style="left: 40%; animation-duration: 28s; animation-delay: 0.5s;"></div>
+    <div class="particle" style="left: 60%; animation-duration: 17s; animation-delay: 2.5s;"></div>
+    <div class="particle" style="left: 80%; animation-duration: 24s; animation-delay: 1.8s;"></div>
+    <div class="particle" style="left: 95%; animation-duration: 21s; animation-delay: 3.2s;"></div>
+
+    <div class="container">
+        <!-- Левая панель навигации -->
+        <div class="nav-panel" id="navPanel">
+            <div class="nav-header">
+                <h2>⚡ СЕРИИ ПРОБ ⚡</h2>
+                <div class="stats" id="seriesStats">
+                    Загрузка...
+                </div>
+            </div>
+            <ul class="series-nav-list" id="seriesNavList">
+                <li class="loading">Загрузка серий...</li>
+            </ul>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="main-content" id="mainContent">
+            <div class="header">
+                <h1>НЕЙРО-АНАЛИЗАТОР СЕРИЙ</h1>
+                <div class="subtitle">v.2.0.4 • СИСТЕМА КВАНТОВОГО АНАЛИЗА</div>
+            </div>
+            
+            <div id="seriesDetails">
+                <!-- Динамически загружаемый контент -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Глобальные переменные
+        let allSeries = [];
+        let currentSeriesId = null;
+        
+        // Загрузка списка серий при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSeriesList();
+        });
+        
+        // Загрузка списка серий
+        async function loadSeriesList() {
+            try {
+                const response = await fetch('/api/series');
+                const data = await response.json();
+                
+                if (data.success) {
+                    allSeries = data.series;
+                    renderSeriesNav(data.series);
+                    updateStats(data.total);
+                    
+                    // Загружаем первую серию по умолчанию
+                    if (data.series.length > 0) {
+                        loadSeriesDetails(data.series[0].id);
+                    } else {
+                        showNoSeries();
+                    }
+                } else {
+                    showError(data.error);
+                }
+            } catch (error) {
+                console.error('Error loading series:', error);
+                showError('Ошибка загрузки данных');
+            }
+        }
+        
+        // Отрисовка навигационной панели
+        function renderSeriesNav(series) {
+            const navList = document.getElementById('seriesNavList');
+            navList.innerHTML = '';
+            
+            series.forEach(s => {
+                const li = document.createElement('li');
+                li.className = `series-nav-item ${s.has_warnings ? 'warning' : ''}`;
+                li.dataset.seriesId = s.id;
+                li.onclick = () => loadSeriesDetails(s.id);
+                
+                li.innerHTML = `
+                    <div class="series-id">${s.source_class} • М:${s.method_number} • Э:${s.exp_number}</div>
+                    <div class="series-meta">
+                        <span>${s.probe_count} проб</span>
+                        <span class="badge ${s.has_warnings ? 'warning' : ''}">
+                            ${s.has_warnings ? '⚠️ ТРЕВОГА' : 'НОРМА'}
+                        </span>
+                    </div>
+                    ${s.missing_count > 0 ? `<div style="margin-top: 5px; font-size: 0.7rem; color: #ff5555;">Отсутствует: ${s.missing_types.join(', ')}</div>` : ''}
+                `;
+                
+                navList.appendChild(li);
+            });
+        }
+        
+        // Обновление статистики
+        function updateStats(total) {
+            document.getElementById('seriesStats').innerHTML = `
+                Всего серий: <span>${total}</span>
+            `;
+        }
+        
+        // Загрузка деталей серии
+        async function loadSeriesDetails(seriesId) {
+            // Обновляем активный элемент в навигации
+            document.querySelectorAll('.series-nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.seriesId === seriesId) {
+                    item.classList.add('active');
+                }
+            });
+            
+            currentSeriesId = seriesId;
+            
+            const detailsDiv = document.getElementById('seriesDetails');
+            detailsDiv.innerHTML = '<div class="loading">ЗАГРУЗКА ДАННЫХ СЕРИИ...</div>';
+            
+            try {
+                const response = await fetch(`/api/series/${seriesId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    renderSeriesDetails(data.series);
+                } else {
+                    detailsDiv.innerHTML = `<div class="error">ОШИБКА: ${data.error}</div>`;
+                }
+            } catch (error) {
+                console.error('Error loading series details:', error);
+                detailsDiv.innerHTML = '<div class="error">ОШИБКА ЗАГРУЗКИ ДАННЫХ СЕРИИ</div>';
+            }
+        }
+        
+        // Отрисовка деталей серии
+        function renderSeriesDetails(series) {
+            const detailsDiv = document.getElementById('seriesDetails');
+            
+            let html = `
+                <div class="series-card">
+                    <div class="series-header">
+                        <div>
+                            <div class="series-title">
+                                ${series.source_class} : МЕТОД ${series.method_number} : ЭКСП. ${series.exp_number}
+                                <small>ИД: ${series.id}</small>
+                            </div>
+                        </div>
+                        <div class="series-stats">
+                            <div class="stat">
+                                <div class="stat-value">${series.probes.length}</div>
+                                <div class="stat-label">ПРОБ</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${series.missing_types.length}</div>
+                                <div class="stat-label">ОТСУТСТВУЕТ</div>
+                            </div>
+                        </div>
+                    </div>
+            `;
+            
+            if (series.has_warnings) {
+                html += `
+                    <div class="warning-banner">
+                        <div class="warning-icon">⚠️</div>
+                        <div class="warning-text">
+                            ОБНАРУЖЕНЫ АНОМАЛИИ В ПОЛЯХ ДАННЫХ. ТРЕБУЕТСЯ ВНИМАНИЕ ОПЕРАТОРА.
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += `<div class="probes-grid">`;
+            
+            // Сортируем пробы по типу
+            const sortedProbes = series.probes.sort((a, b) => a.type.localeCompare(b.type));
+            
+            sortedProbes.forEach(probe => {
+                const hasWarnings = probe.warnings && probe.warnings.length > 0;
+                
+                html += `
+                    <div class="probe-card ${hasWarnings ? 'warning' : ''}">
+                        <div class="probe-type">${probe.type}</div>
+                        <div class="probe-name">${probe.name}</div>
+                        <div class="probe-data">
+                `;
+                
+                // Добавляем данные пробы
+                Object.entries(probe.data).forEach(([key, value]) => {
+                    if (key !== 'name') {
+                        html += `
+                            <div class="data-row">
+                                <span class="data-key">${key}:</span>
+                                <span class="data-value">${value}</span>
+                            </div>
+                        `;
+                    }
+                });
+                
+                html += `</div>`;
+                
+                // Добавляем предупреждения
+                if (hasWarnings) {
+                    html += `<div class="probe-warnings">`;
+                    probe.warnings.forEach(warning => {
+                        html += `<div class="warning-message">⚠️ ${warning}</div>`;
+                    });
+                    html += `</div>`;
+                }
+                
+                html += `</div>`;
+            });
+            
+            html += `</div>`;
+            
+            // Добавляем отсутствующие типы
+            if (series.missing_types.length > 0) {
+                html += `
+                    <div class="missing-types">
+                        <div class="missing-title">⚠️ ОТСУТСТВУЮЩИЕ ТИПЫ ПРОБ (${series.missing_types.length})</div>
+                        <div class="missing-grid">
+                `;
+                
+                series.missing_types.forEach(type => {
+                    html += `<span class="missing-badge">${type}</span>`;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += `</div>`;
+            
+            detailsDiv.innerHTML = html;
+        }
+        
+        // Показать сообщение об отсутствии серий
+        function showNoSeries() {
+            document.getElementById('seriesDetails').innerHTML = `
+                <div class="no-series">
+                    ⚡ СЕРИИ НЕ ОБНАРУЖЕНЫ ⚡<br>
+                    <small style="font-size: 0.9rem; margin-top: 20px; display: block;">
+                        Проверьте подключение к базе данных или наличие проб с корректными идентификаторами
+                    </small>
+                </div>
+            `;
+        }
+        
+        // Показать ошибку
+        function showError(message) {
+            document.getElementById('seriesDetails').innerHTML = `
+                <div class="error">
+                    ⚠️ КРИТИЧЕСКАЯ ОШИБКА: ${message}
+                </div>
+            `;
+            
+            document.getElementById('seriesNavList').innerHTML = `
+                <li class="error" style="padding: 15px; text-align: center;">
+                    ОШИБКА ЗАГРУЗКИ
+                </li>
+            `;
+        }
+        
+        // Автоматическое обновление каждые 30 секунд
+        setInterval(() => {
+            if (currentSeriesId) {
+                loadSeriesDetails(currentSeriesId);
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

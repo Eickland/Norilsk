@@ -3,6 +3,30 @@ import re
 from pathlib import Path
 from typing import Dict, Any, List, Union
 
+
+# Регулярные выражения для определения всех типов проб
+PATTERNS = {
+    'start_A': re.compile(r"^[A-Z]\d-(\d+)A(\d+)$"),
+    'start_B': re.compile(r"^[A-Z]\d-(\d+)B(\d+)$"),
+    'start_C': re.compile(r"^[A-Z]\d-(\d+)C(\d+)$"),
+    'st2_A': re.compile(r"^[A-Z]\d-L(\d+)A(\d+)$"),
+    'st2_B': re.compile(r"^[A-Z]\d-L(\d+)B(\d+)$"),
+    'st2_C': re.compile(r"^[A-Z]\d-L(\d+)C(\d+)$"),        
+    'st3_A': re.compile(r"^[A-Z]\d-L(\d+)P\1A(\d+)$"),  # \1 проверяет что номер методики одинаков
+    'st3_B': re.compile(r"^[A-Z]\d-L(\d+)P\1B(\d+)$"),
+    'st3_C': re.compile(r"^[A-Z]\d-L(\d+)P\1C(\d+)$"),
+    'st4_A': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1A(\d+)$"),
+    'st4_B': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1B(\d+)$"),
+    'st4_D': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1D(\d+)$"),
+    'st4_C': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1C(\d+)$"),
+    'st5_A': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1A(\d+)$"),
+    'st5_B': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1B(\d+)$"),
+    'st5_C': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1C(\d+)$"),        
+    'st6_E': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1N\1E(\d+)$"),
+    'st6_G': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1N\1G(\d+)$")
+}
+
+
 BASE_DIR = Path(__file__).parent.parent.parent
 DATA_FILE = BASE_DIR / 'data' / 'data.json'
 
@@ -14,29 +38,7 @@ def get_source_class_from_probe(probe:dict) -> str|None:
         split_name = probe_name.split(sep='-')
         return split_name[0]
 
-def get_probe_type(probe) -> tuple[str,int,int]|None:
-    
-    # Регулярные выражения для определения всех типов проб
-    patterns = {
-        'start_A': re.compile(r"^[A-Z]\d-(\d+)A(\d+)$"),
-        'start_B': re.compile(r"^[A-Z]\d-(\d+)B(\d+)$"),
-        'start_C': re.compile(r"^[A-Z]\d-(\d+)C(\d+)$"),
-        'st2_A': re.compile(r"^[A-Z]\d-L(\d+)A(\d+)$"),
-        'st2_B': re.compile(r"^[A-Z]\d-L(\d+)B(\d+)$"),
-        'st2_C': re.compile(r"^[A-Z]\d-L(\d+)C(\d+)$"),        
-        'st3_A': re.compile(r"^[A-Z]\d-L(\d+)P\1A(\d+)$"),  # \1 проверяет что номер методики одинаков
-        'st3_B': re.compile(r"^[A-Z]\d-L(\d+)P\1B(\d+)$"),
-        'st3_C': re.compile(r"^[A-Z]\d-L(\d+)P\1C(\d+)$"),
-        'st4_A': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1A(\d+)$"),
-        'st4_B': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1B(\d+)$"),
-        'st4_D': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1D(\d+)$"),
-        'st4_C': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1C(\d+)$"),
-        'st5_A': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1A(\d+)$"),
-        'st5_B': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1B(\d+)$"),
-        'st5_C': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1C(\d+)$"),        
-        'st6_E': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1N\1E(\d+)$"),
-        'st6_G': re.compile(r"^[A-Z]\d-L(\d+)P\1F\1N\1G(\d+)$")
-    }    
+def get_probe_type(probe) -> tuple[str,int,int]|None:    
     
     probe_name = probe.get('name', '')        
     if probe_name:
@@ -46,7 +48,7 @@ def get_probe_type(probe) -> tuple[str,int,int]|None:
         probe_type = None
         
         # Определяем тип пробы
-        for pattern_name, pattern in patterns.items():
+        for pattern_name, pattern in PATTERNS.items():
             match = pattern.match(probe_name)
             if match:
                 probe_type = pattern_name

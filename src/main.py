@@ -9,6 +9,7 @@ from handlers.ISP_AES import process_icp_aes_data
 from mass_balance.phase_calculate import calculate_fields_for_series
 from mass_balance.mass_calculate import recalculate_metal_mass
 from middleware.series_worker import get_series_dicts, get_source_class_from_probe, get_probe_type
+from mass_balance.series_analyzer import analyze_series, get_series_summary, FIELD_VALIDATION_CONFIG
 import pandas as pd
 from version_control.version_control import VersionControlSystem
 from io import BytesIO
@@ -3156,6 +3157,101 @@ def set_global_value():
         overwrite_existing=data.get('overwrite', True) # type: ignore
     )
     return jsonify({'success': True, 'updated_count': count})
+
+@app.route('/analyzer')
+def render_analyzer():
+    """Главная страница"""
+    try:
+        series_list, total_series = analyze_series()
+        return render_template('series_analyzer.html', total_series=total_series)
+    except Exception as e:
+        return render_template('series_analyzer.html', error=str(e), total_series=0)
+
+@app.route('/api/series')
+def get_series_analyzer():
+    """API: Получение списка всех серий (для боковой панели)"""
+    try:
+        series_list, total_series = analyze_series()
+        series_summaries = [get_series_summary(s) for s in series_list]
+        return jsonify({
+            'success': True,
+            'series': series_summaries,
+            'total': total_series
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/series/<series_id>')
+def get_series_details(series_id):
+    """API: Получение детальной информации о конкретной серии"""
+    try:
+        # Парсим ID серии
+        parts = series_id.split('-')
+        if len(parts) != 3:
+            return jsonify({'success': False, 'error': 'Invalid series ID'}), 400
+        
+        source_class, method_str, exp_str = parts
+        method_number = int(method_str)
+        exp_number = int(exp_str)
+        
+        # Получаем все серии
+        series_list, _ = analyze_series()
+        
+        # Ищем нужную серию
+        target_series = None
+        for series in series_list:
+            if (series.series_key[0] == source_class and 
+                series.series_key[1] == method_number and 
+                series.series_key[2] == exp_number):
+                target_series = series
+                break
+        
+        if not target_series:
+            return jsonify({'success': False, 'error': 'Series not found'}), 404
+        
+        # Формируем детальный ответ
+        result = {
+            'success': True,
+            'series': {
+                'id': series_id,
+                'source_class': source_class,
+                'method_number': method_number,
+                'exp_number': exp_number,
+                'probes': [],
+                'missing_types': target_series.missing_types,
+                'has_warnings': target_series.has_warnings
+            }
+        }
+        
+        # Добавляем информацию о пробах
+        for probe_type, probe_info in target_series.probes_by_type.items():
+            probe_data = {
+                'type': probe_type,
+                'name': probe_info.probe.get('name', 'Unknown'),
+                'data': {k: v for k, v in probe_info.probe.items() if k != 'name'},
+                'warnings': probe_info.warnings
+            }
+            result['series']['probes'].append(probe_data)
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/validation-config')
+def get_validation_config():
+    """API: Получение конфигурации валидации полей"""
+    return jsonify({
+        'success': True,
+        'config': FIELD_VALIDATION_CONFIG
+    })
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)
