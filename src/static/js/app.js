@@ -194,15 +194,17 @@ class ProbeLab {
         this.setupExportModal();
         this.setupImportModal('importModal', 'importTable', 'cancelImportBtn', 'fileInput', 
                             'dropArea', 'fileInfo', 'fileName', 'fileSize', 'removeFileBtn', 
-                            'uploadSubmit', '/api/upload_ISPAES');
+                            'uploadSubmit', '/api/upload_ISPAES',
+                            this.handleUpload.bind(this,'ISPAES'));
         this.setupImportModal('importDataModal', 'importData', 'cancelDataImportBtn', 'fileDataInput',
                             'dropDataArea', 'DatafileInfo', 'DatafileName', 'DatafileSize', 
-                            'removeDataFileBtn', 'uploadDataSubmit', '/api/upload_data');
+                            'removeDataFileBtn', 'uploadDataSubmit', '/api/upload_data_synthes',
+                            this.handleUpload.bind(this,'synthes'));
         // Для MS используем кастомный обработчик
         this.setupImportModal('importMSModal', 'importMS', 'cancelMSImportBtn', 'fileMSInput',
                             'dropMSArea', 'fileMSInfo', 'MSfileName', 'MSfileSize', 
                             'removeMSFileBtn', 'uploadMSSubmit', '/api/upload_ISPMS',
-                            this.handleMSUpload.bind(this)); // Добавлен кастомный обработчик
+                            this.handleUpload.bind(this,'ISPMS')); // Добавлен кастомный обработчик
         this.setupEditModal();
         this.setupBatchActions();
         this.setupModalCloseListeners();
@@ -327,15 +329,18 @@ class ProbeLab {
     });
 
     // Измененная отправка файла
-    submitBtn.addEventListener('click', async () => {
-        if (customUploadHandler) {
-            // Используем кастомный обработчик, если он предоставлен
-            await customUploadHandler(fileInput, submitBtn, modal);
-        } else {
-            // Стандартная загрузка
-            await this.uploadFile(fileInput, submitBtn, endpoint, modal);
-        }
-    });
+        submitBtn.addEventListener('click', async () => {
+            if (customUploadHandler) {
+                // Мы вызываем функцию, у которой ПЕРВЫЙ аргумент уже 'ISPMS' (из-за .bind)
+                // Поэтому передаем вторым аргументом объект с остальными данными
+                await customUploadHandler({ 
+                    fileInput: fileInput, 
+                    modal: modal 
+                });
+            } else {
+                await this.uploadFile(fileInput, submitBtn, endpoint, modal);
+            }
+        });
 }
 
     setupEditModal() {
@@ -1116,41 +1121,60 @@ class ProbeLab {
         }
     }
 
-    async handleMSUpload(fileInput, submitBtn, modal) {
-        const file = fileInput.files[0];
-        const formData = new FormData();
-        formData.append('file', file);
+async handleUpload(importType, payload) {
+    // Извлекаем данные из объекта payload, который пришел вторым аргументом
+    const { fileInput, modal } = payload; 
 
-        try {
-            // 1. Запрос превью
-            const response = await fetch('/api/preview_ISPMS', {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
+    const endpoints = {
+        'ISPMS': { preview: '/api/preview_ISPMS', upload: '/api/upload_ISPMS' },
+        'ISPAES': { preview: '/api/preview_ISPAES', upload: '/api/upload_ISPAES' },
+        'synthes': { preview: '/api/preview_upload_synthes', upload: '/api/upload_data_synthes' }
+    };
 
-            if (result.error === 'NEW_FIELDS_DETECTED') {
-                alert(result.message);
-                return; // Блокируем загрузку
-            }
-
-            if (result.success) {
-                // 2. Показ окна подтверждения (используем кастомное окно или confirm)
-                const confirmMsg = `Превью изменений:\n` +
-                    `- Изменится серий: ${result.stats.changed_series_count}\n` +
-                    `- Новых серий: ${result.stats.new_series_count}\n` +
-                    `- Всего проб в файле: ${result.stats.total_probes}\n\n` +
-                    `Продолжить загрузку?`;
-
-                if (confirm(confirmMsg)) {
-                    // Вызываем основной API загрузки, передавая путь к временному файлу или повторно отправляя файл
-                    await this.executeUpload(formData, '/api/upload_ISPMS', modal);
-                }
-            }
-        } catch (e) {
-            alert("Ошибка анализа файла: " + e.message);
-        }
+    const config = endpoints[importType];
+    
+    // Проверка
+    if (!fileInput || !fileInput.files) {
+        console.error('Ошибка: fileInput не передан корректно', fileInput);
+        return;
     }
+
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        // 1. Запрос превью
+        const response = await fetch(config.preview, {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+
+        if (result.error === 'NEW_FIELDS_DETECTED') {
+            alert(result.message);
+            return; 
+        }
+
+        if (result.success) {
+            // 2. Показ окна подтверждения
+            const confirmMsg = `[${importType}] Превью изменений:\n` +
+                `- Изменится серий: ${result.stats.changed_series_count}\n` +
+                `- Новых серий: ${result.stats.new_series_count}\n` +
+                `- Всего проб в файле: ${result.stats.total_probes}\n\n` +
+                `Продолжить загрузку?`;
+
+            if (confirm(confirmMsg)) {
+                // 3. Вызываем основной API загрузки
+                await this.executeUpload(formData, config.upload, modal);
+            }
+        }
+    } catch (e) {
+        alert(`Ошибка анализа (${importType}): ` + e.message);
+    }
+}
 
     async executeUpload(formData, endpoint, modal) {
         const response = await fetch(endpoint, { method: 'POST', body: formData });

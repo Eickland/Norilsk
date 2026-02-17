@@ -683,6 +683,77 @@ def upload_file():
             'message': 'Error processing file'
         }), 500
 
+@app.route('/api/preview_ISPAES', methods=['POST'])
+def preview_ISPAES():
+    if 'file' not in request.files:
+        return jsonify({'success': False, 'error': 'No file'}), 400
+    
+    file = request.files['file']
+    # Сохраняем временно для анализа
+    temp_path = os.path.join(app.config['UPLOAD_FOLDER'], 'temp_' + secure_filename(file.filename)) # type: ignore
+    file.save(temp_path)
+    
+    try:
+        # Обрабатываем данные (используем вашу существующую функцию)
+        result_data = process_icp_aes_data(file_path=temp_path)
+        new_probes = convert_df_to_dict(result_data) # type: ignore
+        
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
+            db_data = json.load(f)
+        
+        # Проверка на новые поля с помощью логики из func_db
+        existing_fields = set()
+        for p in db_data['probes']:
+            existing_fields.update(p.keys())
+        
+        new_fields = set()
+        for p in new_probes:
+            for key in p.keys():
+                if key not in existing_fields:
+                    new_fields.add(key)
+        
+        if new_fields:
+            os.remove(temp_path)
+            return jsonify({
+                'success': False,
+                'error': 'NEW_FIELDS_DETECTED',
+                'details': list(new_fields),
+                'message': f'Обнаружены новые поля: {", ".join(new_fields)}. Загрузка запрещена.'
+            }), 200 # Возвращаем 200, чтобы JS обработал это как бизнес-логику
+
+        # Анализ серий
+        existing_series = set()
+        for p in db_data['probes']:
+            info = get_probe_type(p)
+            source = get_source_class_from_probe(p)
+            if info and source:
+                existing_series.add((source, info[1], info[2])) # source, method, exp
+
+        changed_series = set()
+        new_series = set()
+        
+        for p in new_probes:
+            info = get_probe_type(p)
+            source = get_source_class_from_probe(p)
+            if info and source:
+                series_key = (source, info[1], info[2])
+                if series_key in existing_series:
+                    changed_series.add(series_key)
+                else:
+                    new_series.add(series_key)
+
+        return jsonify({
+            'success': True,
+            'stats': {
+                'changed_series_count': len(changed_series),
+                'new_series_count': len(new_series),
+                'total_probes': len(new_probes)
+            },
+            'temp_file': temp_path # Передаем путь для последующего подтверждения
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @app.route('/api/upload_ISPMS', methods=['POST'])
 def upload_file_MS():
     """
@@ -896,7 +967,7 @@ def preview_ISPMS():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@app.route('/api/upload_data', methods=['POST'])
+@app.route('/api/upload_data_synthes', methods=['POST'])
 def upload_data():
     """
     API endpoint для загрузки файла
@@ -1036,6 +1107,78 @@ def upload_data():
             'error': str(e),
             'message': 'Error processing file'
         }), 500
+
+@app.route('/api/preview_upload_synthes', methods=['POST'])
+def preview_synthes():
+    if 'file' not in request.files:
+        return jsonify({'success': False, 'error': 'No file'}), 400
+    
+    file = request.files['file']
+    # Сохраняем временно для анализа
+    temp_path = os.path.join(app.config['UPLOAD_FOLDER'], 'temp_' + secure_filename(file.filename)) # type: ignore
+    file.save(temp_path)
+    
+    try:
+        # Обрабатываем данные (используем вашу существующую функцию)
+        result_data = pd.read_csv(temp_path,sep=';')
+        result_data['name'] = result_data['name'].apply(expand_sample_code)
+        new_probes = convert_df_to_dict(result_data) # type: ignore
+        
+        with open(DATA_FILE, 'r', encoding='utf-8') as f:
+            db_data = json.load(f)
+        
+        # Проверка на новые поля с помощью логики из func_db
+        existing_fields = set()
+        for p in db_data['probes']:
+            existing_fields.update(p.keys())
+        
+        new_fields = set()
+        for p in new_probes:
+            for key in p.keys():
+                if key not in existing_fields:
+                    new_fields.add(key)
+        
+        if new_fields:
+            os.remove(temp_path)
+            return jsonify({
+                'success': False,
+                'error': 'NEW_FIELDS_DETECTED',
+                'details': list(new_fields),
+                'message': f'Обнаружены новые поля: {", ".join(new_fields)}. Загрузка запрещена.'
+            }), 200 # Возвращаем 200, чтобы JS обработал это как бизнес-логику
+
+        # Анализ серий
+        existing_series = set()
+        for p in db_data['probes']:
+            info = get_probe_type(p)
+            source = get_source_class_from_probe(p)
+            if info and source:
+                existing_series.add((source, info[1], info[2])) # source, method, exp
+
+        changed_series = set()
+        new_series = set()
+        
+        for p in new_probes:
+            info = get_probe_type(p)
+            source = get_source_class_from_probe(p)
+            if info and source:
+                series_key = (source, info[1], info[2])
+                if series_key in existing_series:
+                    changed_series.add(series_key)
+                else:
+                    new_series.add(series_key)
+
+        return jsonify({
+            'success': True,
+            'stats': {
+                'changed_series_count': len(changed_series),
+                'new_series_count': len(new_series),
+                'total_probes': len(new_probes)
+            },
+            'temp_file': temp_path # Передаем путь для последующего подтверждения
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/download/<filename>', methods=['GET'])
 def download_result(filename):
@@ -3167,7 +3310,7 @@ def render_analyzer():
     except Exception as e:
         return render_template('series_analyzer.html', error=str(e), total_series=0)
 
-@app.route('/api/series')
+@app.route('/api/series_analyzer')
 def get_series_analyzer():
     """API: Получение списка всех серий (для боковой панели)"""
     try:

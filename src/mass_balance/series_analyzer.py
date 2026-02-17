@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from middleware.series_worker import get_probe_type, get_source_class_from_probe, PATTERNS
 
 # Конфигурация
-BASE_DIR = Path(__file__).parent.parent
+BASE_DIR = Path(__file__).parent.parent.parent
 DATA_FILE = BASE_DIR / 'data' / 'data.json'
 
 FIELD_VALIDATION_CONFIG = {
@@ -48,7 +48,7 @@ def load_data() -> Dict[str, Any]:
         with open(DATA_FILE, 'r', encoding='utf-8') as f:
             return json.load(f)
     else:
-        raise ValueError('Нет данных')
+        raise ValueError('Нет данных серий')
 
 def validate_probe_fields(probe: Dict[str, Any], probe_type: str) -> List[str]:
     """Валидация полей пробы согласно конфигурации"""

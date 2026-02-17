@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>⚡ АНАЛИЗАТОР СЕРИЙ ПРОБ ⚡</title>
     <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
         {% for i in range(50) %}
             {% set left = range(1, 100) | random %}
             {% set duration = range(10, 30) | random %}
@@ -15,8 +17,6 @@
                 animation-delay: {{ delay }}s;
             }
         {% endfor %}
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
-        
         * {
             margin: 0;
             padding: 0;
@@ -503,8 +503,7 @@
         <!-- Основной контент -->
         <div class="main-content" id="mainContent">
             <div class="header">
-                <h1>НЕЙРО-АНАЛИЗАТОР СЕРИЙ</h1>
-                <div class="subtitle">v.2.0.4 • СИСТЕМА КВАНТОВОГО АНАЛИЗА</div>
+                <div class="subtitle">v.1.0.0 • Система анализа серий</div>
             </div>
             
             <div id="seriesDetails">
@@ -526,7 +525,7 @@
         // Загрузка списка серий
         async function loadSeriesList() {
             try {
-                const response = await fetch('/api/series');
+                const response = await fetch('/api/series_analyzer');
                 const data = await response.json();
                 
                 if (data.success) {
@@ -621,18 +620,18 @@
                     <div class="series-header">
                         <div>
                             <div class="series-title">
-                                ${series.source_class} : МЕТОД ${series.method_number} : ЭКСП. ${series.exp_number}
-                                <small>ИД: ${series.id}</small>
+                                ${series.source_class} : Метод ${series.method_number} : Колба ${series.exp_number}
+                                <small>id: ${series.id}</small>
                             </div>
                         </div>
                         <div class="series-stats">
                             <div class="stat">
                                 <div class="stat-value">${series.probes.length}</div>
-                                <div class="stat-label">ПРОБ</div>
+                                <div class="stat-label">Проб</div>
                             </div>
                             <div class="stat">
                                 <div class="stat-value">${series.missing_types.length}</div>
-                                <div class="stat-label">ОТСУТСТВУЕТ</div>
+                                <div class="stat-label">Отсутствует</div>
                             </div>
                         </div>
                     </div>

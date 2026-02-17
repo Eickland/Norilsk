@@ -734,7 +734,7 @@ class ProbeLab {
                 uploadSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
                 uploadSubmit.disabled = true;
                 
-                const response = await fetch('/api/upload_data', {
+                const response = await fetch('/api/upload_data_synthes', {
                     method: 'POST',
                     body: formData
                 });
