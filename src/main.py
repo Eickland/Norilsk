@@ -71,8 +71,8 @@ def generate_result_filename(original_filename):
     return f"{name}_result_{timestamp}.json"
 
 def convert_df_to_dict(df:pd.DataFrame):
-    
     df['id'] = df.index + 1
+    
     df['tags'] = [[] for _ in range(len(df))]
     if 'status_id' not in df.columns:
         df['status_id'] = 3
@@ -695,7 +695,8 @@ def preview_ISPAES():
     
     try:
         # Обрабатываем данные (используем вашу существующую функцию)
-        result_data = process_icp_aes_data(file_path=temp_path)
+        
+        result_data,_ = process_icp_aes_data(file_path=temp_path)
         new_probes = convert_df_to_dict(result_data) # type: ignore
         
         with open(DATA_FILE, 'r', encoding='utf-8') as f:

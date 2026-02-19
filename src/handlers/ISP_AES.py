@@ -202,7 +202,7 @@ def process_icp_aes_data(file_path: str, json_data_path: Optional[str] = None) -
 # Пример использования функции
 if __name__ == "__main__":
     # Сохраните ваш CSV файл и укажите путь к нему
-    file_path = r"C:\Users\Kirill\Downloads\Telegram Desktop\21-01-2026-Norilsk.csv"
+    file_path = r"C:\Users\mnbv2\Desktop\lab\Norilsk\uploads\12-02-2026-Norilsk.csv"
     
     try:
         processed_data, wavelengths_info = process_icp_aes_data(file_path)

@@ -16,6 +16,8 @@ def get_analysis_coef(probe_map: Dict[str, Any], probe_name: str, default: float
     
     v_ml = probe.get('V (ml)')
     v_aliq = probe.get('Valiq, ml', 10)
+    if v_aliq == 0:
+        v_aliq = 10
     
     if v_ml is not None and (v_ml - v_aliq) != 0:
         return v_ml / (v_ml - v_aliq)
