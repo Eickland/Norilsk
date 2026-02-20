@@ -2,6 +2,7 @@ import json
 import copy
 from typing import Dict, List, Any, Optional
 from pathlib import Path
+import portalocker
 
 class ProbeDatabase:
     def __init__(self, json_path: str):
@@ -24,27 +25,47 @@ class ProbeDatabase:
     
     def remove_field_from_all_probes(self, field_name: str) -> bool:
         """
-        Удаляет поле из всех проб
-        
-        Args:
-            field_name: Название поля для удаления
-            
-        Returns:
-            bool: True если поле было удалено, False если поля не существовало
+        Безопасно удаляет поле, блокируя файл от других процессов.
         """
-        if "probes" not in self.data:
+        # Открываем файл в режиме чтения и записи
+        try:
+            with open(self.json_path, 'r+', encoding='utf-8') as f:
+                # Накладываем эксклюзивную блокировку (процесс будет ждать, если файл занят)
+                portalocker.lock(f, portalocker.LOCK_EX)
+                
+                # 1. Считываем САМЫЕ СВЕЖИЕ данные прямо с диска
+                try:
+                    data = json.load(f)
+                except json.JSONDecodeError:
+                    return False
+                
+                if "probes" not in data:
+                    return False
+
+                field_exists = False
+                # 2. Модифицируем данные в памяти
+                for probe in data["probes"]:
+                    if field_name in probe:
+                        del probe[field_name]
+                        field_exists = True
+
+                if field_exists:
+                    # 3. Перезаписываем файл
+                    f.seek(0)          # В начало файла
+                    f.truncate()       # Очищаем содержимое
+                    json.dump(data, f, ensure_ascii=False, indent=4)
+                    f.flush()          # Принудительно сбрасываем буфер на диск
+                    
+                    # Обновляем локальную копию объекта, если она используется где-то еще
+                    self.data = data
+                    return True
+                
+                return False
+                # Блокировка снимется автоматически при выходе из with (закрытии файла)
+                
+        except Exception as e:
+            print(f"Ошибка при работе с БД: {e}")
             return False
-        
-        field_exists = False
-        for probe in self.data["probes"]:
-            if field_name in probe:
-                del probe[field_name]
-                field_exists = True
-        
-        if field_exists:
-            self._save_data()
-            return True
-        return False
     
     def rename_field_for_all_probes(self, old_field_name: str, new_field_name: str) -> bool:
         """

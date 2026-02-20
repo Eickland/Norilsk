@@ -65,7 +65,6 @@ def get_suspension_data(probe_c: Dict[str, Any]) -> Tuple[float, float, float]:
 # --- Основная функция ---
 
 def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, Any]:
-    print('работаем')
     try:
         with open(data_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -110,7 +109,7 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                         if probe_c.get(field) is not None:
                             probe[field] = probe_c[field]
                             stats['calculated_fields'] += 1
-                            is_updated = True
+                            is_updated = True                        
 
             elif probe_type == 'start_B':
                 parent = probe_map.get(names['st_C'])
@@ -153,6 +152,7 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                         is_updated = True
 
             elif probe_type == 'st3_A':
+
                 p_st2_a = probe_map.get(names['st2_A'])
                 p_st3_c = probe_map.get(names['st3_C'])
                 if p_st2_a and p_st3_c:
@@ -161,6 +161,7 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     if v_st2 is not None:
                         probe['V (ml)'] = v_st2 + liq_vol
                         stats['calculated_fields'] += 1
+
                         is_updated = True
 
             elif probe_type == 'st4_A':

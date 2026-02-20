@@ -10,6 +10,7 @@ from mass_balance.phase_calculate import calculate_fields_for_series
 from mass_balance.mass_calculate import recalculate_metal_mass
 from middleware.series_worker import get_series_dicts, get_source_class_from_probe, get_probe_type,get_type_name_from_pattern_type
 from mass_balance.series_analyzer import analyze_series, get_series_summary, FIELD_VALIDATION_CONFIG
+from database_processing.format import convert_and_save_comma_numbers
 import pandas as pd
 from version_control.version_control import VersionControlSystem
 from io import BytesIO
@@ -24,8 +25,7 @@ import numpy as np
 from datetime import datetime, timedelta
 import traceback
 from app.params import settings
-from database_processing.func_db import ProbeDatabase # Импорт вашего класса
-
+from database_processing.func_db import ProbeDatabase
 
 load_dotenv()
 
@@ -376,6 +376,8 @@ def index():
         if stats.get('fields_added_total',0) > 0:
             app.logger.info(f"Normalized structure: added {stats['fields_added_total']} fields")
 
+        convert_and_save_comma_numbers(DATA_FILE)
+        
         # 3. Копирование массы и объема из проб C в A/B (НОВАЯ ФУНКЦИЯ)
         mass_volume_result = calculate_fields_for_series(str(DATA_FILE))
         
