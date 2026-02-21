@@ -3,7 +3,12 @@ import json
 from pathlib import Path
 from middleware.series_worker import get_probe_type, get_probe_from_type, get_source_class_from_probe
 from app.params import settings
-import traceback
+
+import logging
+
+# Создаем именной логгер для расчетов
+logger = logging.getLogger('calculations')
+logger.setLevel(logging.DEBUG) # На этапе отладки ставим DEBUG
 
 BASE_DIR = Path(__file__).parent.parent.parent
 DATA_FILE = BASE_DIR / 'data' / 'data.json'
@@ -71,45 +76,51 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
         
         probes = data.get('probes', [])
         if not probes:
+            logger.warning("Список проб пуст. Выход.")            
             return {'success': True, 'message': 'Нет проб', 'total_series': 0}
 
         probe_map = {p.get('name', ''): p for p in probes if p.get('name')}
         stats = {'total_series': 0, 'updated_probes': 0, 'calculated_fields': 0, 'missing_probes': [], 'errors': []}
         
         for probe in probes:
-            probe_type_out = get_probe_type(probe) # type: ignore
-            if probe_type_out is not None:
-                probe_type, m ,n = probe_type_out
-            else:
+            p_name = probe.get('name', 'Unknown')
+            probe_type_out = get_probe_type(probe)
+            
+            if probe_type_out is None:
+                # Теперь мы будем знать, какие пробы функция игнорирует
+                logger.debug(f"Проба {p_name}: тип не определен, пропуск.")
                 continue
             
+            probe_type, m, n = probe_type_out
             source_class = get_source_class_from_probe(probe)
             
             
-            if source_class is not None:
-                
-                # Генерация имен связанных проб
-                names = {
-                    'st_A': f"{source_class}-{m}A{n}", 'st_B': f"{source_class}-{m}B{n}", 'st_C': f"{source_class}-{m}C{n}",
-                    'st2_A': f"{source_class}-L{m}A{n}", 'st2_B': f"{source_class}-L{m}B{n}", 'st2_C': f"{source_class}-L{m}C{n}",
-                    'st3_A': f"{source_class}-L{m}P{m}A{n}", 'st3_B': f"{source_class}-L{m}P{m}B{n}", 'st3_C': f"{source_class}-L{m}P{m}C{n}",
-                    'st4_A': f"{source_class}-L{m}P{m}F{m}A{n}", 'st4_D': f"{source_class}-L{m}P{m}F{m}D{n}"
-                }
-                
-            else:
+            if source_class is None:
+                logger.debug(f"Проба {p_name}: не найден source_class, пропуск.")
                 continue
-
+            
+            logger.info(f"Обработка {p_name} (Тип: {probe_type})")
             is_updated = False
+                            
+            # Генерация имен связанных проб
+            names = {
+                'st_A': f"{source_class}-{m}A{n}", 'st_B': f"{source_class}-{m}B{n}", 'st_C': f"{source_class}-{m}C{n}",
+                'st2_A': f"{source_class}-L{m}A{n}", 'st2_B': f"{source_class}-L{m}B{n}", 'st2_C': f"{source_class}-L{m}C{n}",
+                'st3_A': f"{source_class}-L{m}P{m}A{n}", 'st3_B': f"{source_class}-L{m}P{m}B{n}", 'st3_C': f"{source_class}-L{m}P{m}C{n}",
+                'st4_A': f"{source_class}-L{m}P{m}F{m}A{n}", 'st4_D': f"{source_class}-L{m}P{m}F{m}D{n}"
+            }
 
             # Логика расчета базовых значений
             if probe_type == 'start_A':
-                probe_c = get_probe_from_type('start_C', m, n)
+                probe_c = probe_map.get(names['st_C'])
                 if probe_c:
                     for field in ['sample_mass', 'V (ml)']:
                         if probe_c.get(field) is not None:
                             probe[field] = probe_c[field]
                             stats['calculated_fields'] += 1
-                            is_updated = True                        
+                            is_updated = True
+                else:
+                    logger.warning(f"  [!] Для {p_name} не найдена связанная проба start_C")                                            
 
             elif probe_type == 'start_B':
                 parent = probe_map.get(names['st_C'])
@@ -118,7 +129,9 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     probe['V (ml)'] = parent.get('V (ml)')
                     stats['calculated_fields'] += 2
                     is_updated = True
-
+                else:
+                    logger.warning(f"  [!] Для {p_name} не найдена связанная проба start_C")
+                    
             elif probe_type == 'st2_B':
                 parent = probe_map.get(names['st_B'])
                 if parent and parent.get('sample_mass') is not None:
@@ -126,6 +139,9 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     probe['mass_calculation_note'] = f"1/2 от {names['st_B']}"
                     stats['calculated_fields'] += 1
                     is_updated = True
+                else:
+                    logger.warning(f"  [!] Для {p_name} не найдена связанная проба st_B")                    
+                    
 
             elif probe_type == 'st2_A':
                 p_start_a = probe_map.get(names['st_A'])
@@ -138,7 +154,9 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                         probe['volume_calculation_note'] = f"{v_start} + {v_h2so4} H2SO4"
                         stats['calculated_fields'] += 1
                         is_updated = True
-
+                else:
+                    logger.warning(f"  [!] Для {p_name} не найдена связанная проба st2_C или st_A")
+                    
             elif probe_type == 'st3_B':
                 p_st2_b = probe_map.get(names['st2_B'])
                 p_st3_c = probe_map.get(names['st3_C'])
@@ -150,6 +168,8 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                         probe['sample_mass'] = m_st2 + 2.32 * m_ca + m_iron + 3.03 * m_co3
                         stats['calculated_fields'] += 1
                         is_updated = True
+                else:
+                    logger.warning(f"  [!] Для {p_name} не найдена связанная проба st3_C или st2_B")                        
 
             elif probe_type == 'st3_A':
 
@@ -161,8 +181,9 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     if v_st2 is not None:
                         probe['V (ml)'] = v_st2 + liq_vol
                         stats['calculated_fields'] += 1
-
                         is_updated = True
+                else:
+                    logger.warning(f"  [!] Для {p_name} не найдена связанная проба st2_A или st3_C")                        
 
             elif probe_type == 'st4_A':
                 parent = probe_map.get(names['st3_A'])
@@ -170,6 +191,8 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     probe['V (ml)'] = parent['V (ml)']
                     stats['calculated_fields'] += 1
                     is_updated = True
+                else:
+                    logger.warning(f"  [!] Для {p_name} не найдена связанная проба st3_A")                    
 
             elif probe_type == 'st4_B':
                 p_st3_b = probe_map.get(names['st3_B'])
@@ -181,6 +204,8 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                         probe['sample_mass'] = m3 - m4d
                         stats['calculated_fields'] += 1
                         is_updated = True
+                else:
+                    logger.warning(f"  [!] Для {p_name} не найдена связанная проба st3_B или st4_D")                        
 
             # --- Блок REBALANCE (Коэффициенты пересчета) ---
             
@@ -222,6 +247,6 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
         return {'success': True, 'message': f"Обновлено {stats['updated_probes']} проб", **stats}
 
     except Exception as e:
-        traceback.print_exc()
+        logger.exception(f"Критическая ошибка при расчете файла {data_file}")
         return {'success': False, 'message': str(e)}
         

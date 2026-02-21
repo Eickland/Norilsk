@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file
+from flask import Flask, render_template, request, jsonify, send_file,render_template_string
 from datetime import datetime
 import json
 import os
@@ -26,7 +26,8 @@ from datetime import datetime, timedelta
 import traceback
 from app.params import settings
 from database_processing.func_db import ProbeDatabase
-
+from logger.logging import HTTPHandler
+from logging.handlers import RotatingFileHandler
 load_dotenv()
 
 BASE_DIR = Path(__file__).parent.parent
@@ -39,12 +40,45 @@ BLACKLIST_FIELDS = {
     "status_id", "is_solution", "name", "tags"
 } 
 
+LOG_FILE = str(BASE_DIR/"app_local.log")
+
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY')
 app.config['UPLOAD_FOLDER'] = BASE_DIR / 'uploads'
 app.config['RESULTS_FOLDER'] = BASE_DIR / 'results'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB максимум
 app.config['ALLOWED_EXTENSIONS'] = {'csv', 'xlsx', 'xls', 'json'}
 app.config['VERSIONS_DIR'] = BASE_DIR / 'versions'
+
+
+def setup_logging(app):
+    # 1. Создаем форматтер
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+    # 2. Локальный файл (ограничение 1 МБ, храним 3 старых копии)
+    file_handler = RotatingFileHandler(
+        LOG_FILE, 
+        maxBytes=1*1024*1024, # 1 Мегабайт
+        backupCount=3, 
+        encoding='utf-8'
+    )
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.DEBUG)    
+    # Создаем ваш обработчик
+    http_handler = HTTPHandler(url="http://server.internal.error")
+    
+    # Устанавливаем формат (обязательно, чтобы self.format(record) работал корректно)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    http_handler.setFormatter(formatter)
+    app.logger.addHandler(file_handler)
+    
+    # Уровень логирования
+    http_handler.setLevel(logging.INFO)
+    
+    # Добавляем к логгеру Flask
+    app.logger.addHandler(http_handler)
+    app.logger.setLevel(logging.DEBUG)
+
+setup_logging(app)
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['RESULTS_FOLDER'], exist_ok=True)
@@ -53,8 +87,63 @@ DATA_FILE = BASE_DIR / 'data' / 'data.json'
 app.config['DATA_FILE'] = DATA_FILE
 # Инициализация системы управления версиями
 vcs = VersionControlSystem(app.config['DATA_FILE'], app.config['VERSIONS_DIR'])
-db_manager = ProbeDatabase(app.config['DATA_FILE'])       
+db_manager = ProbeDatabase(app.config['DATA_FILE'])
+
+@app.route('/view-logs')
+def view_logs():
+    if not os.path.exists(LOG_FILE):
+        return "Файл логов еще не создан."
+
+    # Читаем файл (последние 200 строк, чтобы не вешать браузер)
+    try:
+        with open(LOG_FILE, 'r', encoding='utf-8') as f:
+            lines = f.readlines()[-200:]
+    except Exception as e:
+        return f"Ошибка чтения логов: {e}"
+
+    # Простой HTML-шаблон
+    html_template = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Системные логи</title>
+        <style>
+            body { background: #1e1e1e; color: #d4d4d4; font-family: monospace; padding: 20px; }
+            .log-entry { border-bottom: 1px solid #333; padding: 5px 0; }
+            .INFO { color: #4caf50; }
+            .WARNING { color: #ff9800; }
+            .ERROR { color: #f44336; }
+            .DEBUG { color: #2196f3; }
+            .header { position: sticky; top: 0; background: #1e1e1e; padding: 10px; border-bottom: 2px solid #555; }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h2>Последние 200 записей лога (Размер файла: {{ size }} байт)</h2>
+            <a href="/view-logs" style="color: #aaa;">Обновить</a>
+        </div>
+        <div style="margin-top: 20px;">
+            {% for line in lines %}
+                <div class="log-entry">
+                    {% if 'INFO' in line %}<span class="INFO">{{ line }}</span>
+                    {% elif 'WARNING' in line %}<span class="WARNING">{{ line }}</span>
+                    {% elif 'ERROR' in line %}<span class="ERROR">{{ line }}</span>
+                    {% elif 'DEBUG' in line %}<span class="DEBUG">{{ line }}</span>
+                    {% else %}<span>{{ line }}</span>{% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </body>
+    </html>
+    """
+    
+    file_size = os.path.getsize(LOG_FILE)
+    return render_template_string(html_template, lines=lines, size=file_size)
+       
 # Глобальная функция для создания версии при изменениях
+
+
+
 def create_version_on_change(description, author="system"):
     """Обертка для создания версии при изменениях"""
     return vcs.create_version(description=description, author=author)
