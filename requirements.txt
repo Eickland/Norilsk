@@ -10,3 +10,4 @@ flask_cors
 pymc
 arviz
 portalocker
+requests
