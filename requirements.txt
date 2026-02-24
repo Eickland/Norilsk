@@ -10,3 +10,4 @@ Requests
 scipy
 seaborn
 Werkzeug
+gunicorn
