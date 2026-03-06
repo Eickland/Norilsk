@@ -3487,6 +3487,321 @@ def get_validation_config():
         'config': FIELD_VALIDATION_CONFIG
     })
 
+JSON_FILE_PATH = DATA_FILE  # Измените на ваш реальный путь
+
+def repair_json_file(file_path, backup=True):
+    """
+    Находит элементы с недопустимыми управляющими символами и удаляет их.
+    
+    Args:
+        file_path (str): Путь к JSON-файлу
+        backup (bool): Создавать ли резервную копию
+    
+    Returns:
+        dict: Статистика исправлений
+    """
+    stats = {
+        'total_items': 0,
+        'items_with_errors': 0,
+        'fields_removed': 0,
+        'errors_found': []
+    }
+    
+    try:
+        # Создаем резервную копию
+        if backup and os.path.exists(file_path):
+            backup_path = file_path + '.backup'
+            import shutil
+            shutil.copy2(file_path, backup_path)
+            stats['backup_created'] = backup_path
+        
+        # Читаем файл как текст для построчного анализа
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        # Пытаемся распарсить JSON стандартным способом, чтобы найти ошибку
+        try:
+            data = json.loads(content)
+            stats['total_items'] = len(data) if isinstance(data, list) else 1
+            return stats  # Если нет ошибок, возвращаем статистику
+        except json.JSONDecodeError as e:
+            # Запоминаем позицию ошибки
+            error_pos = e.pos
+            error_line = e.lineno
+            error_col = e.colno
+            error_msg = str(e)
+            stats['errors_found'].append({
+                'position': error_pos,
+                'line': error_line,
+                'column': error_col,
+                'message': error_msg
+            })
+        
+        # Если это список объектов, обрабатываем каждый элемент отдельно
+        if content.strip().startswith('['):
+            return repair_json_array(file_path, content, stats)
+        else:
+            # Если это один объект, пытаемся восстановить его поля
+            return repair_json_object(file_path, content, stats)
+            
+    except Exception as e:
+        stats['error'] = str(e)
+        return stats
+
+
+def repair_json_array(file_path, content, stats):
+    """Восстанавливает JSON-массив, удаляя проблемные элементы"""
+    
+    # Разбиваем на отдельные объекты (предполагаем формат [{...},{...},...])
+    import re
+    
+    # Находим все объекты между фигурными скобками
+    pattern = r'\{[^{}]*\}'  # Простой паттерн для поиска объектов
+    objects = re.findall(pattern, content)
+    
+    valid_objects = []
+    stats['total_items'] = len(objects)
+    
+    for i, obj_str in enumerate(objects):
+        try:
+            # Пытаемся распарсить объект
+            obj = json.loads(obj_str)
+            
+            # Проверяем каждое поле объекта
+            clean_obj = {}
+            for key, value in obj.items():
+                try:
+                    # Проверяем, можно ли пересохранить значение
+                    json.dumps(value)
+                    clean_obj[key] = value
+                except (TypeError, ValueError) as e:
+                    # Если поле содержит ошибку, пропускаем его
+                    stats['fields_removed'] += 1
+                    stats['errors_found'].append({
+                        'item_index': i,
+                        'field': key,
+                        'error': str(e)
+                    })
+            
+            # Добавляем объект только если остались поля
+            if clean_obj:
+                valid_objects.append(clean_obj)
+            else:
+                stats['items_with_errors'] += 1
+                
+        except json.JSONDecodeError:
+            # Если весь объект битый, пропускаем его
+            stats['items_with_errors'] += 1
+            stats['errors_found'].append({
+                'item_index': i,
+                'error': 'Invalid object structure'
+            })
+    
+    # Сохраняем исправленный массив
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(valid_objects, f, ensure_ascii=False, indent=2)
+    
+    return stats
+
+
+def repair_json_object(file_path, content, stats):
+    """Восстанавливает одиночный JSON-объект"""
+    
+    try:
+        # Пробуем стандартный парсинг
+        data = json.loads(content)
+        stats['total_items'] = 1
+        
+        # Проверяем каждое поле
+        clean_data = {}
+        for key, value in data.items():
+            try:
+                json.dumps(value)
+                clean_data[key] = value
+            except (TypeError, ValueError) as e:
+                stats['fields_removed'] += 1
+                stats['errors_found'].append({
+                    'field': key,
+                    'error': str(e)
+                })
+        
+        # Сохраняем исправленный объект
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(clean_data, f, ensure_ascii=False, indent=2)
+        
+        if len(clean_data) < len(data):
+            stats['items_with_errors'] = 1
+            
+    except json.JSONDecodeError as e:
+        # Если весь файл битый, пробуем восстановить вручную
+        stats['error'] = "File is severely corrupted, manual inspection needed"
+        stats['errors_found'].append({
+            'message': str(e)
+        })
+    
+    return stats
+
+
+def validate_json_field(field_value):
+    """Проверяет, содержит ли поле допустимый JSON"""
+    try:
+        json.dumps(field_value)
+        return True, None
+    except Exception as e:
+        return False, str(e)
+
+@app.route('/api/repair-json', methods=['GET','POST'])
+def repair_json():
+    """
+    API endpoint для восстановления JSON-файла
+    """
+    try:
+        # Получаем путь к файлу из запроса или используем стандартный
+        data = request.get_json() or {}
+        file_path = data.get('file_path', JSON_FILE_PATH)
+        create_backup = data.get('create_backup', True)
+        
+        # Проверяем существование файла
+        if not os.path.exists(file_path):
+            return jsonify({
+                'success': False,
+                'error': f'File not found: {file_path}'
+            }), 404
+        
+        # Запускаем восстановление
+        stats = repair_json_file(file_path, backup=create_backup)
+        
+        return jsonify({
+            'success': True,
+            'stats': stats,
+            'message': f'Repair completed. Removed {stats["fields_removed"]} problematic fields from {stats["items_with_errors"]} items.'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/validate-json', methods=['GET','POST'])
+def validate_json():
+    """
+    API endpoint для проверки JSON без изменений
+    """
+    try:
+        data = request.get_json() or {}
+        file_path = data.get('file_path', JSON_FILE_PATH)
+        
+        if not os.path.exists(file_path):
+            return jsonify({
+                'success': False,
+                'error': f'File not found: {file_path}'
+            }), 404
+        
+        # Просто проверяем файл
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        try:
+            json_data = json.loads(content)
+            
+            # Дополнительная проверка полей
+            issues = []
+            if isinstance(json_data, list):
+                for i, item in enumerate(json_data):
+                    if isinstance(item, dict):
+                        for key, value in item.items():
+                            is_valid, error = validate_json_field(value)
+                            if not is_valid:
+                                issues.append({
+                                    'item_index': i,
+                                    'field': key,
+                                    'error': error
+                                })
+            
+            return jsonify({
+                'success': True,
+                'is_valid': len(issues) == 0,
+                'total_items': len(json_data) if isinstance(json_data, list) else 1,
+                'issues': issues,
+                'issues_count': len(issues)
+            })
+            
+        except json.JSONDecodeError as e:
+            return jsonify({
+                'success': False,
+                'is_valid': False,
+                'error': str(e),
+                'position': e.pos,
+                'line': e.lineno,
+                'column': e.colno
+            }), 400
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/api/json-stats', methods=['GET'])
+def json_stats():
+    """
+    Получить статистику о JSON-файле
+    """
+    try:
+        file_path = request.args.get('file_path', JSON_FILE_PATH)
+        
+        if not os.path.exists(file_path):
+            return jsonify({
+                'success': False,
+                'error': f'File not found: {file_path}'
+            }), 404
+        
+        # Информация о файле
+        file_stats = os.stat(file_path)
+        
+        # Пробуем прочитать JSON
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        try:
+            data = json.loads(content)
+            
+            stats = {
+                'file_size': file_stats.st_size,
+                'last_modified': file_stats.st_mtime,
+                'is_valid_json': True,
+                'type': type(data).__name__,
+                'total_items': len(data) if isinstance(data, list) else 1
+            }
+            
+            # Если это список, показываем пример структуры
+            if isinstance(data, list) and len(data) > 0:
+                stats['sample_fields'] = list(data[0].keys()) if isinstance(data[0], dict) else []
+                
+        except json.JSONDecodeError as e:
+            stats = {
+                'file_size': file_stats.st_size,
+                'last_modified': file_stats.st_mtime,
+                'is_valid_json': False,
+                'error_position': e.pos,
+                'error_line': e.lineno,
+                'error_column': e.colno,
+                'error_message': str(e)
+            }
+        
+        return jsonify({
+            'success': True,
+            'stats': stats
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True, port=5000)
