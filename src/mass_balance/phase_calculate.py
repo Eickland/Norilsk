@@ -94,7 +94,6 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
             probe_type, m, n = probe_type_out
             source_class = get_source_class_from_probe(probe)
             
-            
             if source_class is None:
                 logger.debug(f"Проба {p_name}: не найден source_class, пропуск.")
                 continue
@@ -134,8 +133,16 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     
             elif probe_type == 'st2_B':
                 parent = probe_map.get(names['st_B'])
+                
+                if source_class[0] == 'T':
+                    solid_coeff = 0.3
+                elif source_class[0] == 'E':
+                    solid_coeff = 0.5
+                else:
+                    solid_coeff = 0.3
+                    
                 if parent and parent.get('sample_mass') is not None:
-                    probe['sample_mass'] = parent['sample_mass'] / 2
+                    probe['sample_mass'] = solid_coeff*parent['sample_mass']
                     probe['mass_calculation_note'] = f"1/2 от {names['st_B']}"
                     stats['calculated_fields'] += 1
                     is_updated = True
@@ -160,14 +167,24 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
             elif probe_type == 'st3_B':
                 p_st2_b = probe_map.get(names['st2_B'])
                 p_st3_c = probe_map.get(names['st3_C'])
+                
                 if p_st2_b and p_st3_c:
-                    m_ca, m_co3, _ = get_suspension_data(p_st3_c)
-                    m_st2 = p_st2_b.get('sample_mass')
-                    m_iron = p_st3_c.get('Масса железных окатышей (g)', 0)
-                    if m_st2 is not None:
-                        probe['sample_mass'] = m_st2 + 2.32 * m_ca + m_iron + 3.03 * m_co3
-                        stats['calculated_fields'] += 1
-                        is_updated = True
+                    
+                    susp_mass = p_st3_c.get('sample_mass',0)
+                    susp_volume = p_st3_c.get('V (ml)',0)
+                    
+                    if susp_mass > 0 and susp_volume > 0:
+                        
+                        probe['sample_mass'] = susp_mass - (1.9*susp_volume - susp_mass)/(1.9-1.05)
+                        
+                    else:
+                        m_ca, m_co3, _ = get_suspension_data(p_st3_c)
+                        m_st2 = p_st2_b.get('sample_mass')
+                        m_iron = p_st3_c.get('Масса железных окатышей (g)', 0)
+                        if m_st2 is not None:
+                            probe['sample_mass'] = m_st2 + 2.32 * m_ca + m_iron + 3.03 * m_co3
+                            stats['calculated_fields'] += 1
+                            is_updated = True
                 else:
                     logger.warning(f"  [!] Для {p_name} не найдена связанная проба st3_C или st2_B")                        
 
@@ -176,6 +193,14 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                 p_st2_a = probe_map.get(names['st2_A'])
                 p_st3_c = probe_map.get(names['st3_C'])
                 if p_st2_a and p_st3_c:
+                    
+                    susp_mass = p_st3_c.get('sample_mass',0)
+                    susp_volume = p_st3_c.get('V (ml)',0)
+                    
+                    if susp_mass > 0 and susp_volume > 0:
+                        
+                        probe['V (ml)'] = (1.9*susp_volume - susp_mass)/(1.9-1.05)                                        
+                    
                     _, _, liq_vol = get_suspension_data(p_st3_c)
                     v_st2 = p_st2_a.get('V (ml)')
                     if v_st2 is not None:
