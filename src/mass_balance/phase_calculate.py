@@ -87,7 +87,7 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
             probe_type_out = get_probe_type(probe)
             
             if probe_type_out is None:
-                # Теперь мы будем знать, какие пробы функция игнорирует
+                # Теперь мы будем знать, какие пробы функция 
                 logger.debug(f"Проба {p_name}: тип не определен, пропуск.")
                 continue
             
@@ -204,7 +204,7 @@ def calculate_fields_for_series(data_file: str = str(DATA_FILE)) -> Dict[str, An
                     _, _, liq_vol = get_suspension_data(p_st3_c)
                     v_st2 = p_st2_a.get('V (ml)')
                     if v_st2 is not None:
-                        probe['V (ml)'] = v_st2 + liq_vol
+                        probe['V (ml)'] = (v_st2 + liq_vol)
                         stats['calculated_fields'] += 1
                         is_updated = True
                 else:
