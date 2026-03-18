@@ -1,8 +1,10 @@
 import json
 import re
 from pathlib import Path
-from typing import Dict, Any, List, Union
-
+from typing import Dict, Any, List, Union, Optional
+import sys
+sys.path.insert(0, r'D:\lab\Norilsk')
+from src.database import get_db_connection
 
 # Регулярные выражения для определения всех типов проб
 PATTERNS = {
@@ -47,7 +49,6 @@ TYPE_NAMES = {
     'st6_G' : 'Оборотная жидкость',
 }
 
-
 BASE_DIR = Path(__file__).parent.parent.parent
 DATA_FILE = BASE_DIR / 'data' / 'data.json'
 
@@ -85,133 +86,101 @@ def get_probe_type(probe) -> tuple[str,int,int]|None:
         if probe_type and m and n:
             return probe_type, m, n
 
-def get_probe_from_type(type:str, method_number: int, exp_number:int, data_file: str = str(DATA_FILE)) -> dict|None:
-
-    # Загружаем данные
-    with open(data_file, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    
-    probes = data.get('probes', [])
+def get_probe_from_type(probe_type: str, method_number: int, exp_number: int) -> Optional[dict]:
+    """Находит одну конкретную пробу по её типу и номерам методики/эксперимента"""
+    with get_db_connection() as conn:
+        # Ищем сразу по колонкам таблицы - это мгновенно
+        row = conn.execute("""
+            SELECT raw_data FROM probes 
+            WHERE probe_type = ? AND method_number = ? AND exp_number = ?
+            LIMIT 1
+        """, (probe_type, method_number, exp_number)).fetchone()
         
-    if not probes:
-        raise ValueError('Нет базы данных или она пуста')
-
-    for probe in probes:
-        get_probe_type_out = get_probe_type(probe)
-        if get_probe_type_out is not None:
-            real_type, real_method, real_exp_number = get_probe_type_out # type: ignore
-        else:
-            continue
-        if type == real_type and method_number == real_method and exp_number == real_exp_number:
-            return probe
+        return json.loads(row['raw_data']) if row else None
     
-    return
-
-def get_series_probes(data_file: str = str(DATA_FILE)) -> List[Dict[str, Any]]:
+def get_series_probes() -> List[Dict[str, Any]]:
     """
-    Возвращает список проб, у которых в базе данных есть проба типа 'start_C' 
-    из этой же серии (одинаковый source_class, номер методики и номер эксперимента)
-    
-    Returns:
-        List[Dict]: Список проб в формате json таблицы (поле 'probes')
+    Возвращает список ВСЕХ проб из серий, в которых есть 'start_C'.
+    Использует подзапрос для поиска валидных серий.
     """
-    # Загружаем данные
-    with open(data_file, 'r', encoding='utf-8') as f:
-        data = json.load(f)
+    with get_db_connection() as conn:
+        # SQL логика: 
+        # 1. Найти уникальные ключи (source_class, method, exp) для всех проб типа start_C
+        # 2. Выбрать все пробы, которые подходят под эти ключи
+        query = """
+            SELECT raw_data FROM probes 
+            WHERE (source_class, method_number, exp_number) IN (
+                SELECT source_class, method_number, exp_number 
+                FROM probes 
+                WHERE probe_type = 'start_C'
+            )
+        """
+        rows = conn.execute(query).fetchall()
+        
+        result_probes = [json.loads(row['raw_data']) for row in rows]
+        print(f"Найдено проб в валидных сериях: {len(result_probes)}")
+        return result_probes
     
-    probes = data.get('probes', [])
-    
-    if not probes:
-        raise ValueError('Нет базы данных или она пуста')
-    
-    # Группируем пробы по сериям (source_class + method_number + exp_number)
-    series_groups = {}
-    
-    for probe in probes:
-        probe_type_info = get_probe_type(probe)
-        if not probe_type_info:
-            continue
+def get_series_dicts() -> List[Dict[str, Dict[str, Any]]]:
+    """
+    Возвращает список серий. Каждая серия — это словарь { тип_пробы: объект_пробы }.
+    Условие: в серии обязана быть проба 'start_C'.
+    """
+    with get_db_connection() as conn:
+        # Получаем все данные из серий, где есть start_C
+        # Сортируем для удобства группировки
+        query = """
+            SELECT source_class, method_number, exp_number, probe_type, raw_data 
+            FROM probes 
+            WHERE (source_class, method_number, exp_number) IN (
+                SELECT source_class, method_number, exp_number 
+                FROM probes 
+                WHERE probe_type = 'start_C'
+            )
+            ORDER BY source_class, method_number, exp_number
+        """
+        rows = conn.execute(query).fetchall()
+        
+        series_groups = {}
+        for row in rows:
+            # Создаем уникальный ключ для группировки строк в серии
+            key = (row['source_class'], row['method_number'], row['exp_number'])
             
-        probe_type, method_number, exp_number = probe_type_info
-        source_class = get_source_class_from_probe(probe)
-        
-        if not source_class:
-            continue
-        
-        # Ключ серии: source_class, method_number, exp_number
-        series_key = (source_class, method_number, exp_number)
-        
-        if series_key not in series_groups:
-            series_groups[series_key] = {
-                'probes': [],
-                'has_start_c': False
-            }
-        
-        series_groups[series_key]['probes'].append(probe)
-        
-        # Проверяем, есть ли в этой серии проба типа 'start_C'
-        if probe_type == 'start_C':
-            series_groups[series_key]['has_start_c'] = True
-    
-    # Собираем все пробы из серий, где есть start_C
-    result_probes = []
-    for series_info in series_groups.values():
-        if series_info['has_start_c']:
-            result_probes.extend(series_info['probes'])
-    print(len(result_probes))
-    return result_probes
-
-def get_series_dicts(data_file: str = str(DATA_FILE)) -> List[Dict[str, Dict]]:
-    """
-    Возвращает список словарей, где каждый словарь представляет серию проб.
-    Ключ - тип пробы из паттернов в get_probe_type, значение - сама проба.
-    Условие: в базе данных есть проба типа 'start_C' (необходимое условие существования серии)
-    
-    Returns:
-        List[Dict[str, Dict]]: Список словарей с пробами, сгруппированными по типам
-    """
-    # Загружаем данные
-    with open(data_file, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    
-    probes = data.get('probes', [])
-    
-    if not probes:
-        raise ValueError('Нет базы данных или она пуста')
-    
-    # Группируем пробы по сериям
-    series_dicts = []
-    series_groups = {}
-    
-    # Сначала группируем все пробы по сериям
-    for probe in probes:
-        probe_type_info = get_probe_type(probe)
-        if not probe_type_info:
-            continue
+            if key not in series_groups:
+                series_groups[key] = {}
             
-        probe_type, method_number, exp_number = probe_type_info
-        source_class = get_source_class_from_probe(probe)
-        
-        if not source_class:
-            continue
-        
-        series_key = (source_class, method_number, exp_number)
-        
-        if series_key not in series_groups:
-            series_groups[series_key] = {
-                'probes_by_type': {},
-                'has_start_c': False
-            }
-        
-        # Добавляем пробу в словарь по её типу
-        series_groups[series_key]['probes_by_type'][probe_type] = probe
-        
-        if probe_type == 'start_C':
-            series_groups[series_key]['has_start_c'] = True
+            # Наполняем словарь серии: { 'start_A': {...}, 'st2_B': {...} }
+            series_groups[key][row['probe_type']] = json.loads(row['raw_data'])
+            
+        return list(series_groups.values())
     
-    # Формируем результат только для серий с start_C
-    for series_info in series_groups.values():
-        if series_info['has_start_c']:
-            series_dicts.append(series_info['probes_by_type'])
+def get_product_type(name:str):
     
-    return series_dicts
+    if 'A' in name[-4:]: 
+        return 'Liquid'
+    
+    elif 'B' in name[-4:]: 
+        return 'Solid'
+    
+    elif 'D' in name[-4:]: 
+        return 'Concetrate'
+    
+    elif 'E' in name[-4:]: 
+        return 'Dump'
+    
+    elif 'G' in name[-4:]: 
+        return 'Recycle'
+    
+    else:
+        return 'Undefined'
+    
+def get_probe_by_name(target_name):
+    with get_db_connection() as conn:
+        # Ищем строку, где имя совпадает с нужным
+        row = conn.execute(
+            "SELECT raw_data FROM probes WHERE name = ?", 
+            (target_name,)
+        ).fetchone()
+        
+        # Если нашли — парсим JSON, если нет — возвращаем None
+        return json.loads(row['raw_data']) if row else None            

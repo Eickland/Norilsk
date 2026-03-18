@@ -5,10 +5,11 @@ from pathlib import Path
 from typing import Dict, Any, List, Tuple, Optional
 from dataclasses import dataclass
 from middleware.series_worker import get_probe_type, get_source_class_from_probe, PATTERNS
+from database import get_full_database
 
 # Конфигурация
 BASE_DIR = Path(__file__).parent.parent.parent
-DATA_FILE = BASE_DIR / 'data' / 'data.json'
+#DATA_FILE = BASE_DIR / 'data' / 'data.json'
 
 FIELD_VALIDATION_CONFIG = {
     'start_A': {
@@ -91,14 +92,6 @@ class SeriesInfo:
     all_types: List[str]
     has_warnings: bool
 
-def load_data() -> Dict[str, Any]:
-    """Загрузка данных из файла"""
-    if os.path.exists(DATA_FILE):
-        with open(DATA_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    else:
-        raise ValueError('Нет данных серий')
-
 def validate_probe_fields(probe: Dict[str, Any], probe_type: str) -> List[str]:
     """Валидация полей пробы согласно конфигурации"""
     warnings = []
@@ -124,8 +117,7 @@ def analyze_series() -> Tuple[List[SeriesInfo], int]:
     Анализ всех серий проб
     Возвращает список серий и общее количество серий
     """
-    data = load_data()
-    probes = data.get('probes', [])
+    probes = get_full_database()
     
     if not probes:
         raise ValueError('Нет базы данных или она пуста')

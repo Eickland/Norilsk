@@ -10,7 +10,14 @@ services:
       - ./src/static:/src/static
     environment:
       - PYTHONUNBUFFERED=1
-
+  worker:
+    build: .
+    volumes:
+      - ./data:/data
+    restart: always
+    command: python src/worker.py 
+    depends_on:
+      - norilsk_app
   nginx:
     image: nginx:latest
     restart: always

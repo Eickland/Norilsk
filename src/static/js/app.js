@@ -63,10 +63,12 @@ class ProbeLab {
     // Рендеринг таблицы
     renderTable() {
         const tbody = document.getElementById('probeTableBody');
-        if (!tbody || !this.data) return;
+        // ВАЖНО: Проверяем наличие именно this.data.probes
+        if (!tbody || !this.data || !this.data.probes) return;
 
         tbody.innerHTML = '';
 
+        // Используем массив из объекта ответа
         const filteredProbes = this.data.probes.filter(probe => {
             const probeName = this.getSafeValue(probe, 'name', '');
             const probeTags = this.getSafeValue(probe, 'tags', []);
@@ -75,18 +77,25 @@ class ProbeLab {
                 probeName.toLowerCase().includes(this.currentFilter.toLowerCase()) ||
                 probeTags.some(tag => tag && tag.toLowerCase().includes(this.currentFilter.toLowerCase()));
             
+            // SQLite может возвращать id как числа, убедитесь в сравнении (== вместо === если типы плавают)
             const matchesStatus = this.currentStatusFilter === null || 
-                this.getSafeValue(probe, 'status_id') === this.currentStatusFilter;
+                this.getSafeValue(probe, 'status_id') == this.currentStatusFilter;
 
             return matchesSearch && matchesStatus;
         });
 
         filteredProbes.forEach(probe => {
-            const status = this.data.statuses.find(s => s.id === probe.status_id);
-            const priority = this.data.priority?.find(p => p.id === probe.priority) || 
+            // Добавляем опциональную цепочку ?. на случай, если справочники еще не загружены
+            const status = this.data.statuses?.find(s => s.id == probe.status_id);
+            const priority = this.data.priority?.find(p => p.id == probe.priority) || 
                             { id: probe.priority, name: 'Не указан', color: '#ccc' };
             
             const row = document.createElement('tr');
+            // Добавляем класс, если проба ожидает пересчета (визуальная фишка)
+            if (probe.flag_needs_recalculation) {
+                row.classList.add('row-pending');
+            }
+            
             row.innerHTML = this.createTableRowHTML(probe, status, priority);
             tbody.appendChild(row);
         });
@@ -95,25 +104,29 @@ class ProbeLab {
     }
 
     createTableRowHTML(probe, status, priority) {
+        // В шаблоне используем те же имена полей, что в SQLite
         return `
             <td>${probe.id ? `#${probe.id}` : '—'}</td>
-            <td><strong>${this.escapeHtml(this.getSafeValue(probe, 'name', 'Без названия'))}</strong></td>
             <td>
-                <select class="status-select" data-probe-id="${probe.id || ''}" 
-                        style="background-color: ${status?.color || '#ccc'}; color: black; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; min-width: 140px;">
+                <strong>${this.escapeHtml(this.getSafeValue(probe, 'name', 'Без названия'))}</strong>
+                ${probe.flag_needs_recalculation ? '<i class="fas fa-sync fa-spin" title="В очереди на расчет" style="margin-left: 5px; color: #007bff;"></i>' : ''}
+            </td>
+            <td>
+                <select class="status-select" data-probe-id="${probe.id}" 
+                        style="background-color: ${status?.color || '#ccc'}; color: black; border: none; padding: 5px 10px; border-radius: 15px; cursor: pointer;">
                     ${(this.data.statuses || []).map(s => 
-                        `<option value="${s.id}" ${s.id === probe.status_id ? 'selected' : ''}
-                        style="background-color: ${s.color || '#ccc'}; color: black;">
-                            ${this.escapeHtml(s.name || 'Неизвестно')}
+                        `<option value="${s.id}" ${s.id == probe.status_id ? 'selected' : ''}
+                        style="background-color: ${s.color}; color: black;">
+                            ${this.escapeHtml(s.name)}
                         </option>`
                     ).join('')}
                 </select>
             </td>
             <td>
-                <select class="priority-select" data-probe-id="${probe.id || ''}" 
-                        style="background-color: ${priority.color}; color: black; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; min-width: 140px;">
+                <select class="priority-select" data-probe-id="${probe.id}" 
+                        style="background-color: ${priority.color}; color: black; border: none; padding: 5px 10px; border-radius: 15px; cursor: pointer;">
                     ${(this.data.priority || []).map(p => 
-                        `<option value="${p.id}" ${p.id === probe.priority ? 'selected' : ''}
+                        `<option value="${p.id}" ${p.id == probe.priority ? 'selected' : ''}
                         style="background-color: ${p.color}; color: black;">
                             ${this.escapeHtml(p.name)}
                         </option>`
@@ -121,15 +134,14 @@ class ProbeLab {
                 </select>
             </td>
             <td>
-                <button class="btn-action" onclick="lab.editProbe(${probe.id || 0})" title="Редактировать">
+                <button class="btn-action" onclick="lab.editProbe(${probe.id})" title="Редактировать">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn-action" onclick="lab.deleteProbe(${probe.id || 0})" title="Удалить">
+                <button class="btn-action" onclick="lab.deleteProbe(${probe.id})" title="Удалить">
                     <i class="fas fa-trash"></i>
                 </button>
-            <input type="checkbox" class="probe-checkbox" data-probe-id="${probe.id}">
+                <input type="checkbox" class="probe-checkbox" data-probe-id="${probe.id}">
             </td>
-                
         `;
     }
 
@@ -156,16 +168,20 @@ class ProbeLab {
         const container = document.getElementById('statusFilter');
         if (!container) return;
 
+        // Безопасное получение списка статусов
+        // Если statuses лежат внутри data, используем их, иначе пустой массив
+        const statuses = this.data && this.data.statuses ? this.data.statuses : [];
+
         container.innerHTML = `
             <button class="filter-btn ${this.currentStatusFilter === null ? 'active' : ''}" 
                     onclick="lab.filterByStatus(null)">
                 Все статусы
             </button>
-            ${this.data.statuses.map(status => `
+            ${statuses.map(status => `
                 <button class="filter-btn ${this.currentStatusFilter === status.id ? 'active' : ''}" 
                         onclick="lab.filterByStatus(${status.id})"
-                        style="border-left: 3px solid ${status.color}">
-                    ${this.escapeHtml(status.name)}
+                        style="border-left: 4px solid ${status.color || '#ccc'}">
+                    ${this.escapeHtml(status.name || 'Без названия')}
                 </button>
             `).join('')}
         `;

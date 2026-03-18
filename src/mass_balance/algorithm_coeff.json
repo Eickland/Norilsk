@@ -1,0 +1,17 @@
+{
+  "coefficients": {
+    "solid_dencity_start_param_T_type": 3,
+    "liquid_dencity_start_param_T_type": 1,
+    "solid_dencity_start_param_E_type": 3,
+    "liquid_dencity_start_param_E_type": 1,
+    "leaching_solid_coefficient_T_type": 0.33,
+    "leaching_solid_coefficient_E_type": 0.5,
+    "contraction_h2so4": 0.06,
+    "solid_dencity_st3_param_T_type": 2,
+    "liquid_dencity_st3_param_T_type": 1.2,
+    "solid_dencity_st3_param_E_type": 2,
+    "liquid_dencity_st3_param_E_type": 1.2,
+    "st3_B_calc_type": 0,
+    "st2_solid_dissolution_param": 0.95
+  }
+}
